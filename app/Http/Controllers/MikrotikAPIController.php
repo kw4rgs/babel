@@ -20,17 +20,17 @@ class MikrotikAPIController extends Controller
 
     function __construct($ip = null, $nodos = null, $redes = null)
     {
-        $this->ip = '192.168.2.100';
-        $this->user = '';
-        $this->pass = '';
-        $this->nodos = $nodos != null ? $nodos : array();
-        $this->redes = $redes != null ? $redes : array();
+        $this-> ip = '192.168.2.100';
+        $this-> user = 'admin';
+        $this-> pass = '';
+        $this-> nodos = $nodos != null ? $nodos : array();
+        $this-> redes = $redes != null ? $redes : array();
     }
 
     function connection($ip)
     {
         $client = new Client([
-            'host' => $ip,
+            'host' => $this->ip,
             'user' => $this->user,
             'pass' => $this->pass
         ]);
@@ -49,10 +49,9 @@ class MikrotikAPIController extends Controller
             Router Info
     */
 
-    public function testRouterOS(Request $request)
+    public function testRouterOS()
     {
-        $data = $request->all();
-        $connection = $this->connection($data['ip'],$data['user'], $data['pass']);
+        $connection = $this->connection('host');
         $query =
             (new Query('/system/identity/print'));
         $response = $connection->query($query)->read();
@@ -73,7 +72,7 @@ class MikrotikAPIController extends Controller
     public function getQueues()
     {
         try {
-            $connection = $this->connection('192.168.2.100');
+            $connection = $this->connection('host');
 
             $query =
                 (new Query('/queue/simple/print'));
