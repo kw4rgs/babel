@@ -8,9 +8,6 @@ use App\Http\Response;
 use \App\Clases\RouterosAPI;
 use \RouterOS\Client;
 use \RouterOS\Query;
-
-
-use App\ClienteLista;
 use Exception;
 
 class MikrotikAPIController extends Controller
@@ -24,7 +21,7 @@ class MikrotikAPIController extends Controller
     function __construct($ip = null, $nodos = null, $redes = null)
     {
         $this->ip = '192.168.2.100';
-        $this->user = 'admin';
+        $this->user = '';
         $this->pass = '';
         $this->nodos = $nodos != null ? $nodos : array();
         $this->redes = $redes != null ? $redes : array();
@@ -45,16 +42,17 @@ class MikrotikAPIController extends Controller
     // ------------------------ metodo = [GET] ----------------------------------
     // ------------------------ /testRouterOS ----------------------------------
 
-    /* Function: Permite chequear a que router pertenece el nodo */
-    /* Parametros:
-            Nodo
+    /* Function: Prueba de conexion al router */
+    /* Parametros: 
+            IP
         Retorna:
-            Router
+            Router Info
     */
 
-    public function testRouterOS()
+    public function testRouterOS(Request $request)
     {
-        $connection = $this->connection('192.168.2.100');
+        $data = $request->all();
+        $connection = $this->connection($data['ip'],$data['user'], $data['pass']);
         $query =
             (new Query('/system/identity/print'));
         $response = $connection->query($query)->read();
@@ -65,11 +63,11 @@ class MikrotikAPIController extends Controller
     // ------------------------ metodo = [GET] ----------------------------------
     // ------------------------- /getQueues ------------------------------------
 
-    /* Function: Permite chequear a que router pertenece el nodo */
+    /* Function: Obtiene la cantidad y las colas en el Mikrotik */
     /* Parametros:
-            Nodo
+            IP
         Retorna:
-            Router
+            Router Info
     */
 
     public function getQueues()
@@ -92,13 +90,6 @@ class MikrotikAPIController extends Controller
     // ------------------------ metodo = [GET] ----------------------------------
     // ------------------------- /getRouterByNode ------------------------------------
 
-    /* Function: Permite chequear a que router pertenece el nodo */
-    /* Parametros:
-            Nodo
-        Retorna:
-            Router
-    */
-
     public function getRouterByNode($nodo)
     {
         $this->nodos[] = $nodo;
@@ -109,12 +100,8 @@ class MikrotikAPIController extends Controller
     // --------------------------- metodo = [POST] ------------------------------
     // -----------------------/createContract -----------------------------
 
-    /* Function: Permite chequear a que router pertenece el nodo */
-    /* Parametros:
-            Nodo
-        Retorna:
-            Router
-    */
+    /* Funcion: Crea las colas de los clientes en el Mikrotik */
+    /* Parametros: Array de clientes */
 
     function createContract(Request $request)
     {
@@ -164,11 +151,9 @@ class MikrotikAPIController extends Controller
     // --------------------------- metodo = [DEL] -------------------------------
     // -----------------------/deleteContract -----------------------------
 
-    /* Function: Permite chequear a que router pertenece el nodo */
+    /* Function: Elimina los clientes del objeto, sus colas y address list */
     /* Parametros:
-            Nodo
-        Retorna:
-            Router
+            Singleton
     */
 
     public function deleteContract(Request $request)
@@ -184,6 +169,7 @@ class MikrotikAPIController extends Controller
         }
         return $return;
     }
+
 
     function removeClientQueue($connection, $clientes)
     {
@@ -220,12 +206,8 @@ class MikrotikAPIController extends Controller
     // --------------------------- metodo = [PUT] -------------------------------
     // -----------------------/updateContract -----------------------------
 
-    /* Function: Permite chequear a que router pertenece el nodo */
-    /* Parametros:
-            Nodo
-        Retorna:
-            Router
-    */
+    /* Funcion: Actualiza las colas de los clientes en el Mikrotik */
+    /* Parametros: Array de clientes */
 
     function updateContract(Request $request)
     {
@@ -240,6 +222,11 @@ class MikrotikAPIController extends Controller
         }
         return $return;
     }
+
+    /* Function: Actualiza los parametros de los clientes solicitados, si el cliente no existe lo creamos */
+    /* Parametros:
+            Singleton
+    */
 
     function updateClientQueue($connection, $clientes)
     {
