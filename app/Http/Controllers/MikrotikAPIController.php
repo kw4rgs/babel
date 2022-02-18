@@ -259,7 +259,7 @@ class MikrotikAPIController extends Controller
     // --------------------------- metodo = [POST] --------------------------
     // ------------------------------ /nodes --------------------------------
 
-    function migrateNewNode(Request $request)
+    function migrateQueues(Request $request)
     {
         try {
             $data = $request->all();
