@@ -30,7 +30,7 @@ class MikrotikAPIController extends Controller
     function connection($ip)
     {
         $client = new Client([
-            'host' => $this->ip,
+            'host' => $ip,
             'user' => $this->user,
             'pass' => $this->pass
         ]);
@@ -49,9 +49,10 @@ class MikrotikAPIController extends Controller
             Router Info
     */
 
-    public function testRouterOS()
+    public function testRouterOS(Request $request)
     {
-        $connection = $this->connection('host');
+        $data = $request->all();
+        $connection = $this->connection($data['ip']);
         $query =
             (new Query('/system/identity/print'));
         $response = $connection->query($query)->read();
@@ -69,11 +70,11 @@ class MikrotikAPIController extends Controller
             Router Info
     */
 
-    public function getQueues()
+    public function getQueues(Request $request)
     {
         try {
-            $connection = $this->connection('host');
-
+            $data = $request->all();
+            $connection = $this->connection($data['ip']);
             $query =
                 (new Query('/queue/simple/print'));
             $response = $connection->query($query)->read();
@@ -89,23 +90,13 @@ class MikrotikAPIController extends Controller
             return $return;
     }
 
-    // ------------------------ Metodo Obtener Info ------------------------------
-    // ------------------------ metodo = [GET] ----------------------------------
-    // ------------------------- /getRouterByNode ------------------------------------
-
-    public function getRouterByNode($nodo)
-    {
-        $this->nodos[] = $nodo;
-        return 'nodo';
-    }
-
+    
     // --------------------- Metodo Creacion de Cola ----------------------------
     // --------------------------- metodo = [POST] ------------------------------
     // -----------------------/createContract -----------------------------
 
     /* Funcion: Crea las colas de los clientes en el Mikrotik */
     /* Parametros: Array de clientes */
-
     function createContract(Request $request)
     {
         try {
@@ -270,41 +261,6 @@ class MikrotikAPIController extends Controller
 
     function migrateNewNode(Request $request)
     {
-        
-        $data = $request->all(); 
-        $connection = $this->connection($data['ip_router_viejo']);
-        //$this->removeClientQueue($connection,$data['clientes']);
-        $query =
-            (new Query('/queue/simple/print'));
-        $response = $connection->query($query)->read();
-        
-        return $response;
-
-
-
-        //return $response;
-/*         foreach($response as $key => $value)
-        {
-            $clientes = array ($value['target'], $value['max-limit']);        
-
-        } */
-        
-
-
-
-        //return $response;
-        //return $response;
-        //dd(count($response)-1);
-        //$clientes = array ($response);
-        //dd($clientes);
-        //$connection = $this->connection($data['ip_router_nuevo']);
-        //$this->createClientQueue($connection,$data['clientes']);
-        
-        //return $response;
-    }
-
-
-/*     {
         try {
             $data = $request->all();
             
@@ -321,8 +277,5 @@ class MikrotikAPIController extends Controller
 
         return $return;
 
-    } */
-
-
-
+    }
 }
