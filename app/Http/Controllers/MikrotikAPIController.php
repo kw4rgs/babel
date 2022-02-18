@@ -20,9 +20,9 @@ class MikrotikAPIController extends Controller
 
     function __construct($ip = null, $nodos = null, $redes = null)
     {
-        $this-> ip = '192.168.2.100';
-        $this-> user = 'admin';
-        $this-> pass = '';
+        $this-> ip = '';
+        $this-> user = 'usr_mkt';
+        $this-> pass = 'usr_mkt';
         $this-> nodos = $nodos != null ? $nodos : array();
         $this-> redes = $redes != null ? $redes : array();
     }
@@ -32,7 +32,8 @@ class MikrotikAPIController extends Controller
         $client = new Client([
             'host' => $ip,
             'user' => $this->user,
-            'pass' => $this->pass
+            'pass' => $this->pass,
+            'port' => 8728
         ]);
 
         return $client;
@@ -136,7 +137,7 @@ class MikrotikAPIController extends Controller
     function addAddressList($connection, $ip)
     {
         $query = (new Query("/ip/firewall/address-list/add"))
-            ->equal('list', $ip)
+            ->equal('list', 'clientes_activos')
             ->equal('address', $ip);
         $response = $connection->query($query)->read();
     }
@@ -184,7 +185,7 @@ class MikrotikAPIController extends Controller
     function removeAddressList($connection, $ip)
     {
         $query = (new Query("/ip/firewall/address-list/print"))
-            ->where('list', $ip)
+            ->where('list', 'clientes_activos')
             ->where('address', $ip);
         $response = $connection->query($query)->read();
 
@@ -264,6 +265,7 @@ class MikrotikAPIController extends Controller
         try {
             $data = $request->all();
             
+            
             $connection = $this->connection($data['ip_router_viejo']);
             $this->removeClientQueue($connection,$data['clientes']);
             
@@ -273,6 +275,7 @@ class MikrotikAPIController extends Controller
             $return = response('¡Clientes migrados con éxito!', 200);
         } catch (Exception $e) {
             $return = response('Ha ocurrido un error al migrar los clientes.', 400);
+
         }
 
         return $return;
