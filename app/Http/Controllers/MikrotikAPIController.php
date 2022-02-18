@@ -12,11 +12,11 @@ use Exception;
 
 class MikrotikAPIController extends Controller
 {
-    private $ip;
+/*     private $ip;
     private $user;
     private $pass;
     private $nodos;
-    private $redes;
+    private $redes; */
 
     function __construct($ip = null, $nodos = null, $redes = null)
     {
@@ -77,8 +77,12 @@ class MikrotikAPIController extends Controller
             $query =
                 (new Query('/queue/simple/print'));
             $response = $connection->query($query)->read();
-            count($response);
-            return $response;
+            //dd(count($response)-1);
+            if ($response == null) {
+                $return = response ('No hay clientes en el equipo', 400);
+            } else {
+            return $response; 
+            }
         } catch (Exception $e) {
             $return = response('Ha ocurrido al extraer la informacion', 400);
         }
@@ -260,35 +264,65 @@ class MikrotikAPIController extends Controller
         }
     }
 
-    // ------------------- Metodo Actualizacion de Cola -------------------------
-    // --------------------------- metodo = [PUT] -------------------------------
-    // -----------------------/updateContract -----------------------------
-
-    /* Function: Permite migrar clientes de un nodo a otro*/
-    /* Parametros:
-                    Array de clientes del nuevo nodo
-                    Nombre del nodo
-                    Subnet (es el node_id de la tabla node)
-    */
+    // ------------------- Metodo Migracion de Nodo -------------------------
+    // --------------------------- metodo = [POST] --------------------------
+    // ------------------------------ /nodes --------------------------------
 
     function migrateNewNode(Request $request)
     {
+        
+        $data = $request->all(); 
+        $connection = $this->connection($data['ip_router_viejo']);
+        //$this->removeClientQueue($connection,$data['clientes']);
+        $query =
+            (new Query('/queue/simple/print'));
+        $response = $connection->query($query)->read();
+        
+        return $response;
+
+
+
+        //return $response;
+/*         foreach($response as $key => $value)
+        {
+            $clientes = array ($value['target'], $value['max-limit']);        
+
+        } */
+        
+
+
+
+        //return $response;
+        //return $response;
+        //dd(count($response)-1);
+        //$clientes = array ($response);
+        //dd($clientes);
+        //$connection = $this->connection($data['ip_router_nuevo']);
+        //$this->createClientQueue($connection,$data['clientes']);
+        
+        //return $response;
+    }
+
+
+/*     {
         try {
             $data = $request->all();
-
+            
             $connection = $this->connection($data['ip_router_viejo']);
             $this->removeClientQueue($connection,$data['clientes']);
-
+            
             $connection = $this->connection($data['ip_router_nuevo']);
             $this->createClientQueue($connection,$data['clientes']);
 
-            $return = response('Clientes migrados con éxito!', 200);
+            $return = response('¡Clientes migrados con éxito!', 200);
         } catch (Exception $e) {
             $return = response('Ha ocurrido un error al migrar los clientes.', 400);
         }
 
         return $return;
 
-    }
+    } */
+
+
 
 }

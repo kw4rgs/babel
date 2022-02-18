@@ -18,6 +18,7 @@
 }); */
 
 $router->get('/', function () use ($router) {return "<h1>API MIKROTIK EN LUMEN<h1>";});
+
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
 $router->get('/v1/infoQueue', 'MikrotikAPIController@getQueues');
 $router->get('/v1/infoNodes', 'MikrotikAPIController@getRouterByNode');
