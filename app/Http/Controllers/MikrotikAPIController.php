@@ -272,6 +272,7 @@ class MikrotikAPIController extends Controller
             $connection = $this->connection($data['ip_router_nuevo']);
             $this->createClientQueue($connection,$data['clientes']);
 
+            
             $return = response('¡Clientes migrados con éxito!', 200);
         } catch (Exception $e) {
             $return = response('Ha ocurrido un error al migrar los clientes.', 400);
