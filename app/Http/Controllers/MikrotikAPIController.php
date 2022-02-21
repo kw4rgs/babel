@@ -52,13 +52,19 @@ class MikrotikAPIController extends Controller
 
     public function testRouterOS(Request $request)
     {
-        $data = $request->all();
-        $connection = $this->connection($data['ip']);
-        $query =
-            (new Query('/system/identity/print'));
-        $response = $connection->query($query)->read();
-        return $response;
-    }
+        try {
+            $data = $request->all();
+            $connection = $this->connection($data['ip']);
+            $query =
+                (new Query('/system/identity/print'));
+            $response = $connection->query($query)->read();
+            return $response;
+        } catch (Exception $e) {
+            $return = response('Ha ocurrido un error. Verifique la IP ingresada', 400);
+        }
+            return $return;
+    }   
+
 
     // ------------------------ Metodo Obtener Info ------------------------------
     // ------------------------ metodo = [GET] ----------------------------------
@@ -79,11 +85,16 @@ class MikrotikAPIController extends Controller
             $query =
                 (new Query('/queue/simple/print'));
             $response = $connection->query($query)->read();
-            //dd(count($response)-1);
+            $quantity = count ($response);
             if ($response == null) {
                 $return = response ('No hay clientes en el equipo', 400);
             } else {
-            return $response; 
+            $queues = json_encode(array
+                (
+                    'cantidad de colas' => $quantity,
+                    'colas' => $response
+                ));
+            return $queues;
             }
         } catch (Exception $e) {
             $return = response('Ha ocurrido al extraer la informacion', 400);
@@ -91,7 +102,6 @@ class MikrotikAPIController extends Controller
             return $return;
     }
 
-    
     // --------------------- Metodo Creacion de Cola ----------------------------
     // --------------------------- metodo = [POST] ------------------------------
     // -----------------------/createContract -----------------------------
@@ -263,23 +273,50 @@ class MikrotikAPIController extends Controller
     function migrateQueues(Request $request)
     {
         try {
-            $data = $request->all();
-            
-            
-            $connection = $this->connection($data['ip_router_viejo']);
-            $this->removeClientQueue($connection,$data['clientes']);
-            
-            $connection = $this->connection($data['ip_router_nuevo']);
-            $this->createClientQueue($connection,$data['clientes']);
-
-            
-            $return = response('¡Clientes migrados con éxito!', 200);
+            $data = $request->all();    
+            if ($request ['ip_router_viejo'] == $request ['ip_router_nuevo']) {
+                $return = response ('La IP origen y destino son iguales', 400);
+                return $return;
+            } 
+            else {
+                $connection = $this->connection($data['ip_router_nuevo']);
+                $this->createClientQueue($connection,$data['clientes']);        
+                if (http_response_code($return = 200)) {
+                    $connection = $this->connection($data['ip_router_viejo']);
+                    $this->removeClientQueue($connection,$data['clientes']);
+                    $return = response('¡Clientes migrados con éxito!', 200);
+                    return $return;
+                }       
+            }
         } catch (Exception $e) {
             $return = response('Ha ocurrido un error al migrar los clientes.', 400);
-
+            return $return;
         }
+    } 
 
-        return $return;
 
-    }
 }
+
+/* {
+    try {
+        $data = $request->all();          
+        if ($request['ip_router_nuevo'] != ['ip_router_viejo']) {
+            $this->createClientQueue($connection,$data['clientes']);        
+            $connection = $this->connection($data['ip_router_nuevo']);
+            if (http_response_code($return = 200)){  
+                $connection = $this->connection($data['ip_router_viejo']);
+                $this->removeClientQueue($connection,$data['clientes']);
+                $return = response('¡Clientes migrados con éxito!', 200);
+            } 
+            else { 
+                $return = response('Ha ocurrido un error al crear cola de clientes', 400);
+            } 
+        }
+        else {
+            $return = response ('La IP origen y destino son iguales', 400);
+        }
+    } catch (Exception $e) {
+            $return = response('Ha ocurrido un error al migrar los clientes.', 400);
+        }
+        return $return;   
+}   */
