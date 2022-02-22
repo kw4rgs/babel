@@ -313,21 +313,35 @@ class MikrotikAPIController extends Controller
     // ------------------------ metodo = [POST] -----------------------------
     // ------------------------- /nodes -------------------------------------
     
-/*     public function cleanQueues(Request $request)
+    public function cleanQueues(Request $request)
     {
         $data = $this->getQueues($request);
+        
+        //dd($data['clientes'][1]);
 
         $connection = $this->connection($data['ip']);
-    }       */
-    
-/* 
 
-        $creacion = $this->createContract($info);
+        for ($i=0; $i < 200; $i++) { 
+            $this->removeAddressList($connection, $data['clientes'][$i]['cliente_ip']);
+            //$this->removeClientQueue($connection, $data['clientes'][$i]['cliente_ip']);
+        }
+            
+
+    /* if (isset($response[0])) {
+
+        $query = (new Query("/ip/firewall/address-list/remove"))
+            ->equal('.id', $response[0]['.id']);
+        $response = $connection->query($query)->read();
+ */
+
+        return $response;
         
+        //$this->removeClientQueue($connection,$data['clientes']);
 
-        return $creacion; */
+        //$this->createClientQueue($connection,$data['clientes']);
+    }       
 
-        //$eliminacion = $this->deleteContract($request);
+
     
 }
     
