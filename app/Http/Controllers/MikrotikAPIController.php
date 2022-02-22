@@ -10,6 +10,7 @@ use \RouterOS\Client;
 use \RouterOS\Query;
 use Exception;
 
+
 class MikrotikAPIController extends Controller
 {
 /*     private $ip;
@@ -86,14 +87,28 @@ class MikrotikAPIController extends Controller
                 (new Query('/queue/simple/print'));
             $response = $connection->query($query)->read();
             $quantity = count ($response);
+
+            foreach ($response as $key => $queue) {
+                //$colas[$key]['.id'] = $queue['.id']; 
+                $colas[$key]['cliente_ip'] = (explode("/", $queue['target']))[0];
+                $ancho = explode("/", $queue['max-limit']);
+                $colas[$key]['download'] = strval ($ancho[1] / 1000) . " Kbps"; 
+                $colas[$key]['upload'] = strval ($ancho[0] / 1000) . " Kbps"; 
+                //$colas[$key]['parent'] = $queue['parent']; 
+                //$colas[$key]['target'] = strval ($queue['target']);
+                $colas[$key]['estado'] = "activo";
+            };
+
             if ($response == null) {
                 $return = response ('No hay clientes en el equipo', 400);
             } else {
-            $queues = json_encode(array
+
+            $queues = array
                 (
+                    'ip' => $request['ip'],
                     'cantidad de colas' => $quantity,
-                    'colas' => $response
-                ));
+                    'clientes' => $colas
+                );
             return $queues;
             }
         } catch (Exception $e) {
@@ -108,7 +123,7 @@ class MikrotikAPIController extends Controller
 
     /* Funcion: Crea las colas de los clientes en el Mikrotik */
     /* Parametros: Array de clientes */
-    function createContract(Request $request)
+    public function createContract(Request $request)
     {
         try {
             $data = $request->all();
@@ -267,14 +282,14 @@ class MikrotikAPIController extends Controller
     }
 
     // ------------------- Metodo Migracion de Nodo -------------------------
-    // --------------------------- metodo = [POST] --------------------------
+    // --------------------------- metodo = [PUT] --------------------------
     // ------------------------------ /nodes --------------------------------
 
     function migrateQueues(Request $request)
     {
         try {
             $data = $request->all();    
-            if ($request ['ip_router_viejo'] == $request ['ip_router_nuevo']) {
+            if ($request ['ip_router_viejo'] != $request ['ip_router_nuevo']) {
                 $return = response ('La IP origen y destino son iguales', 400);
                 return $return;
             } 
@@ -294,29 +309,25 @@ class MikrotikAPIController extends Controller
         }
     } 
 
+    // ------------------- Metodo PQ a SQ - Limpieza-------------------------
+    // ------------------------ metodo = [POST] -----------------------------
+    // ------------------------- /nodes -------------------------------------
+    
+/*     public function cleanQueues(Request $request)
+    {
+        $data = $this->getQueues($request);
 
+        $connection = $this->connection($data['ip']);
+    }       */
+    
+/* 
+
+        $creacion = $this->createContract($info);
+        
+
+        return $creacion; */
+
+        //$eliminacion = $this->deleteContract($request);
+    
 }
-
-/* {
-    try {
-        $data = $request->all();          
-        if ($request['ip_router_nuevo'] != ['ip_router_viejo']) {
-            $this->createClientQueue($connection,$data['clientes']);        
-            $connection = $this->connection($data['ip_router_nuevo']);
-            if (http_response_code($return = 200)){  
-                $connection = $this->connection($data['ip_router_viejo']);
-                $this->removeClientQueue($connection,$data['clientes']);
-                $return = response('¡Clientes migrados con éxito!', 200);
-            } 
-            else { 
-                $return = response('Ha ocurrido un error al crear cola de clientes', 400);
-            } 
-        }
-        else {
-            $return = response ('La IP origen y destino son iguales', 400);
-        }
-    } catch (Exception $e) {
-            $return = response('Ha ocurrido un error al migrar los clientes.', 400);
-        }
-        return $return;   
-}   */
+    
