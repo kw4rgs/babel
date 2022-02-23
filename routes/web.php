@@ -29,6 +29,8 @@ $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 $router->put('/v1/nodes','MikrotikAPIController@migrateQueues');
 $router->post('/v1/nodes','MikrotikAPIController@cleanQueues');
 
+$router->post('/v1/backup', 'MikrotikAPIController@backupMikrotik');
+
 
 
 

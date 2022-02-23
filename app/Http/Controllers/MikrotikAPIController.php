@@ -312,36 +312,48 @@ class MikrotikAPIController extends Controller
     // ------------------- Metodo PQ a SQ - Limpieza-------------------------
     // ------------------------ metodo = [POST] -----------------------------
     // ------------------------- /nodes -------------------------------------
-    
-    public function cleanQueues(Request $request)
+
+
+    function cleanQueues(Request $request)
     {
-        $data = $this->getQueues($request);
         
-        //dd($data['clientes'][1]);
+            $data = $request->all();    
+            $clientes = $this->getQueues($request);
 
-        $connection = $this->connection($data['ip']);
-
-        for ($i=0; $i < 200; $i++) { 
-            $this->removeAddressList($connection, $data['clientes'][$i]['cliente_ip']);
-            //$this->removeClientQueue($connection, $data['clientes'][$i]['cliente_ip']);
-        }
+            $connection = $this->connection($data['ip']);
             
+            // BORRA TODAS LAS ADDRESS LIST
+            $query =
+                (new Query('/ip/firewall/address-list/find'))
+                    ->where('list'); 
+            $ips = $connection->query($query)->read();
+            
+            $ips=$ips["after"]["ret"];
+            $ips=str_replace(';', ',', $ips);
+            
+            $query = 
+                (new Query('/ip/firewall/address-list/remove'))
+                    ->equal('.id',$ips);
+            $ret = $connection->query($query)->read();
 
-    /* if (isset($response[0])) {
+            // BORRA TODAS LAS QUEUES
+            $query =
+                (new Query('/queue/simple/find'))
+                    ->where('list'); 
+            $ips = $connection->query($query)->read();
 
-        $query = (new Query("/ip/firewall/address-list/remove"))
-            ->equal('.id', $response[0]['.id']);
-        $response = $connection->query($query)->read();
- */
+            $ips=$ips["after"]["ret"];
 
-        return $response;
-        
-        //$this->removeClientQueue($connection,$data['clientes']);
+            $ips=str_replace(';', ',', $ips);
 
-        //$this->createClientQueue($connection,$data['clientes']);
-    }       
+            $query = 
+                (new Query('/queue/simple/remove'))
+                    ->equal('.id',$ips);
+            $ret = $connection->query($query)->read();
 
-
-    
+            $connection = $this->connection($clientes['ip']);
+            $this->createClientQueue($connection,$clientes['clientes']);        
+            $return = response('¡Clientes migrados con éxito!', 200);
+            return $return;  
+    } 
 }
-    
