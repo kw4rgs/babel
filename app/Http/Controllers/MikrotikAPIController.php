@@ -308,11 +308,11 @@ class MikrotikAPIController extends Controller
     // ------------------------ metodo = [POST] -----------------------------
     // ------------------------- /nodes -------------------------------------
 
-    function cleanContract(Request $request)
+    function cleanContracts (Request $request)
     {
         
             $data = $request->all();    
-            $clientes = $this->getQueues($request);
+            $clientes = $this->getContract($request);
 
             $connection = $this->connection($data['ip']);
             
@@ -355,7 +355,7 @@ class MikrotikAPIController extends Controller
     // ------------------------ metodo = [POST] -----------------------------
     // ------------------------- /nodes -------------------------------------
 
-    public function backupMikrotik (Request $request) 
+    public function backupContracts (Request $request) 
     {      
         $data = $request->all();
         $connection = $this->connection($data['ip']);
@@ -364,7 +364,7 @@ class MikrotikAPIController extends Controller
             new Query('/export');
         $backup = $connection->query($query)->read();
 
-        return $backup;
+        dd($backup);
 
     }
 
