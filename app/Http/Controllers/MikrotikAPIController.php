@@ -13,11 +13,6 @@ use Exception;
 
 class MikrotikAPIController extends Controller
 {
-/*     private $ip;
-    private $user;
-    private $pass;
-    private $nodos;
-    private $redes; */
 
     function __construct($ip = null, $nodos = null, $redes = null)
     {
@@ -78,7 +73,7 @@ class MikrotikAPIController extends Controller
             Router Info
     */
 
-    public function getQueues(Request $request)
+    public function getContract(Request $request)
     {
         try {
             $data = $request->all();
@@ -224,7 +219,7 @@ class MikrotikAPIController extends Controller
 
     // ------------------- Metodo Actualizacion de Cola -------------------------
     // --------------------------- metodo = [PUT] -------------------------------
-    // -----------------------/updateContract -----------------------------
+    // -----------------------/updateContract -----------------------------------
 
     /* Funcion: Actualiza las colas de los clientes en el Mikrotik */
     /* Parametros: Array de clientes */
@@ -285,11 +280,11 @@ class MikrotikAPIController extends Controller
     // --------------------------- metodo = [PUT] --------------------------
     // ------------------------------ /nodes --------------------------------
 
-    function migrateQueues(Request $request)
+    function migrateContract(Request $request)
     {
         try {
             $data = $request->all();    
-            if ($request ['ip_router_viejo'] != $request ['ip_router_nuevo']) {
+            if ($request ['ip_router_viejo'] == $request ['ip_router_nuevo']) {
                 $return = response ('La IP origen y destino son iguales', 400);
                 return $return;
             } 
@@ -313,8 +308,7 @@ class MikrotikAPIController extends Controller
     // ------------------------ metodo = [POST] -----------------------------
     // ------------------------- /nodes -------------------------------------
 
-
-    function cleanQueues(Request $request)
+    function cleanContract(Request $request)
     {
         
             $data = $request->all();    
@@ -356,4 +350,63 @@ class MikrotikAPIController extends Controller
             $return = response('¡Clientes migrados con éxito!', 200);
             return $return;  
     } 
+
+    // ------------------- Metodo PQ a SQ - Limpieza-------------------------
+    // ------------------------ metodo = [POST] -----------------------------
+    // ------------------------- /nodes -------------------------------------
+
+    public function backupMikrotik (Request $request) 
+    {      
+        $data = $request->all();
+        $connection = $this->connection($data['ip']);
+
+        $query = 
+            new Query('/export');
+        $backup = $connection->query($query)->read();
+
+        return $backup;
+
+    }
+
+    // ------------------- Metodo Limpieza de Colas ------------------------
+    // ------------------------ metodo = [DEL] -----------------------------
+    // ------------------------- /contracts --------------------------------
+
+    public function wipeContracts (Request $request)
+    {   
+        $data = $request->all();    
+        $clientes = $this->getContract($request);
+
+        $connection = $this->connection($data['ip']);
+        
+        // BORRA TODAS LAS ADDRESS LIST
+        $query =
+            (new Query('/ip/firewall/address-list/find'))
+                ->where('list'); 
+        $ips = $connection->query($query)->read();
+        
+        $ips=$ips["after"]["ret"];
+        $ips=str_replace(';', ',', $ips);
+        
+        $query = 
+            (new Query('/ip/firewall/address-list/remove'))
+                ->equal('.id',$ips);
+        $ret = $connection->query($query)->read();
+
+        // BORRA TODAS LAS QUEUES
+        $query =
+            (new Query('/queue/simple/find'))
+                ->where('list'); 
+        $ips = $connection->query($query)->read();
+
+        $ips=$ips["after"]["ret"];
+
+        $ips=str_replace(';', ',', $ips);
+
+        $query = 
+            (new Query('/queue/simple/remove'))
+                ->equal('.id',$ips);
+        $ret = $connection->query($query)->read();   
+    }
+
 }

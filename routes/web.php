@@ -20,17 +20,15 @@
 $router->get('/', function () use ($router) {return "<h1>API MIKROTIK EN LUMEN<h1>";});
 
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
-$router->get('/v1/infoQueue', 'MikrotikAPIController@getQueues');
 
+$router->get('/v1/contracts', 'MikrotikAPIController@getContract');
 $router->post('/v1/contracts','MikrotikAPIController@createContract');
 $router->put('/v1/contracts','MikrotikAPIController@updateContract');
 $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
-
-$router->put('/v1/nodes','MikrotikAPIController@migrateQueues');
-$router->post('/v1/nodes','MikrotikAPIController@cleanQueues');
-
-$router->post('/v1/backup', 'MikrotikAPIController@backupMikrotik');
-
+$router->get('/v1/contracts', 'MikrotikAPIController@backupContracts');
+$router->put('/v1/contracts','MikrotikAPIController@migrateContract');
+$router->post('/v1/contracts','MikrotikAPIController@cleanContracts');
+$router->delete('/v1/contracts','MikrotikAPIController@wipeContracts');
 
 
 
