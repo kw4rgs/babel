@@ -280,7 +280,7 @@ class MikrotikAPIController extends Controller
     // --------------------------- metodo = [PUT] --------------------------
     // ------------------------------ /nodes --------------------------------
 
-    function migrateContract(Request $request)
+    public function migrateContract(Request $request)
     {
         try {
             $data = $request->all();    
@@ -304,109 +304,114 @@ class MikrotikAPIController extends Controller
         }
     } 
 
-    // ------------------- Metodo PQ a SQ - Limpieza-------------------------
-    // ------------------------ metodo = [POST] -----------------------------
-    // ------------------------- /nodes -------------------------------------
+    // ------------------------ Clean Contracts ---------------------------
+    // ---------------------- HTTP Method = [POST] ------------------------
+    // --------------------------- /router --------------------------------
+    // 
+    /* Function: Gets all the contracts from a Mikrotik within an entered IP. 
+    // Wipes out the contracts from the server and then it creates them again
+    // as a "simple queue"  */
+    /* Params: The Mikrotik's IP  */
 
-    function cleanContracts (Request $request)
+    public function cleanContracts (Request $request)
     {
-        
+        try {
+            /* Gets the IP and then gets all the contracts within that IP */
             $data = $request->all();    
             $clientes = $this->getContract($request);
-
+            
+            /* Gets the IP and then wipe out the contracts from the server */
             $connection = $this->connection($data['ip']);
-            
-            // BORRA TODAS LAS ADDRESS LIST
-            $query =
-                (new Query('/ip/firewall/address-list/find'))
-                    ->where('list'); 
-            $ips = $connection->query($query)->read();
-            
-            $ips=$ips["after"]["ret"];
-            $ips=str_replace(';', ',', $ips);
-            
-            $query = 
-                (new Query('/ip/firewall/address-list/remove'))
-                    ->equal('.id',$ips);
-            $ret = $connection->query($query)->read();
+            $this->wipeContracts($request);
 
-            // BORRA TODAS LAS QUEUES
-            $query =
-                (new Query('/queue/simple/find'))
-                    ->where('list'); 
-            $ips = $connection->query($query)->read();
-
-            $ips=$ips["after"]["ret"];
-
-            $ips=str_replace(';', ',', $ips);
-
-            $query = 
-                (new Query('/queue/simple/remove'))
-                    ->equal('.id',$ips);
-            $ret = $connection->query($query)->read();
-
+            /* Gets the IP and then delete the contracts from the server */
             $connection = $this->connection($clientes['ip']);
-            $this->createClientQueue($connection,$clientes['clientes']);        
-            $return = response('¡Clientes migrados con éxito!', 200);
+            $this->createClientQueue($connection,$clientes['clientes']);
+
+            $return = response('¡Operación realizada con éxito!', 200);
             return $return;  
+
+        } catch (Exception $e) {
+            $return = response('Ha ocurrido un error al limpiar los contratos', 400);
+        }
     } 
 
-    // ------------------- Metodo PQ a SQ - Limpieza-------------------------
-    // ------------------------ metodo = [POST] -----------------------------
-    // ------------------------- /nodes -------------------------------------
+    // ------------------------ Backup Contracts -----------------------------
+    // ---------------------- HTTP Method = [GET] ----------------------------
+    // --------------------------- /router -----------------------------------
+    // 
+    /* Function: Creates a "backup file" of all the contracts, then puts it 
+    // in the files directory in the Mikrotik.
+    /* Params: The Mikrotik's IP  */
 
     public function backupContracts (Request $request) 
     {      
-        $data = $request->all();
-        $connection = $this->connection($data['ip']);
+        try {
+            /* Gets the IP and then get a connection to the server */
+            $data = $request->all();
+            $connection = $this->connection($data['ip']);
+            /* Creates a "backup file" with all the configs, with the name/date/time and stores into the files directory */
+            $query = new Query('/system/backup/save');
+            $response = $connection->query($query)->read();
 
-        $query = 
-            new Query('/export');
-        $backup = $connection->query($query)->read();
+            $query = new Query('/file');
+            $response = $connection->query($query)->read();
+            dd($response);
 
-        dd($backup);
+            $query = (new Query('/system/backup/load'))
+                ->equal('.id', '.id');
+            $response = $connection->query($query)->read();
+            
+            
+            $return = response('¡Operación realizada con éxito! 
+                Verifique el archivo creado en el directorio "Files" en el servidor', 200);
+            return $return; 
 
+        } catch (Exception $e) {
+            $response = response('Ha ocurrido un error al realizar el back up', 400);    
+            return $response;
+        }
+        
     }
 
-    // ------------------- Metodo Limpieza de Colas ------------------------
+    // ------------------- Metodo Limpieza de Contratos --------------------
     // ------------------------ metodo = [DEL] -----------------------------
-    // ------------------------- /contracts --------------------------------
+    // --------------------------- /router ---------------------------------
 
     public function wipeContracts (Request $request)
-    {   
-        $data = $request->all();    
-        $clientes = $this->getContract($request);
+    {
+        try {   
+            /* Gets the IP and then gets the contracts within that IP */
+            $data = $request->all();    
+            $clientes = $this->getContract($request);
+            $connection = $this->connection($data['ip']);
+            
+            /* It search for all contracts in the address list */
+            $query = (new Query('/ip/firewall/address-list/find'))->where('list'); 
+            $ips = $connection->query($query)->read();           
+            $ips=$ips["after"]["ret"];
+            $ips=str_replace(';', ',', $ips);
+            /* Then removes them */
+            $query = (new Query('/ip/firewall/address-list/remove'))->equal('.id',$ips);
+            $ret = $connection->query($query)->read();
 
-        $connection = $this->connection($data['ip']);
-        
-        // BORRA TODAS LAS ADDRESS LIST
-        $query =
-            (new Query('/ip/firewall/address-list/find'))
-                ->where('list'); 
-        $ips = $connection->query($query)->read();
-        
-        $ips=$ips["after"]["ret"];
-        $ips=str_replace(';', ',', $ips);
-        
-        $query = 
-            (new Query('/ip/firewall/address-list/remove'))
-                ->equal('.id',$ips);
-        $ret = $connection->query($query)->read();
+            /* It search for all contracts in the queues list */
+            $query = (new Query('/queue/simple/find'))->where('list'); 
+            $ips = $connection->query($query)->read();
+            $ips=$ips["after"]["ret"];
+            $ips=str_replace(';', ',', $ips);
+            /* Then removes them */
+            $query = (new Query('/queue/simple/remove'))->equal('.id',$ips);
+            $ret = $connection->query($query)->read();   
 
-        // BORRA TODAS LAS QUEUES
-        $query =
-            (new Query('/queue/simple/find'))
-                ->where('list'); 
-        $ips = $connection->query($query)->read();
-
-        $ips=$ips["after"]["ret"];
-
-        $ips=str_replace(';', ',', $ips);
-
-        $query = 
-            (new Query('/queue/simple/remove'))
-                ->equal('.id',$ips);
-        $ret = $connection->query($query)->read();   
+            $response = response('¡Operación realizada con éxito!', 200);
+            return $response;
+    
+        } catch (Exception $e) {
+            $response = response('Ha ocurrido un error al eliminar los contratos', 400);    
+            return $response;
+        }
+    
     }
 
 }
