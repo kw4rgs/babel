@@ -336,7 +336,7 @@ class MikrotikAPIController extends Controller
         }
     } 
 
-    // ------------------------ Backup Contracts -----------------------------
+    // ------------------------ Backup Router --------------------------------
     // ---------------------- HTTP Method = [GET] ----------------------------
     // --------------------------- /router -----------------------------------
     // 
@@ -344,34 +344,56 @@ class MikrotikAPIController extends Controller
     // in the files directory in the Mikrotik.
     /* Params: The Mikrotik's IP  */
 
-    public function backupContracts (Request $request) 
+    public function backupRouter (Request $request) 
     {      
         try {
-            /* Gets the IP and then get a connection to the server */
+            /* Gets the IP and then it connects to the server */
             $data = $request->all();
             $connection = $this->connection($data['ip']);
-            /* Creates a "backup file" with all the configs, with the name/date/time and stores into the files directory */
+            /* Creates a "backup file" with all the configs, with the name/date/time and stores it into the files directory */
             $query = new Query('/system/backup/save');
             $response = $connection->query($query)->read();
-
-            $query = new Query('/file');
-            $response = $connection->query($query)->read();
-            dd($response);
-
-            $query = (new Query('/system/backup/load'))
-                ->equal('.id', '.id');
-            $response = $connection->query($query)->read();
             
-            
-            $return = response('¡Operación realizada con éxito! 
-                Verifique el archivo creado en el directorio "Files" en el servidor', 200);
-            return $return; 
+            $return = response('¡Operación realizada con éxito!<br>
+            Verifique el archivo creado en el directorio <b>"Files"</b> en el Mikrotik', 200);
+            return $return;
 
         } catch (Exception $e) {
             $response = response('Ha ocurrido un error al realizar el back up', 400);    
             return $response;
+            }
+    }
+
+    // ------------------------- Restore Router -----------------------------------
+    // ---------------------- HTTP Method = [GET] ---------------------------------
+    // --------------------------- /router ----------------------------------------
+    // 
+    /* Function: Restores the server to the state before applying changes using API
+    /* Params: The Mikrotik's IP  */
+
+    public function restoreRouter (Request $request) 
+    {      
+        try {
+            /* Gets the IP and then it connects to the server */
+            $data = $request->all();
+            $connection = $this->connection($data['ip']);
+            /* Gets the name of the generated file */
+            $query = (new Query("/file/print"))->where('type', 'backup');
+            $backup = $connection->query($query)->read();              
+            $index= array_key_last($backup);
+            $namef = $backup[$index]['name'];
+
+            /* Restores the Mikrotik using the backup file */
+            $query = (new Query('/system/backup/load'))->equal('name', $namef);
+            $response = $connection->query($query)->read();
+
+            $return = response('¡Equipo restaurado con éxito!', 200);
+            return $return; 
+
+        } catch (Exception $e) {
+            $response = response('Ha ocurrido un error al restaurar el equipo', 400);    
+            return $response;
         }
-        
     }
 
     // ------------------- Metodo Limpieza de Contratos --------------------
@@ -394,8 +416,8 @@ class MikrotikAPIController extends Controller
             /* Then removes them */
             $query = (new Query('/ip/firewall/address-list/remove'))->equal('.id',$ips);
             $ret = $connection->query($query)->read();
-
-            /* It search for all contracts in the queues list */
+            
+            /* It search for all contracts in the queue list */
             $query = (new Query('/queue/simple/find'))->where('list'); 
             $ips = $connection->query($query)->read();
             $ips=$ips["after"]["ret"];
@@ -403,15 +425,13 @@ class MikrotikAPIController extends Controller
             /* Then removes them */
             $query = (new Query('/queue/simple/remove'))->equal('.id',$ips);
             $ret = $connection->query($query)->read();   
-
+            
             $response = response('¡Operación realizada con éxito!', 200);
             return $response;
-    
+            
         } catch (Exception $e) {
             $response = response('Ha ocurrido un error al eliminar los contratos', 400);    
             return $response;
         }
-    
     }
-
 }

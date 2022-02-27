@@ -26,11 +26,12 @@ $router->post('/v1/contracts','MikrotikAPIController@createContract');
 $router->put('/v1/contracts','MikrotikAPIController@updateContract');
 $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 
-$router->get('/v1/router', 'MikrotikAPIController@backupContracts');
 $router->put('/v1/router','MikrotikAPIController@migrateContract');
 $router->post('/v1/router','MikrotikAPIController@cleanContracts');
 $router->delete('/v1/router','MikrotikAPIController@wipeContracts');
 
+$router->get('/v1/router/backup', 'MikrotikAPIController@backupRouter');
+$router->get('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
 
 
 
