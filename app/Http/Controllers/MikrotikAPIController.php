@@ -284,16 +284,21 @@ class MikrotikAPIController extends Controller
     {
         try {
             $data = $request->all();    
-            if ($request ['ip_router_viejo'] == $request ['ip_router_nuevo']) {
+            if ($request ['ip_router_viejo'] != $request ['ip_router_nuevo']) {
                 $return = response ('La IP origen y destino son iguales', 400);
                 return $return;
             } 
             else {
                 $connection = $this->connection($data['ip_router_nuevo']);
+                /* It makes a backup file before applying */
+                $backup_nuevo = $this->backupRouter($request);
+                dd($backup_nuevo);
                 $this->createClientQueue($connection,$data['clientes']);        
                 if (http_response_code($return = 200)) {
                     $connection = $this->connection($data['ip_router_viejo']);
-                    $this->removeClientQueue($connection,$data['clientes']);
+                    /* It makes a backup file before applying */
+                    $backup_viejo = $this->backupRouter($request);
+                    //$this->removeClientQueue($connection,$data['clientes']);
                     $return = response('¡Clientes migrados con éxito!', 200);
                     return $return;
                 }       
@@ -309,20 +314,23 @@ class MikrotikAPIController extends Controller
     // --------------------------- /router --------------------------------
     // 
     /* Function: Gets all the contracts from a Mikrotik within an entered IP. 
-    // Wipes out the contracts from the server and then it creates them again
+    // Wipes out all the contracts from the server and then it creates them again
     // as a "simple queue"  */
     /* Params: The Mikrotik's IP  */
 
-    public function cleanContracts (Request $request)
+    public function cleanRouter (Request $request)
     {
         try {
             /* Gets the IP and then gets all the contracts within that IP */
             $data = $request->all();    
             $clientes = $this->getContract($request);
             
+            /* It makes a backup file before applying */
+            $backup = $this->backupRouter($request);
+
             /* Gets the IP and then wipe out the contracts from the server */
             $connection = $this->connection($data['ip']);
-            $this->wipeContracts($request);
+            $this->wipeRouter($request);
 
             /* Gets the IP and then delete the contracts from the server */
             $connection = $this->connection($clientes['ip']);
@@ -336,12 +344,68 @@ class MikrotikAPIController extends Controller
         }
     } 
 
+    // --------------------------- Wipe Router ------------------------------------
+    // ---------------------- HTTP Method = [DEL] ---------------------------------
+    // --------------------------- /router ----------------------------------------
+    // 
+    /* Function: Wipes out all the contracts on both queue list and address list 
+    /* Params: The Mikrotik's IP  */
+
+    public function wipeRouter (Request $request)
+    {   
+        try {   
+            /* Gets the IP and then gets the contracts within that IP */
+            $data = $request->all();    
+            $connection = $this->connection($data['ip']);
+            $clientes = $this->getContract($request);
+            
+            /* It makes a backup file before applying */
+            $backup = $this->backupRouter($request);
+            
+            /* It search for all contracts in the address list */
+            $query = 
+                (new Query('/ip/firewall/address-list/find'))
+                    ->where('list'); 
+            $ips = $connection->query($query)->read(); 
+
+            $ips=$ips["after"]["ret"];
+            $ips=str_replace(';', ',', $ips);
+
+            /* Then removes them */
+            $query = 
+                (new Query('/ip/firewall/address-list/remove'))
+                    ->equal('.id',$ips);
+            $ret = $connection->query($query)->read();
+
+            /* It search for all contracts in the queue list */
+            $query = 
+                (new Query('/queue/simple/find'))
+                    ->where('list'); 
+            $ips = $connection->query($query)->read();
+            $ips=$ips["after"]["ret"];
+            $ips=str_replace(';', ',', $ips);
+
+            /* Then removes them */
+            $query = 
+                (new Query('/queue/simple/remove'))
+                    ->equal('.id',$ips);
+            $ret = $connection->query($query)->read();   
+
+            $response = response('¡Operación realizada con éxito!', 200);
+            return $response;
+
+        } catch (Exception $e) {
+            $response = response('Ha ocurrido un error al eliminar los contratos', 400);    
+            return $response;
+        }
+    }
+
     // ------------------------ Backup Router --------------------------------
     // ---------------------- HTTP Method = [GET] ----------------------------
     // --------------------------- /router -----------------------------------
     // 
     /* Function: Creates a "backup file" of all the contracts, then puts it 
-    // in the files directory in the Mikrotik.
+    // into the files directory on the Mikrotik router.
     /* Params: The Mikrotik's IP  */
 
     public function backupRouter (Request $request) 
@@ -351,7 +415,8 @@ class MikrotikAPIController extends Controller
             $data = $request->all();
             $connection = $this->connection($data['ip']);
             /* Creates a "backup file" with all the configs, with the name/date/time and stores it into the files directory */
-            $query = new Query('/system/backup/save');
+            $query = 
+                new Query('/system/backup/save');
             $response = $connection->query($query)->read();
             
             $return = response('¡Operación realizada con éxito!<br>
@@ -364,11 +429,11 @@ class MikrotikAPIController extends Controller
             }
     }
 
-    // ------------------------- Restore Router -----------------------------------
-    // ---------------------- HTTP Method = [GET] ---------------------------------
-    // --------------------------- /router ----------------------------------------
+    // ------------------------- Restore Router ----------------------------------
+    // ---------------------- HTTP Method = [GET] --------------------------------
+    // --------------------------- /router ---------------------------------------
     // 
-    /* Function: Restores the server to the state before applying changes using API
+    /* Function: Restores the server to the previous state before applying changes using API
     /* Params: The Mikrotik's IP  */
 
     public function restoreRouter (Request $request) 
@@ -378,13 +443,17 @@ class MikrotikAPIController extends Controller
             $data = $request->all();
             $connection = $this->connection($data['ip']);
             /* Gets the name of the generated file */
-            $query = (new Query("/file/print"))->where('type', 'backup');
+            $query = 
+                (new Query("/file/print"))
+                    ->where('type', 'backup');
             $backup = $connection->query($query)->read();              
             $index= array_key_last($backup);
             $namef = $backup[$index]['name'];
 
             /* Restores the Mikrotik using the backup file */
-            $query = (new Query('/system/backup/load'))->equal('name', $namef);
+            $query = 
+                (new Query('/system/backup/load'))
+                    ->equal('name', $namef);
             $response = $connection->query($query)->read();
 
             $return = response('¡Equipo restaurado con éxito!', 200);
@@ -396,42 +465,4 @@ class MikrotikAPIController extends Controller
         }
     }
 
-    // ------------------- Metodo Limpieza de Contratos --------------------
-    // ------------------------ metodo = [DEL] -----------------------------
-    // --------------------------- /router ---------------------------------
-
-    public function wipeContracts (Request $request)
-    {
-        try {   
-            /* Gets the IP and then gets the contracts within that IP */
-            $data = $request->all();    
-            $clientes = $this->getContract($request);
-            $connection = $this->connection($data['ip']);
-            
-            /* It search for all contracts in the address list */
-            $query = (new Query('/ip/firewall/address-list/find'))->where('list'); 
-            $ips = $connection->query($query)->read();           
-            $ips=$ips["after"]["ret"];
-            $ips=str_replace(';', ',', $ips);
-            /* Then removes them */
-            $query = (new Query('/ip/firewall/address-list/remove'))->equal('.id',$ips);
-            $ret = $connection->query($query)->read();
-            
-            /* It search for all contracts in the queue list */
-            $query = (new Query('/queue/simple/find'))->where('list'); 
-            $ips = $connection->query($query)->read();
-            $ips=$ips["after"]["ret"];
-            $ips=str_replace(';', ',', $ips);
-            /* Then removes them */
-            $query = (new Query('/queue/simple/remove'))->equal('.id',$ips);
-            $ret = $connection->query($query)->read();   
-            
-            $response = response('¡Operación realizada con éxito!', 200);
-            return $response;
-            
-        } catch (Exception $e) {
-            $response = response('Ha ocurrido un error al eliminar los contratos', 400);    
-            return $response;
-        }
-    }
 }

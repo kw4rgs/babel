@@ -18,17 +18,16 @@
 }); */
 
 $router->get('/', function () use ($router) {return "<h1>API MIKROTIK EN LUMEN<h1>";});
-
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
 
-$router->get('/v1/contracts', 'MikrotikAPIController@getContract');
 $router->post('/v1/contracts','MikrotikAPIController@createContract');
+$router->get('/v1/contracts', 'MikrotikAPIController@getContract');
 $router->put('/v1/contracts','MikrotikAPIController@updateContract');
 $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 
 $router->put('/v1/router','MikrotikAPIController@migrateContract');
-$router->post('/v1/router','MikrotikAPIController@cleanContracts');
-$router->delete('/v1/router','MikrotikAPIController@wipeContracts');
+$router->post('/v1/router','MikrotikAPIController@cleanRouter');
+$router->delete('/v1/router','MikrotikAPIController@wipeRouter');
 
 $router->get('/v1/router/backup', 'MikrotikAPIController@backupRouter');
 $router->get('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
