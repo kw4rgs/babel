@@ -417,7 +417,7 @@ class MikrotikAPIController extends Controller
     }
 
     // ------------------------- Restore Router ----------------------------------
-    // ---------------------- HTTP Method = [GET] --------------------------------
+    // ---------------------- HTTP Method = [POST] -------------------------------
     // --------------------------- /router/restore -------------------------------
     // 
     /* Function: Restores the server to the previous state before applying changes using API

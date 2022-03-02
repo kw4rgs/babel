@@ -30,7 +30,7 @@ $router->post('/v1/router','MikrotikAPIController@cleanRouter');
 $router->delete('/v1/router','MikrotikAPIController@wipeRouter');
 
 $router->get('/v1/router/backup', 'MikrotikAPIController@backupRouter');
-$router->get('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
+$router->post('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
 
 
 
