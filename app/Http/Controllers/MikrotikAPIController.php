@@ -217,7 +217,7 @@ class MikrotikAPIController extends Controller
     // ---------------------- HTTP Method = [PUT] -----------------------------
     // --------------------------- /contract ----------------------------------
     // 
-    /* Function: Update the contract in a Mikrotik server.
+    /* Function: Update upload/download params of a contract in a Mikrotik server.
     /* Params: 
     //      Server IP 
     //      Contract IP */
@@ -277,7 +277,7 @@ class MikrotikAPIController extends Controller
     {
         try {
             $data = $request->all();    
-            if ($request ['ip_router_viejo'] != $request ['ip_router_nuevo']) {
+            if ($request ['ip_router_viejo'] == $request ['ip_router_nuevo']) {
                 $return = response ('La IP origen y destino son iguales', 400);
                 return $return;
             } 
