@@ -453,4 +453,43 @@ class MikrotikAPIController extends Controller
         }
     }
 
+    // public function ClientPPPOEDisconnect (Request $request) 
+    // {
+    //     $data = $request->all();
+    //     dd($data);
+
+    //     $connection = $this->connection($data['ip_router']);
+    //     $query = (new Query("/ppp/active/print"))
+    //             ->where('address', $data['ip_cliente'] );
+    //     $response = $connection->query($query)->read();
+    //     return $response;
+    
+    // }
+
+
+
+
+
+
+    public function ClientPPPOEDisconnect (Request $request) 
+    {      
+
+            $data = $request->all();
+            dd($data);
+            $connection = $this->connection($data['ip_router']);
+
+            $query = (new Query("/ppp/active/print"))
+                ->where('address', $data['ip_cliente'] );
+            $response = $connection->query($query)->read();
+
+            $client_pppoe = $response[0]['.id'];
+
+            $query = (new Query("/ppp/active/remove"))
+                ->equal('.id', $client_pppoe);
+            $response = $connection->query($query)->read();   
+            return $response;
+    }
+
+
+
 }
