@@ -468,28 +468,30 @@ class MikrotikAPIController extends Controller
 
 
 
-
-
-
     public function ClientPPPOEDisconnect (Request $request) 
     {      
-
+        try {
             $data = $request->all();
-            dd($data);
             $connection = $this->connection($data['ip_router']);
-
             $query = (new Query("/ppp/active/print"))
                 ->where('address', $data['ip_cliente'] );
             $response = $connection->query($query)->read();
 
-            $client_pppoe = $response[0]['.id'];
-
-            $query = (new Query("/ppp/active/remove"))
-                ->equal('.id', $client_pppoe);
-            $response = $connection->query($query)->read();   
-            return $response;
+            if (isset($response[0]['.id'])){
+                $client_pppoe = $response[0]['.id'];
+                $query = (new Query("/ppp/active/remove"))
+                    ->equal('.id', $client_pppoe);
+                $response = $connection->query($query)->read(); 
+                $return = response('¡Operacion realizada con exito!', 200);
+            }
+            else{
+                $return = response('No se encontro la ip en el servidor', 404);
+            }
+            
+        } catch (\Exception $e) {
+            $return = response('Ha ocurrido un error: ' . $e->getMessage() , 400);    
+            } 
+            return $return;
     }
-
-
 
 }
