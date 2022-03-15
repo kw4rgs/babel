@@ -19,6 +19,7 @@
 
 $router->get('/', function () use ($router) {return "<h1>API MIKROTIK EN LUMEN<h1>";});
 
+/* RUTAS PARA QUEUES */
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
 
 $router->post('/v1/contracts','MikrotikAPIController@createContract');
@@ -33,6 +34,8 @@ $router->delete('/v1/router','MikrotikAPIController@wipeRouter');
 $router->get('/v1/router/backup', 'MikrotikAPIController@backupRouter');
 $router->post('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
 
-$router->get('/v1/disconnect', 'MikrotikAPIController@ClientPPPOEDisconnect');
+
+/* RUTAS PARA PPPOE */
+$router->post('/v1/pppoe/client', 'MikrotikPPPOEController@disconnectClient');
 
 
