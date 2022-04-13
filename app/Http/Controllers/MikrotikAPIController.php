@@ -318,7 +318,7 @@ class MikrotikAPIController extends Controller
 
             /* Gets the IP and then wipe out the contracts from the server */
             $connection = $this->connection($data['ip']);
-            $this->wipeRouter($request);
+            $this->wipeRouterOnlyActives($request);
 
             /* Gets the IP and then delete the contracts from the server */
             $connection = $this->connection($clientes['ip']);
@@ -337,6 +337,7 @@ class MikrotikAPIController extends Controller
     // --------------------------- /router ----------------------------------------
     // 
     /* Function: Wipes out all the contracts on both queue list and address list 
+    /* CAUTION IT WILL WIPE OUT ALL! USE AT YOUR OWN RISK (Luckily it makes a back-up file before applying, god isn't?)
     /* Params: The Mikrotik's IP  */
 
     public function wipeRouter (Request $request)
@@ -449,6 +450,62 @@ class MikrotikAPIController extends Controller
 
         } catch (Exception $e) {
             $response = response('Ha ocurrido un error al restaurar el equipo', 400);    
+            return $response;
+        }
+    }
+
+
+    // ------------------------ Wipe Router Only Actives --------------------------
+    // ---------------------- HTTP Method = [DEL] ---------------------------------
+    // --------------------------- /router ----------------------------------------
+    // 
+    /* Function: Wipes out all the contracts on both queue list and address list of "clientes_activos"
+    /* Params: The Mikrotik's IP  */
+
+    public function wipeRouterOnlyActives (Request $request)
+    {   
+        try {   
+            /* Gets the IP and then gets the contracts within that IP */
+            $data = $request->all();    
+            $connection = $this->connection($data['ip']);
+            $clientes = $this->getContract($request);
+            
+            /* It makes a backup file before applying */
+            $backup = $this->backupRouter($request);
+
+            /* It search for all contracts in the queue list */
+            $query = 
+                (new Query('/queue/simple/find'))
+                    ->where('list'); 
+            $ips = $connection->query($query)->read();
+            $ips=$ips["after"]["ret"];
+            $ips=str_replace(';', ',', $ips);
+        
+            /* Then removes them */
+            $query = 
+                (new Query('/queue/simple/remove'))
+                    ->equal('.id',$ips);
+            $del = $connection->query($query)->read();   
+
+            /* Gets all the contracts's ids on the address-list */
+            $query = (new Query("/ip/firewall/address-list/print"))
+                ->where('list', 'clientes_activos');
+            $response = $connection->query($query)->read();
+
+            /* Then removes them */
+            foreach ($response as $row) {
+                $row = current($row);
+                    $query = 
+                        (new Query('/ip/firewall/address-list/remove'))
+                            ->equal('.id',$row);
+                    $del = $connection->query($query)->read();
+            }
+
+            $response = response('¡Operación realizada con éxito!', 200);
+            return $response;
+
+        } catch (Exception $e) {
+            $response = response('Ha ocurrido un error al eliminar los contratos', 400);    
             return $response;
         }
     }
