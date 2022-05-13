@@ -58,16 +58,15 @@ class MikrotikPPPOEController extends Controller
                 $query = (new Query("/ppp/active/remove"))
                     ->equal('.id', $client_pppoe);
                 $response = $connection->query($query)->read(); 
-                $return = response('¡Operacion realizada con exito!', 200);
+                $return = response('¡API: Operacion realizada con exito!', 200);
             }
             else{
-                $return = response('No se encontro la ip en el servidor', 404);
+                $return = response('API: No se encontro la ip en el servidor', 404);
             }
             
         } catch (\Exception $e) {
-            $return = response('Ha ocurrido un error: ' . $e->getMessage() , 400);    
+            $return = response('API: Ha ocurrido un error: ' . $e->getMessage() , 400);    
             } 
             return $return;
     }
-
 }

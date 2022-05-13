@@ -38,5 +38,6 @@ $router->post('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
 
 /* RUTAS PARA PPPOE */
 $router->post('/v1/pppoe/client', 'MikrotikPPPOEController@disconnectClient');
+$router->get('/v1/pppoe/client', 'MikrotikPPPOEController@findclient');
 
 
