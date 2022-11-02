@@ -638,7 +638,7 @@ class MikrotikAPIController extends Controller
 
                 $response = [
                     'status' => false,
-                    'message' => 'No existen clientes para restaurar',
+                    'message' => 'BABEL: No existen clientes para restaurar',
                 ];
 
                 return response($response, $status = 404);
@@ -654,14 +654,14 @@ class MikrotikAPIController extends Controller
 
                 $response = [
                     'restored' => true,
-                    'message' => 'Clientes migrados con éxito',
+                    'message' => 'BABEL: Clientes restaurados con éxito',
                 ];
                 return response($response, $status = 200);
             }
         } catch (\Throwable $th) {
             $response = [
                 'status' => false,
-                'message' => 'Ha ocurrido un error',
+                'message' => 'BABEL: Ha ocurrido un error',
             ];
             return response( $response, $status = 500);
         }
