@@ -510,4 +510,164 @@ class MikrotikAPIController extends Controller
         }
     }
 
+    // ------------------------ Clip/Unclip Wireless Clients  ----------------------
+    // ---------------------- HTTP Method = [POST] ---------------------------------
+    // --------------------------- /contracts --------------------------------------
+    // 
+    /* Function: Check the statuses on the contracts from Gestion API , then it clip their connections out.
+    / Otherwise, it removes them from 'clientes_cortados' on the router and moves them to 'clientes_activos'.
+    /* Params: The Mikrotik's IP & IP cliente */
+
+    public function clipUnclipContracts (Request $request) 
+    {
+        $data = $request->all();    
+        $connection = $this->connection($data['ip']);
+        $clientes = $data['clientes'];
+
+        foreach ($clientes as $cliente) {
+            $ip = $cliente['cliente_ip'];
+            $status_connection = $cliente['account_status'];
+            if ($status_connection == 'clipped' || $status_connection == 'low' || $status_connection == 'disabled') {
+                $this->removeAddressList($connection, $ip);
+                $query =
+                    (new Query('/ip/firewall/address-list/add'))
+                        ->equal('list', 'clientes_cortados')
+                        ->equal('address', $ip);
+                $response = $connection->query($query)->read();
+            } else  
+            {
+                    $query = (new Query("/ip/firewall/address-list/print"))
+                    ->where('list', 'clientes_cortados')
+                    ->where('address', $ip);
+                    $response = $connection->query($query)->read();
+
+                    if (isset($response[0])) {
+                        $query = (new Query("/ip/firewall/address-list/remove"))
+                            ->equal('.id', $response[0]['.id']);
+                        $response = $connection->query($query)->read();
+                    }
+                    
+                    $query =
+                    (new Query('/ip/firewall/address-list/add'))
+                    ->equal('list', 'clientes_activos')
+                    ->equal('address', $ip);
+                    $response = $connection->query($query)->read();
+            }
+        }
+        return response('Operación realizada con éxito', 200);
+    }
+
+    // ------------------------ Get Data Mikrotik ----------------------------------
+    // ---------------------- HTTP Method = [GET] ---------------------------------
+    // --------------------------- /router --------------------------------------
+    // 
+    /* Function: It gets info from the router (clients connected, active clients, clipped, etc)
+    /* Params: The Mikrotik's IP */
+
+    public function getDataMikrotik(Request $request)
+    {
+        try {
+            /* Total Clients */
+            $data = $request->all();
+            $connection = $this->connection($data['ip']);
+            $query =
+                (new Query('/queue/simple/print'));
+            $response = $connection->query($query)->read();
+            $quantity = count($response);
+
+            foreach ($response as $key => $queue) {
+                $client[$key]['ip_client'] = (explode("/", $queue['target']))[0];
+                $ancho = explode("/", $queue['max-limit']);
+                $client[$key]['download'] = strval($ancho[1] / 1000) . " Kbps";
+                $client[$key]['upload'] = strval($ancho[0] / 1000) . " Kbps";
+            };
+
+            /* Active Clients */
+            $query_actives =
+                (new Query('/ip/firewall/address-list/print'))
+                ->where('list', 'clientes_activos');
+            $response_ac = $connection->query($query_actives)->read();
+            $quantity_actives = count($response_ac);
+
+            /* Clipped Clients */
+            $query_clipped =
+                (new Query('/ip/firewall/address-list/print'))
+                ->where('list', 'clientes_cortados');
+            $response_cc = $connection->query($query_clipped)->read();
+            $quantity_clipped = count($response_cc);
+
+            if ($response == null) {
+                $return = response('Ha ocurrido un error', 500);
+            } else {
+
+                $info = array(
+                    'server_ip' => $request['ip'],
+                    'total_clients' => $quantity,
+                    'active_clients' => $quantity_actives,
+                    'clipped_clients' => $quantity_clipped,
+                    'clients' => $client
+                );
+                return $info;
+            }
+        } catch (Exception $e) {
+            $return = response('Ha ocurrido al extraer la informacion', 500);
+        }
+        return $return;
+    }
+
+    // ------------------------ Revert data on Mikrotik ----------------------------
+    // ---------------------- HTTP Method = [PATCH] --------------------------------
+    // --------------------------- /router -----------------------------------------
+    // 
+    /* Function: It gets info from the router (clients connected, active clients, clipped, etc)
+    /* Params: The Mikrotik's IP */
+
+    public function revertChanges(Request $request)
+    {
+
+        try {
+            $server = $request->all();
+            $connection = $this->connection($server['ip']);
+
+            $query =
+                (new Query('/ip/firewall/address-list/print'))
+                ->where('list', 'clientes_cortados');
+            $cortados = $connection->query($query)->read();
+
+            if ($cortados == null) {
+
+                $response = [
+                    'status' => false,
+                    'message' => 'No existen clientes para restaurar',
+                ];
+
+                return response($response, $status = 404);
+            } else {
+
+                foreach ($cortados as $cortado) {
+                    $query =
+                        (new Query('/ip/firewall/address-list/set'))
+                        ->equal('.id', $cortado['.id'])
+                        ->equal('list', 'clientes_activos');
+                    $activos = $connection->query($query)->read();
+                }
+
+                $response = [
+                    'restored' => true,
+                    'message' => 'Clientes migrados con éxito',
+                ];
+                return response($response, $status = 200);
+            }
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => false,
+                'message' => 'Ha ocurrido un error',
+            ];
+            return response( $response, $status = 500);
+        }
+    }
+
+    /* /ip firewall address-list set list="new-name" [find list="old-name"] */
+
+
 }
