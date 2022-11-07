@@ -17,7 +17,7 @@
     return $router->app->version();
 }); */
 
-$router->get('/', function () use ($router) {return "<h1>MIKROTIK ROUTER MANAGER</h1>";});
+$router->get('/', function () use ($router) {return "<h1>API MIKROTIK EN LUMEN<h1>";});
 
 /* RUTAS PARA QUEUES */
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
