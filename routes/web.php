@@ -29,7 +29,6 @@ $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 
 $router->post('/v1/contracts/clip_unclip','MikrotikAPIController@clipUnclipContracts');
 
-
 $router->put('/v1/router','MikrotikAPIController@migrateContract');
 $router->post('/v1/router','MikrotikAPIController@cleanRouter');
 //$router->delete('/v1/router','MikrotikAPIController@wipeRouter');
@@ -46,4 +45,9 @@ $router->get('/v1/pppoe/client', 'MikrotikPPPOEController@findclient');
 /* RUTAS PARA WIRELES */
 $router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikrotik');
 $router->patch('/v1/router/revertChanges','MikrotikAPIController@revertChanges');
+
+    /* Habilitar conexión */
+$router->patch('/v1/connection/enable','MikrotikAPIController@enableConnection');
+    /* Deshabilitar conexión */
+$router->patch('/v1/connection/disable','MikrotikAPIController@disableConnection');
 

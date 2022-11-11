@@ -624,7 +624,6 @@ class MikrotikAPIController extends Controller
 
     public function revertChanges(Request $request)
     {
-
         try {
             $server = $request->all();
             $connection = $this->connection($server['ip']);
@@ -667,7 +666,94 @@ class MikrotikAPIController extends Controller
         }
     }
 
+    // ------------------------ Enable Connections on Mikrotik ---------------------
+    // ---------------------- HTTP Method = [PATCH] --------------------------------
+    // --------------------------- /connection -----------------------------------------
+    // 
+    /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
+    /* puts them back in "clientes_activos" address-list 
+    /* Params: The Mikrotik's IP and clients IP */
+
+    public function enableConnection (Request $request)
+    {
+        try {
+            $data = $request->all();    
+            $connection = $this->connection($data['ip']);
+            $clientes = $data['clientes'];
+    
+            foreach ($clientes as $cliente) {
+                $ip = $cliente['cliente_ip'];
+                self::switchAddressName('clientes_activos', $ip, $connection);
+            }
+
+            $http_response = [
+                'status' => true,
+                'message' => 'BABEL: Se habilitaron los clientes con éxito',
+            ];
+            $return = response($http_response, 200);
+
+        } catch (\Throwable $e) {
+            $return = response($e, 500);
+        }
+        return $return;
+    }
+
+    // ------------------------ Enable Connections on Mikrotik ---------------------
+    // ---------------------- HTTP Method = [PATCH] --------------------------------
+    // --------------------------- /connection -----------------------------------------
+    // 
+    /* Function: Disable connections on Mikrotik. Gets ips in the address-list "activos", then it
+    /* puts them in "clientes_cortados" address-list 
+    /* Params: The Mikrotik's IP and clients IP */
+
+    public function disableConnection (Request $request)
+    {
+        try {
+            $data = $request->all();    
+            $connection = $this->connection($data['ip']);
+            $clientes = $data['clientes'];
+    
+            foreach ($clientes as $cliente) {
+                $ip = $cliente['cliente_ip'];
+                self::switchAddressName('clientes_cortados', $ip, $connection);
+            }
+
+            $http_response = [
+                'status' => true,
+                'message' => 'BABEL: Se deshabilitaron los clientes con éxito',
+            ];
+            $return = response($http_response, 200);
+
+        } catch (\Throwable $e) {
+            $return = response($e, 500);
+        }
+        return $return;
+    }
+
+    /**
+    * 
+    * @return void
+    */
+
+    public static function switchAddressName($name_to, $client_address, $connection) : void
+    {
+        $query = (new Query('/ip/firewall/address-list/print'))
+            ->where('address', $client_address);
+        $response = $connection->query($query)->read();
+        $client_id = $response[0]['.id'];
+
+        $query = (new Query('/ip/firewall/address-list/remove'))
+            ->equal('.id',$client_id);
+        $remove = $connection->query($query)->read();
+
+        $query = (new Query('/ip/firewall/address-list/add'))
+            ->equal('list', $name_to)
+            ->equal('address', $client_address);
+        $add = $connection->query($query)->read();
+    }
+
     /* /ip firewall address-list set list="new-name" [find list="old-name"] */
+/*     ip firewall address-list set list="clientes_activos" [find list="clientes_cortados"] */
 
 
 }
