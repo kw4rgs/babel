@@ -572,15 +572,17 @@ class MikrotikAPIController extends Controller
             $connection = $this->connection($data['ip']);
             $query =
                 (new Query('/queue/simple/print'));
-            $response = $connection->query($query)->read();
-            $quantity = count($response);
+            $queues = $connection->query($query)->read();
+            $quantity = count($queues);
 
-            foreach ($response as $key => $queue) {
-                $client[$key]['ip_client'] = (explode("/", $queue['target']))[0];
+/*             $client = array();
+            foreach ($queues as $key => $queue) {
+                $client[$key]['ip_client'] = (explode("/", $queue['target']))[0];        
+                $client[$queue]['ip_client'] = (explode("/", $queue['target']))[0];
                 $ancho = explode("/", $queue['max-limit']);
-                $client[$key]['download'] = strval($ancho[1] / 1000) . " Kbps";
-                $client[$key]['upload'] = strval($ancho[0] / 1000) . " Kbps";
-            };
+                $client[$queue]['download'] = strval($ancho[1] / 1000) . " Kbps";
+                $client[$queue]['upload'] = strval($ancho[0] / 1000) . " Kbps"; 
+            }; */
 
             /* Active Clients */
             $query_actives =
@@ -596,7 +598,7 @@ class MikrotikAPIController extends Controller
             $response_cc = $connection->query($query_clipped)->read();
             $quantity_clipped = count($response_cc);
 
-            if ($response == null) {
+            if ($queues == null) {
                 $return = response('Ha ocurrido un error', 500);
             } else {
 
@@ -605,7 +607,7 @@ class MikrotikAPIController extends Controller
                     'total_clients' => $quantity,
                     'active_clients' => $quantity_actives,
                     'clipped_clients' => $quantity_clipped,
-                    'clients' => $client
+/*                     'clients' => $client */
                 );
                 return $info;
             }
