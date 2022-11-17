@@ -738,7 +738,7 @@ class MikrotikAPIController extends Controller
     * @return void
     */
 
-/*     public static function switchAddressName($name_to, $client_address, $connection) : void
+    public static function switchAddressName($name_to, $client_address, $connection) : void
     {
         $query = (new Query('/ip/firewall/address-list/print'))
             ->where('address', $client_address);
@@ -753,44 +753,6 @@ class MikrotikAPIController extends Controller
             ->equal('list', $name_to)
             ->equal('address', $client_address);
         $add = $connection->query($query)->read();
-    } */
-
-    public static function switchAddressName($name_to, $client_address, $connection) : void
-    {
-        $query = (new Query('/ip/firewall/address-list/print'))
-            ->where('address', $client_address);
-        $response = $connection->query($query)->read();
-
-        # Ip address doesn't exist
-        if (!isset($response[0])) {
-            # Search queue with address list given
-            $queue = self::findQueueWithIP($connection,$client_address);
-            # If queue exists
-            if ($queue) {
-                # create address
-                $query = (new Query('/ip/firewall/address-list/add'))
-                    ->equal('list', $name_to)
-                    ->equal('address', $client_address);
-                $add = $connection->query($query)->read();
-            } 
-            # Queue doesnt exist
-            else {
-                # do nothing as this function shouldnt create any queue.
-                // todo: manage exception
-            }
-        } 
-        # IP already exists in address list
-        else {
-            $query = (new Query('/ip/firewall/address-list/remove'))
-                ->equal('.id',$client_address);
-            $remove = $connection->query($query)->read();
-    
-            $query = (new Query('/ip/firewall/address-list/add'))
-                ->equal('list', $name_to)
-                ->equal('address', $client_address);
-            $add = $connection->query($query)->read();
-        }
-
     }
 
     /* /ip firewall address-list set list="new-name" [find list="old-name"] */
@@ -812,36 +774,30 @@ class MikrotikAPIController extends Controller
     {
             $data = $request->all();
             $connection = $this->connection($data['ip']);         
-            $client_ip = $data['clientes'][0]['cliente_ip'];
-            $queue = self::findQueueWithIP($connection,$client_ip);
-            if (!empty($queue)) {
+            $client_to = $data['clientes'][0]['cliente_ip'];
+
+            $query =
+                (new Query('/queue/simple/print', ['?target=' . $client_to . '/32']));
+            $queues = $connection->query($query)->read();
+
+            if (!empty($queues)) {
                 $http_response = [
                     'status' => true,
-                    'message' => 'BABEL: Queue ' . $client_ip . ' encontrada'
+                    'message' => 'BABEL: Queue ' . $client_to . ' encontrada'
                 ];
                 $return = response($http_response, 200);
             
             } else {
                 $http_response = [
                     'status' => false,
-                    'message' => 'BABEL: Queue ' . $client_ip . ' inexistente'
+                    'message' => 'BABEL: Queue ' . $client_to . ' inexistente'
                 ];
                 $return = response($http_response, 404);
             }
-            return $return;
-        }
 
-    public static function findQueueWithIP($connection, $client_ip)
-    {
-        $response = false;
-        $query =
-            (new Query('/queue/simple/print', ['?target=' . $client_ip . '/32']));
-        $queue = $connection->query($query)->read();
-        if(!empty($queue)){
-            $response = $queue;
-        }
-        return $response;
+            return $return;
     }
+
         // ------------------------ Enable Connections on Mikrotik ---------------------
     // ---------------------- HTTP Method = [PATCH] --------------------------------
     // --------------------------- /connection -----------------------------------------
@@ -879,7 +835,6 @@ class MikrotikAPIController extends Controller
 
 
 
-
     // ------------------------ Create Contracts ------------------------------
     // ---------------------- HTTP Method = [POST] ----------------------------
     // --------------------------- /contract ----------------------------------
@@ -894,9 +849,9 @@ class MikrotikAPIController extends Controller
         try {
             $data = $request->all();
             $connection = $this->connection($data['ip']);
-            #$colas = new MikrotikAPIController();
-            $colas = $this ->createClientQueue2 ($connection, $data['clientes']);
+            self::createClientQueue2 ($connection, $data['clientes']);
             $return = response('¡Cola creada con éxito!', 200);
+
         } catch (Exception $e) {
             $return = response('Ha ocurrido un error al actualizar el contrato', 400);
         }
@@ -906,7 +861,7 @@ class MikrotikAPIController extends Controller
     function createClientQueue2 ($connection, $clientes)
     {
         foreach ($clientes as $cliente) {
-            //Transform kbps a bytes
+            // Transform kbps a bytes
             $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
             $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
 
@@ -918,19 +873,83 @@ class MikrotikAPIController extends Controller
             $response = $connection->query($query)->read();
 
             if ($cliente["estado"] === "activo") {
-                $this->addAddressList2 ($connection, $cliente["cliente_ip"]);
+                $this->addAddressListActive($connection, $cliente["cliente_ip"]);
             } else {
-                $this->removeAddressList($connection, $cliente["cliente_ip"]);
+                $this->AddAddressListCutted($connection, $cliente["cliente_ip"]);
             }
         }
     }
 
-    function addAddressList2 ($connection, $ip)
+    function addAddressListActive ($connection, $ip)
     {
         $query = (new Query("/ip/firewall/address-list/add"))
             ->equal('list', 'clientes_activos')
             ->equal('address', $ip);
         $response = $connection->query($query)->read();
     }
+
+    function addAddressListCutted ($connection, $ip)
+    {
+        $query = (new Query("/ip/firewall/address-list/add"))
+            ->equal('list', 'clientes_cortados')
+            ->equal('address', $ip);
+        $response = $connection->query($query)->read();
+    }
+
+    // // ------------------------ Delete Contracts ------------------------------
+    // // ---------------------- HTTP Method = [DEL] -----------------------------
+    // // --------------------------- /contract ----------------------------------
+    // // 
+    // /* Function: Delete the contract from a Mikrotik server.
+    // /* Params: 
+    // //      Server IP 
+    // //      Contract IP */
+
+    // public function deleteContract(Request $request)
+    // {
+    //     try {
+    //         $data = $request->all();
+    //         $connection = $this->connection($data['ip']);
+    //         $colas = new MikrotikAPIController();
+    //         $colas->removeClientQueue($connection, $data['clientes']);
+    //         $return = response('¡Cola eliminada con éxito!', 200);
+    //     } catch (Exception $e) {
+    //         $return = response('Ha ocurrido un error al eliminar la cola', 400);
+    //     }
+    //     return $return;
+    // }
+
+
+    // function removeClientQueue($connection, $clientes)
+    // {
+    //     foreach ($clientes as $cliente) {
+    //         $query = (new Query("/queue/simple/print"))
+    //             ->where('name', $cliente["cliente_ip"]);
+    //         $response = $connection->query($query)->read();
+
+    //         if (isset($response[0])) {
+    //             $query = (new Query("/queue/simple/remove"))
+    //                 ->equal('.id', $response[0][".id"]);
+    //             $response = $connection->query($query)->read();
+    //         }
+    //         $this->removeAddressList($connection, $cliente["cliente_ip"]);
+    //     }
+    // }
+
+    // function removeAddressList2 ($connection, $ip)
+    // {
+    //     $query = (new Query("/ip/firewall/address-list/print"))
+    //         ->where('list', 'clientes_activos')
+    //         ->where('address', $ip);
+    //     $response = $connection->query($query)->read();
+
+    //     if (isset($response[0])) {
+    //         $query = (new Query("/ip/firewall/address-list/remove"))
+    //             ->equal('.id', $response[0]['.id']);
+    //         $response = $connection->query($query)->read();
+    //     }
+    // }
+
+
 
 }
