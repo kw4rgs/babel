@@ -10,6 +10,7 @@ use \RouterOS\Client;
 use \RouterOS\Query;
 use Exception;
 
+use function PHPUnit\Framework\isEmpty;
 
 class MikrotikAPIController extends Controller
 {
@@ -756,6 +757,81 @@ class MikrotikAPIController extends Controller
 
     /* /ip firewall address-list set list="new-name" [find list="old-name"] */
 /*     ip firewall address-list set list="clientes_activos" [find list="clientes_cortados"] */
+
+
+    // NEW ENDPOINTS
+
+
+    // ------------------------ Enable Connections on Mikrotik ---------------------
+    // ---------------------- HTTP Method = [PATCH] --------------------------------
+    // --------------------------- /connection -----------------------------------------
+    // 
+    /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
+    /* puts them back in "clientes_activos" address-list 
+    /* Params: The Mikrotik's IP and clients IP */
+
+    public function findConn (Request $request)
+    {
+            $data = $request->all();
+            $connection = $this->connection($data['ip']);         
+            $client_to = $data['clientes'][0]['cliente_ip'];
+
+            $query =
+                (new Query('/queue/simple/print', ['?target=' . $client_to . '/32']));
+            $queues = $connection->query($query)->read();
+
+            if (!empty($queues)) {
+                $http_response = [
+                    'status' => true,
+                    'message' => 'BABEL: Queue ' . $client_to . ' encontrada'
+                ];
+                $return = response($http_response, 200);
+            
+            } else {
+                $http_response = [
+                    'status' => false,
+                    'message' => 'BABEL: Queue ' . $client_to . ' inexistente'
+                ];
+                $return = response($http_response, 404);
+            }
+
+            return $return;
+    }
+
+        // ------------------------ Enable Connections on Mikrotik ---------------------
+    // ---------------------- HTTP Method = [PATCH] --------------------------------
+    // --------------------------- /connection -----------------------------------------
+    // 
+    /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
+    /* puts them back in "clientes_activos" address-list 
+    /* Params: The Mikrotik's IP and clients IP */
+
+    public function findConnAddress (Request $request)
+    {
+            $data = $request->all();
+            $connection = $this->connection($data['ip']);         
+            $client_to = $data['clientes'][0]['cliente_ip'];
+
+            $query = (new Query('/ip/firewall/address-list/print'))
+                ->where('address', $client_to);
+            $response = $connection->query($query)->read();
+
+            if (empty($response)) {
+                $http_response = [
+                    'status' => false,
+                    'message' => 'BABEL: Queue ' . $client_to . ' sin adress-list'
+                ];
+                $return = response($http_response, 404);
+            } else {
+                $address = $response[0]['list'];
+                $http_response = [
+                    'status' => true,
+                    'message' => 'BABEL: Queue ' . $client_to . ' encontrada en ' . $address
+                ];
+                $return = response($http_response, 200);
+            }
+            return $return;
+    }
 
 
 }
