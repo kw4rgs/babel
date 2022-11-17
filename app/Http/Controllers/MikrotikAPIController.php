@@ -760,6 +760,7 @@ class MikrotikAPIController extends Controller
         $query = (new Query('/ip/firewall/address-list/print'))
             ->where('address', $client_address);
         $response = $connection->query($query)->read();
+        
 
         # Ip address doesn't exist
         if (!isset($response[0])) {
@@ -781,8 +782,9 @@ class MikrotikAPIController extends Controller
         } 
         # IP already exists in address list
         else {
+            $client_id = $response[0]['.id'];
             $query = (new Query('/ip/firewall/address-list/remove'))
-                ->equal('.id',$client_address);
+                ->equal('.id',$client_id);
             $remove = $connection->query($query)->read();
     
             $query = (new Query('/ip/firewall/address-list/add'))
