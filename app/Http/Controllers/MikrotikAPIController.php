@@ -122,7 +122,8 @@ class MikrotikAPIController extends Controller
             $data = $request->all();
             $connection = $this->connection($data['ip']);
             $colas = new MikrotikAPIController();
-            $colas->createClientQueue($connection, $data['clientes']);
+            #$colas->createClientQueue($connection, $data['clientes']);
+            $colas = $this->createClientQueue($connection, $data['clientes']);
             $return = response('¡Cola creada con éxito!', 200);
         } catch (Exception $e) {
             $return = response('Ha ocurrido un error al actualizar el contrato', 400);
@@ -147,6 +148,7 @@ class MikrotikAPIController extends Controller
             if ($cliente["estado"] === "activo") {
                 $this->addAddressList($connection, $cliente["cliente_ip"]);
             } else {
+                #$this->addAddressListCutted($connection, $cliente["cliente_ip"]);
                 $this->removeAddressList($connection, $cliente["cliente_ip"]);
             }
         }
@@ -156,6 +158,14 @@ class MikrotikAPIController extends Controller
     {
         $query = (new Query("/ip/firewall/address-list/add"))
             ->equal('list', 'clientes_activos')
+            ->equal('address', $ip);
+        $response = $connection->query($query)->read();
+    }
+
+    function addAddressListCutted ($connection, $ip)
+    {
+        $query = (new Query("/ip/firewall/address-list/add"))
+            ->equal('list', 'clientes_cortados')
             ->equal('address', $ip);
         $response = $connection->query($query)->read();
     }
