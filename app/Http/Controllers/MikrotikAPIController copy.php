@@ -19,7 +19,7 @@ class MikrotikAPIController extends Controller
     {
         $this-> ip = '';
         $this-> user = 'babel';
-        $this-> pass = '4p1B4b3l1589!';
+        $this-> pass = '4p1B4b3l1257!';
         $this-> nodos = $nodos != null ? $nodos : array();
         $this-> redes = $redes != null ? $redes : array();
         $this-> middleware('auth');
