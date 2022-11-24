@@ -1,6 +1,7 @@
 <?php
 
 /** @var \Laravel\Lumen\Routing\Router $router */
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,7 @@
     return $router->app->version();
 }); */
 
-$router->get('/', function () use ($router) {return "<h1>API MIKROTIK EN LUMEN<h1>";});
+$router->get('/', function () use ($router) {return "<h1>BABEL ON BIGWAY<h1>";});
 
 /* RUTAS PARA QUEUES */
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
@@ -56,4 +57,6 @@ $router->patch('/v1/connection/disable','MikrotikAPIController@disableConnection
 
 $router->get('/v2/connection/findConn','MikrotikAPIController@findConn');
 $router->get('/v2/connection/findConnAddress','MikrotikAPIController@findConnAddress');
-$router->post('/v2/connection/fixAll','MikrotikAPIController@fixAll');
+$router->post('/v2/connection/enableConnection','MikrotikAPIController@enableConnection');
+
+
