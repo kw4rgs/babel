@@ -56,4 +56,6 @@ $router->patch('/v1/connection/disable','MikrotikAPIController@disableConnection
 
 $router->get('/v2/connection/findConn','MikrotikAPIController@findConn');
 $router->get('/v2/connection/findConnAddress','MikrotikAPIController@findConnAddress');
-$router->post('/v2/connection/fixAll','MikrotikAPIController@fixAll');
+$router->post('/v2/connection/enableConnection','MikrotikAPIController@enableConnection');
+
+
