@@ -18,7 +18,7 @@ class MikrotikAPIController extends Controller
     function __construct($ip = null, $nodos = null, $redes = null)
     {
         $this-> ip = '';
-        $this-> user = 'babel';
+        $this-> user = 'babel-bigway';
         $this-> pass = '4p1B4b3l1589!';
         $this-> nodos = $nodos != null ? $nodos : array();
         $this-> redes = $redes != null ? $redes : array();
