@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
     return $router->app->version();
 }); */
 
-$router->get('/', function () use ($router) {return "<h1>BABEL ON BIGWAY<h1>";});
+$router->get('/', function () use ($router) {return "<h1>". env('APP_TITLE') ."<h1>";});
 
 /* RUTAS PARA QUEUES */
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
