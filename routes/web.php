@@ -48,15 +48,18 @@ $router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikroti
 $router->patch('/v1/router/revertChanges','MikrotikAPIController@revertChanges');
 
     /* Habilitar conexión */
-$router->patch('/v1/connection/enable','MikrotikAPIController@enableConnection');
-$router->post('/v2/connection/enable','MikrotikAPIController@enableConn');
+#$router->patch('/v1/connection/enable','MikrotikAPIController@enableConnection');
+#$router->post('/v2/connection/enable','MikrotikAPIController@enableConn');
     /* Deshabilitar conexión */
-$router->patch('/v1/connection/disable','MikrotikAPIController@disableConnection');
+#$router->patch('/v1/connection/disable','MikrotikAPIController@disableConnection');
 
 
 
 $router->get('/v2/connection/findConn','MikrotikAPIController@findConn');
-$router->get('/v2/connection/findConnAddress','MikrotikAPIController@findConnAddress');
+#$router->get('/v2/connection/findConnAddress','MikrotikAPIController@findConnAddress');
+/* Habilitar conexión */
 $router->post('/v2/connection/enableConnection','MikrotikAPIController@enableConnection');
+/* Deshabilitar conexión */
+$router->post('/v2/connection/disableConnection','MikrotikAPIController@disableConnection');
 
 
