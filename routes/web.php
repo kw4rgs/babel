@@ -58,8 +58,8 @@ $router->patch('/v1/router/revertChanges','MikrotikAPIController@revertChanges')
 $router->get('/v2/connection/findConn','MikrotikAPIController@findConn');
 #$router->get('/v2/connection/findConnAddress','MikrotikAPIController@findConnAddress');
 /* Habilitar conexión */
-$router->post('/v2/connection/enableConnection','MikrotikAPIController@enableConnection');
+$router->patch('/v2/connection/enableConnection','MikrotikAPIController@enableConnection');
 /* Deshabilitar conexión */
-$router->post('/v2/connection/disableConnection','MikrotikAPIController@disableConnection');
+$router->patch('/v2/connection/disableConnection','MikrotikAPIController@disableConnection');
 
 
