@@ -102,7 +102,7 @@ class MikrotikAPIController extends Controller
             return $queues;
             }
         } catch (Exception $e) {
-            $return = response('Ha ocurrido al extraer la informacion', 400);
+            $return = response('Ha ocurrido un error al extraer la informacion', 400);
         }
             return $return;
     }
