@@ -18,8 +18,8 @@ class MikrotikAPIController extends Controller
     function __construct($ip = null, $nodos = null, $redes = null)
     {
         $this-> ip = '';
-        $this-> user = 'babel';
-        $this-> pass = '4p1B4b3l1257!';
+        $this-> user = env("BABEL_USER");
+        $this-> pass = env("BABEL_PASS");
         $this-> nodos = $nodos != null ? $nodos : array();
         $this-> redes = $redes != null ? $redes : array();
         $this-> middleware('auth');
@@ -102,7 +102,7 @@ class MikrotikAPIController extends Controller
             return $queues;
             }
         } catch (Exception $e) {
-            $return = response('Ha ocurrido al extraer la informacion', 400);
+            $return = response('Ha ocurrido un error al extraer la informacion', 400);
         }
             return $return;
     }
