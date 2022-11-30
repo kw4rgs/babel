@@ -580,6 +580,8 @@ class MikrotikAPIController extends Controller
             foreach ($queues as $key => $queue) {
                 $queues_list[$key]['name'] = $queue['name'];
                 $queues_list[$key]['target'] = (explode("/", $queue['target'])[0]);
+                $queues_list[$key]['download'] = ((explode("/", $queue['max-limit']))[1])/1000 . " Kbps";
+                $queues_list[$key]['upload'] = ((explode("/", $queue['max-limit']))[0])/1000 . " Kbps";
             };
 
 
