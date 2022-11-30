@@ -576,14 +576,23 @@ class MikrotikAPIController extends Controller
             $queues = $connection->query($query)->read();
             $quantity = count($queues);
 
-/*             $client = array();
-            foreach ($queues as $key => $queue) {
-                $client[$key]['ip_client'] = (explode("/", $queue['target']))[0];        
-                $client[$queue]['ip_client'] = (explode("/", $queue['target']))[0];
-                $ancho = explode("/", $queue['max-limit']);
-                $client[$queue]['download'] = strval($ancho[1] / 1000) . " Kbps";
-                $client[$queue]['upload'] = strval($ancho[0] / 1000) . " Kbps"; 
-            }; */
+            $query =
+                (new Query('/ip/firewall/address-list/print'));
+            $addresses = $connection->query($query)->read();
+
+            /* Clients Address-Lists*/
+            $client = array();
+            foreach ($addresses as $key => $address) {
+                $client[$key]['ip_client'] = $address['address'];
+                $client[$key]['address_list'] = $address['list'];
+                #$client[$key]['ip_client'] = $address['adddress'][0];
+                #dd($address);
+                #$client[$key]['address_list'] = $address['address-list'][0];    
+                #$client[$queue]['ip_client'] = (explode("/", $queue['target']))[0];
+                #$ancho = explode("/", $queue['max-limit']);
+                #$client[$queue]['download'] = strval($ancho[1] / 1000) . " Kbps";
+                #$client[$queue]['upload'] = strval($ancho[0] / 1000) . " Kbps"; 
+            };
 
             /* Active Clients */
             $query_actives =
@@ -608,12 +617,12 @@ class MikrotikAPIController extends Controller
                     'total_clients' => $quantity,
                     'active_clients' => $quantity_actives,
                     'clipped_clients' => $quantity_clipped,
-/*                     'clients' => $client */
+                    'clients' => $client,
                 );
                 return $info;
             }
         } catch (Exception $e) {
-            $return = response('Ha ocurrido al extraer la informacion', 500);
+            $return = response('Ha ocurrido un error al extraer la informacion', 500);
         }
         return $return;
     }
