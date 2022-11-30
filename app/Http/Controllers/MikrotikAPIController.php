@@ -569,12 +569,19 @@ class MikrotikAPIController extends Controller
     {
         try {
             $data = $request->all();
-            $connection = $this->connection($data['ip']);      
-            /* Total Clients */
+            $connection = $this->connection($data['ip']);  
+
+            /* Name */
+            $query =
+                (new Query('/system/identity/print'));
+            $name = $connection->query($query)->read();
+            
+            
+            /* Queues */
             $query =
                 (new Query('/queue/simple/print'));
             $queues = $connection->query($query)->read();
-            $quantity = count($queues);
+            $total_queues = count($queues);
 
             $queues_list = array();
             foreach ($queues as $key => $queue) {
@@ -595,13 +602,6 @@ class MikrotikAPIController extends Controller
             foreach ($addresses as $key => $address) {
                 $address_lists[$key]['client_ip'] = $address['address'];
                 $address_lists[$key]['address_list'] = $address['list'];
-                #$client[$key]['ip_client'] = $address['adddress'][0];
-                #dd($address);
-                #$client[$key]['address_list'] = $address['address-list'][0];    
-                #$client[$queue]['ip_client'] = (explode("/", $queue['target']))[0];
-                #$ancho = explode("/", $queue['max-limit']);
-                #$client[$queue]['download'] = strval($ancho[1] / 1000) . " Kbps";
-                #$client[$queue]['upload'] = strval($ancho[0] / 1000) . " Kbps"; 
             };
 
             /* Active Clients */
@@ -623,15 +623,25 @@ class MikrotikAPIController extends Controller
             } else {
 
                 $info = array(
+                    'name' => $name[0]['name'],
                     'server_ip' => $request['ip'],
-                    'total_clients' => $quantity,
-                    'active_clients' => $quantity_actives,
-                    'clipped_clients' => $quantity_clipped,
-                    'total_address_list' => $total_address_lists,
-                    'address_list' => $address_lists,
-                    'total_queues' => $quantity,
-                    'queues' => $queues_list,
-                    'other_lists' => ($total_address_lists - ($quantity_actives + $quantity_clipped)),
+                    'queues' => array (
+                        'total_queues' => $total_queues,
+                        'queues_details' => $queues_list,
+                        ),
+                    'address_list' => array (
+                        'total_address_list' => $total_address_lists,
+                        'address_list_details' => $address_lists,
+                        'other_lists' => ($total_address_lists - ($quantity_actives + $quantity_clipped)),
+                        ),
+                    'firewall' => array( 
+                        'clientes_activos' => $quantity_actives,
+                        'clientes_cortados' => $quantity_clipped,
+                        ),
+                    'FYI' => array(
+                        'clientes_sin_internet (sin address-list)' => $total_queues - $total_address_lists,
+                        'clientes_liberados (sin queue)' => $total_address_lists - $total_queues,
+                    ),
                 );
                 return $info;
             }
