@@ -28,8 +28,6 @@ $router->get('/v1/contracts', 'MikrotikAPIController@getContract');
 $router->put('/v1/contracts','MikrotikAPIController@updateContract');
 $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 
-$router->post('/v1/contracts/clip_unclip','MikrotikAPIController@clipUnclipContracts');
-
 $router->put('/v1/router','MikrotikAPIController@migrateContract');
 $router->post('/v1/router','MikrotikAPIController@cleanRouter');
 //$router->delete('/v1/router','MikrotikAPIController@wipeRouter');
@@ -52,7 +50,6 @@ $router->patch('/v1/router/revertChanges','MikrotikAPIController@revertChanges')
 #$router->post('/v2/connection/enable','MikrotikAPIController@enableConn');
     /* Deshabilitar conexión */
 #$router->patch('/v1/connection/disable','MikrotikAPIController@disableConnection');
-
 
 
 $router->get('/v2/connection/findConn','MikrotikAPIController@findConn');
