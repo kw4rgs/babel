@@ -839,8 +839,8 @@ class MikrotikAPIController extends Controller
             }
             $http_response = [
                 'status' => true,
-                'message' => 'Operacion realizada con exito. Clientes habilitados',
-                'results' => $this->getDataMikrotik($request)
+                'message' => 'BABEL: Operación realizada con éxito. Cliente habilitado'
+                #'results' => $this->getDataMikrotik($request)
             ];
             return response($http_response, 200);
 
@@ -906,8 +906,8 @@ class MikrotikAPIController extends Controller
 
         $http_response = [
             'status' => true,
-            'message' => 'Operacion realizada con exito. Clientes deshabilitados',
-            'results' => $this->getDataMikrotik($request),
+            'message' => 'BABEL: Operación realizada con éxito. Cliente deshabilitado'
+            #'results' => $this->getDataMikrotik($request),
         ];
         
         return response($http_response, 200);
