@@ -887,7 +887,7 @@ class MikrotikAPIController extends Controller
             return response($http_response, 200);
 
         } catch (\Throwable $th) {
-            return response ($th, 500);
+            return response ("BABEL: Ha ocurrido un error", 400);
         }
     }
 
@@ -955,7 +955,7 @@ class MikrotikAPIController extends Controller
         return response($http_response, 200);
 
         } catch (\Throwable $th) {
-            return response ($th, 500);
+            return response ("BABEL: Ha ocurrido un error", 400);
         }
     }
 
