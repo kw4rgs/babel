@@ -576,30 +576,33 @@ class MikrotikAPIController extends Controller
                 (new Query('/system/identity/print'));
             $name = $connection->query($query)->read();
             
-            
             /* Queues */
             $query =
                 (new Query('/queue/simple/print'));
             $queues = $connection->query($query)->read();
             $total_queues = count($queues);
 
+            
+            $colas=array();
             $queues_list = array();
             foreach ($queues as $key => $queue) {
                 $queues_list[$key]['name'] = $queue['name'];
+                $colas[$key] = strval((explode("/", $queue['target'])[0]));
                 $queues_list[$key]['target'] = (explode("/", $queue['target'])[0]);
                 $queues_list[$key]['download'] = ((explode("/", $queue['max-limit']))[1])/1000 . " Kbps";
                 $queues_list[$key]['upload'] = ((explode("/", $queue['max-limit']))[0])/1000 . " Kbps";
             };
 
-
-            /* Clients Address-Lists*/
+            /* Address-Lists*/
             $query =
                 (new Query('/ip/firewall/address-list/print'));
             $addresses = $connection->query($query)->read();
             $total_address_lists = count($addresses);
 
+            $listas=array();
             $address_lists = array();
             foreach ($addresses as $key => $address) {
+                $listas[$key]= strval($address['address']);
                 $address_lists[$key]['client_ip'] = $address['address'];
                 $address_lists[$key]['address_list'] = $address['list'];
             };
@@ -618,10 +621,13 @@ class MikrotikAPIController extends Controller
             $response_cc = $connection->query($query_clipped)->read();
             $quantity_clipped = count($response_cc);
 
+            /* Diferencias */
+            $intersect = array_intersect($colas, $listas);
+            $diferencias = array_merge(array_diff($colas, $intersect), array_diff($listas, $intersect));
+            
             if ($queues == null) {
                 $return = response('Ha ocurrido un error', 500);
             } else {
-
                 $info = array(
                     'name' => $name[0]['name'],
                     'server_ip' => $request['ip'],
@@ -638,11 +644,14 @@ class MikrotikAPIController extends Controller
                         'clientes_activos' => $quantity_actives,
                         'clientes_cortados' => $quantity_clipped,
                         ),
-                    'FYI' => array(
-                        'clientes_sin_internet (sin address-list)' => $total_queues - $total_address_lists,
-                        'clientes_liberados (sin queue)' => $total_address_lists - $total_queues,
+                    'diferencias' => array(
+                        'total_diferencias' => count($diferencias),
+                        'queues_sin_address' => $total_queues - $total_address_lists,
+                        'addresses_sin_queue' => ($total_address_lists - $total_queues) * -1,
+                        'diferencias_detail' => $diferencias,
                     ),
                 );
+
                 return $info;
             }
         } catch (Exception $e) {
@@ -971,5 +980,4 @@ class MikrotikAPIController extends Controller
             ->equal('address', $ip);
         $response = $connection->query($query)->read();
     }
-
 }
