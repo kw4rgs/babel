@@ -568,23 +568,31 @@ class MikrotikAPIController extends Controller
     public function getDataMikrotik(Request $request)
     {
         try {
-            /* Total Clients */
             $data = $request->all();
-            $connection = $this->connection($data['ip']);
+            $connection = $this->connection($data['ip']);      
+            /* Total Clients */
             $query =
                 (new Query('/queue/simple/print'));
             $queues = $connection->query($query)->read();
             $quantity = count($queues);
 
+            $queues_list = array();
+            foreach ($queues as $key => $queue) {
+                $queues_list[$key]['name'] = $queue['name'];
+                $queues_list[$key]['target'] = (explode("/", $queue['target'])[0]);
+            };
+
+
+            /* Clients Address-Lists*/
             $query =
                 (new Query('/ip/firewall/address-list/print'));
             $addresses = $connection->query($query)->read();
+            $total_address_lists = count($addresses);
 
-            /* Clients Address-Lists*/
-            $client = array();
+            $address_lists = array();
             foreach ($addresses as $key => $address) {
-                $client[$key]['ip_client'] = $address['address'];
-                $client[$key]['address_list'] = $address['list'];
+                $address_lists[$key]['client_ip'] = $address['address'];
+                $address_lists[$key]['address_list'] = $address['list'];
                 #$client[$key]['ip_client'] = $address['adddress'][0];
                 #dd($address);
                 #$client[$key]['address_list'] = $address['address-list'][0];    
@@ -617,7 +625,11 @@ class MikrotikAPIController extends Controller
                     'total_clients' => $quantity,
                     'active_clients' => $quantity_actives,
                     'clipped_clients' => $quantity_clipped,
-                    'clients' => $client,
+                    'total_address_list' => $total_address_lists,
+                    'address_list' => $address_lists,
+                    'total_queues' => $quantity,
+                    'queues' => $queues_list,
+                    'other_lists' => ($total_address_lists - ($quantity_actives + $quantity_clipped)),
                 );
                 return $info;
             }
