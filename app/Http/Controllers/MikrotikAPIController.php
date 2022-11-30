@@ -60,7 +60,6 @@ class MikrotikAPIController extends Controller
             return $return;
     }   
 
-
     // ------------------------ Get Contract ----------------------------------
     // ---------------------- HTTP Method = [GET] -----------------------------
     // --------------------------- /contract ----------------------------------
@@ -84,7 +83,7 @@ class MikrotikAPIController extends Controller
                 $ancho = explode("/", $queue['max-limit']);
                 $colas[$key]['download'] = strval ($ancho[1] / 1000) . " Kbps"; 
                 $colas[$key]['upload'] = strval ($ancho[0] / 1000) . " Kbps"; 
-                //$colas[$key]['parent'] = $queue['parent']; 
+
                 //$colas[$key]['target'] = strval ($queue['target']);
                 $colas[$key]['estado'] = "activo";
             };
@@ -130,36 +129,37 @@ class MikrotikAPIController extends Controller
         return $return;
     }
 
-    function createClientQueue($connection, $clientes)
-    {
-        foreach ($clientes as $cliente) {
-            //Transform kbps a bytes
-            $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-            $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+        function createClientQueue($connection, $clientes)
+        {
+            foreach ($clientes as $cliente) {
+                //Transform kbps a bytes
+                $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+                $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
 
-            $query = (new Query("/queue/simple/add"))
-                ->equal('name', $cliente["cliente_ip"])
-                ->equal('target', $cliente["cliente_ip"])
-                ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
-                ->equal('queue', "pcq-upload-default/pcq-download-default");
-            $response = $connection->query($query)->read();
+                $query = (new Query("/queue/simple/add"))
+                    ->equal('name', $cliente["cliente_ip"])
+                    ->equal('target', $cliente["cliente_ip"])
+                    ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
+                    ->equal('queue', "pcq-upload-default/pcq-download-default");
+                $response = $connection->query($query)->read();
 
-            if ($cliente["estado"] === "activo") {
-                $this->addAddressList($connection, $cliente["cliente_ip"]);
-            } else {
-                $this->removeAddressList($connection, $cliente["cliente_ip"]);
+                if ($cliente["estado"] === "activo") {
+                    $this->addAddressList($connection, $cliente["cliente_ip"]);
+                } else {
+                    $this->removeAddressList($connection, $cliente["cliente_ip"]);
+                }
             }
         }
-    }
 
-    function addAddressList($connection, $ip)
-    {
-        $query = (new Query("/ip/firewall/address-list/add"))
-            ->equal('list', 'clientes_activos')
-            ->equal('address', $ip);
-        $response = $connection->query($query)->read();
-    }
+        function addAddressList($connection, $ip)
+        {
+            $query = (new Query("/ip/firewall/address-list/add"))
+                ->equal('list', 'clientes_activos')
+                ->equal('address', $ip);
+            $response = $connection->query($query)->read();
+        }
 
+    
     // ------------------------ Delete Contracts ------------------------------
     // ---------------------- HTTP Method = [DEL] -----------------------------
     // --------------------------- /contract ----------------------------------
@@ -184,35 +184,35 @@ class MikrotikAPIController extends Controller
     }
 
 
-    function removeClientQueue($connection, $clientes)
-    {
-        foreach ($clientes as $cliente) {
-            $query = (new Query("/queue/simple/print"))
-                ->where('name', $cliente["cliente_ip"]);
+        function removeClientQueue($connection, $clientes)
+        {
+            foreach ($clientes as $cliente) {
+                $query = (new Query("/queue/simple/print"))
+                    ->where('name', $cliente["cliente_ip"]);
+                $response = $connection->query($query)->read();
+
+                if (isset($response[0])) {
+                    $query = (new Query("/queue/simple/remove"))
+                        ->equal('.id', $response[0][".id"]);
+                    $response = $connection->query($query)->read();
+                }
+                $this->removeAddressList($connection, $cliente["cliente_ip"]);
+            }
+        }
+
+        function removeAddressList($connection, $ip)
+        {
+            $query = (new Query("/ip/firewall/address-list/print"))
+                ->where('list', 'clientes_activos')
+                ->where('address', $ip);
             $response = $connection->query($query)->read();
 
             if (isset($response[0])) {
-                $query = (new Query("/queue/simple/remove"))
-                    ->equal('.id', $response[0][".id"]);
+                $query = (new Query("/ip/firewall/address-list/remove"))
+                    ->equal('.id', $response[0]['.id']);
                 $response = $connection->query($query)->read();
             }
-            $this->removeAddressList($connection, $cliente["cliente_ip"]);
         }
-    }
-
-    function removeAddressList($connection, $ip)
-    {
-        $query = (new Query("/ip/firewall/address-list/print"))
-            ->where('list', 'clientes_activos')
-            ->where('address', $ip);
-        $response = $connection->query($query)->read();
-
-        if (isset($response[0])) {
-            $query = (new Query("/ip/firewall/address-list/remove"))
-                ->equal('.id', $response[0]['.id']);
-            $response = $connection->query($query)->read();
-        }
-    }
 
     // ------------------------ Update Contracts ------------------------------
     // ---------------------- HTTP Method = [PUT] -----------------------------
@@ -237,34 +237,34 @@ class MikrotikAPIController extends Controller
         return $return;
     }
 
-    function updateClientQueue($connection, $clientes)
-    {
-        foreach ($clientes as $cliente) {    
-        /* Transform kbps to bytes */
-        $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-        $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-        /* List the queue */
-        $query = (new Query("/queue/simple/print"))
-        ->where('name', $cliente["cliente_ip"]);
-        $response = $connection->query($query)->read();
-        /* Add queue */
-        if (isset($response[0])) {
-            $query = (new Query("/queue/simple/set"))
-            ->equal('.id', $response[0]['.id'])
-            ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
-            ->equal('parent', 'none');
+        function updateClientQueue($connection, $clientes)
+        {
+            foreach ($clientes as $cliente) {    
+            /* Transform kbps to bytes */
+            $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+            $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+            /* List the queue */
+            $query = (new Query("/queue/simple/print"))
+            ->where('name', $cliente["cliente_ip"]);
             $response = $connection->query($query)->read();
-            /* Only if contract is "active" adds it, otherwise it doesn't get added */
-            if ($cliente["estado"] === "activo") {
-                $this->addAddressList($connection, $cliente["cliente_ip"]);
+            /* Add queue */
+            if (isset($response[0])) {
+                $query = (new Query("/queue/simple/set"))
+                ->equal('.id', $response[0]['.id'])
+                ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
+                ->equal('parent', 'none');
+                $response = $connection->query($query)->read();
+                /* Only if contract is "active" adds it, otherwise it doesn't */
+                if ($cliente["estado"] === "activo") {
+                    $this->addAddressList($connection, $cliente["cliente_ip"]);
+                } else {
+                    $this->removeAddressList($connection, $cliente["cliente_ip"]);
+                    }
             } else {
-                $this->removeAddressList($connection, $cliente["cliente_ip"]);
-                }
-        } else {
-            $this->createClientQueue($connection, $clientes);
-            }  
+                $this->createClientQueue($connection, $clientes);
+                }  
+            }
         }
-    }
 
     // ------------------------ Migrate Contracts ---------------------------
     // ---------------------- HTTP Method = [PUT] ---------------------------
@@ -519,7 +519,7 @@ class MikrotikAPIController extends Controller
     / Otherwise, it removes them from 'clientes_cortados' on the router and moves them to 'clientes_activos'.
     /* Params: The Mikrotik's IP & IP cliente */
 
-    public function clipUnclipContracts (Request $request) 
+/*     public function clipUnclipContracts (Request $request) 
     {
         $data = $request->all();    
         $connection = $this->connection($data['ip']);
@@ -556,7 +556,7 @@ class MikrotikAPIController extends Controller
             }
         }
         return response('Operación realizada con éxito', 200);
-    }
+    } */
 
     // ------------------------ Get Data Mikrotik ----------------------------------
     // ---------------------- HTTP Method = [GET] ---------------------------------
@@ -754,19 +754,19 @@ class MikrotikAPIController extends Controller
                 $return = response($http_response, 404);
             }
             return $return;
-        }
-
-    function findQueueWithIP($connection, $client_ip)
-    {
-        $response = false;
-        $query =
-            (new Query('/queue/simple/print', ['?target=' . $client_ip . '/32']));
-        $queue = $connection->query($query)->read();
-        if(!empty($queue)){
-            $response = $queue;
-        }
-        return $response;
     }
+
+        function findQueueWithIP($connection, $client_ip)
+        {
+            $response = false;
+            $query =
+                (new Query('/queue/simple/print', ['?target=' . $client_ip . '/32']));
+            $queue = $connection->query($query)->read();
+            if(!empty($queue)){
+                $response = $queue;
+            }
+            return $response;
+        }
         // ------------------------ Enable Connections on Mikrotik ---------------------
     // ---------------------- HTTP Method = [PATCH] --------------------------------
     // --------------------------- /connection -----------------------------------------
@@ -851,17 +851,17 @@ class MikrotikAPIController extends Controller
 
         function removeAddressListCutted($connection, $ip)
         {
-        $query = (new Query("/ip/firewall/address-list/print"))
-            ->where('list', 'clientes_cortados')
-            ->where('address', $ip);
-        $response = $connection->query($query)->read();
-
-        if (isset($response[0])) {
-            $query = (new Query("/ip/firewall/address-list/remove"))
-                ->equal('.id', $response[0]['.id']);
+            $query = (new Query("/ip/firewall/address-list/print"))
+                ->where('list', 'clientes_cortados')
+                ->where('address', $ip);
             $response = $connection->query($query)->read();
+
+            if (isset($response[0])) {
+                $query = (new Query("/ip/firewall/address-list/remove"))
+                    ->equal('.id', $response[0]['.id']);
+                $response = $connection->query($query)->read();
+            }
         }
-    }
 
 
     // ------------------------ Disable Connections on Mikrotik ---------------------
