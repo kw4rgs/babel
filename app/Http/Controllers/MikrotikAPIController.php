@@ -121,8 +121,8 @@ class MikrotikAPIController extends Controller
         try {
             $data = $request->all();
             $connection = $this->connection($data['ip']);
-            $colas = new MikrotikAPIController();
-            $colas->createClientQueue($connection, $data['clientes']);
+            #$colas = new MikrotikAPIController();
+            $colas = self::createClientQueue($connection, $data['clientes']);
             $return = response('¡Cola creada con éxito!', 200);
         } catch (Exception $e) {
             $return = response('Ha ocurrido un error al actualizar el contrato', 400);
@@ -175,8 +175,8 @@ class MikrotikAPIController extends Controller
         try {
             $data = $request->all();
             $connection = $this->connection($data['ip']);
-            $colas = new MikrotikAPIController();
-            $colas->removeClientQueue($connection, $data['clientes']);
+            #$colas = new MikrotikAPIController();
+            $colas = self::removeClientQueue($connection, $data['clientes']);
             $return = response('¡Cola eliminada con éxito!', 200);
         } catch (Exception $e) {
             $return = response('Ha ocurrido un error al eliminar la cola', 400);
@@ -229,8 +229,7 @@ class MikrotikAPIController extends Controller
         try {
             $data = $request->all();
             $connection = $this->connection($data['ip']);
-            $colas = new MikrotikAPIController();
-            $colas->updateClientQueue($connection, $data['clientes']);
+            $colas = self::updateClientQueue($connection, $data['clientes']);
             $return = response('¡Cola actualizada con éxito!', 200);
         } catch (Exception $e) {
             $return = response('Ha ocurrido un error al actualizar el contrato', 400);
@@ -246,14 +245,14 @@ class MikrotikAPIController extends Controller
             $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
             /* List the queue */
             $query = (new Query("/queue/simple/print"))
-            ->where('name', $cliente["cliente_ip"]);
+                ->where('name', $cliente["cliente_ip"]);
             $response = $connection->query($query)->read();
             /* Add queue */
             if (isset($response[0])) {
                 $query = (new Query("/queue/simple/set"))
-                ->equal('.id', $response[0]['.id'])
-                ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
-                ->equal('parent', 'none');
+                    ->equal('.id', $response[0]['.id'])
+                    ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
+                    ->equal('parent', 'none');
                 $response = $connection->query($query)->read();
                 /* Only if contract is "active" adds it, otherwise it doesn't */
                 if ($cliente["estado"] === "activo") {
