@@ -22,6 +22,7 @@ class MikrotikAPIController extends Controller
         $this-> pass = env("BABEL_PASS");
         $this-> nodos = $nodos != null ? $nodos : array();
         $this-> redes = $redes != null ? $redes : array();
+	    #$this-> port = env("BABEL_PORT");
         $this-> middleware('auth');
     }
 
@@ -31,7 +32,7 @@ class MikrotikAPIController extends Controller
             'host' => $ip,
             'user' => $this->user,
             'pass' => $this->pass,
-            'port' => 8728
+            'port' => 52692
         ]);
 
         return $client;
