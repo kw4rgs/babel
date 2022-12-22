@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\Route;
 
 $router->get('/', function () use ($router) {return "<h1>". env('APP_TITLE') ."<h1>";});
 
-/* RUTAS PARA QUEUES */
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
 
+/* RUTAS PARA QUEUES */
 $router->post('/v1/contracts','MikrotikAPIController@createContract');
 $router->get('/v1/contracts', 'MikrotikAPIController@getContract');
 $router->put('/v1/contracts','MikrotikAPIController@updateContract');

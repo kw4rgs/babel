@@ -9,7 +9,6 @@ use \App\Clases\RouterosAPI;
 use \RouterOS\Client;
 use \RouterOS\Query;
 use Exception;
-
 use function PHPUnit\Framework\isEmpty;
 
 class MikrotikAPIController extends Controller
@@ -20,10 +19,10 @@ class MikrotikAPIController extends Controller
         $this-> ip = '';
         $this-> user = env("BABEL_USER");
         $this-> pass = env("BABEL_PASS");
-        $this-> nodos = $nodos != null ? $nodos : array();
-        $this-> redes = $redes != null ? $redes : array();
-	    #$this-> port = env("BABEL_PORT");
+	    $this-> port = env("BABEL_PORT");
         $this-> middleware('auth');
+        #$this-> nodos = $nodos != null ? $nodos : array();
+        #$this-> redes = $redes != null ? $redes : array();
     }
 
     function connection($ip)
@@ -32,7 +31,7 @@ class MikrotikAPIController extends Controller
             'host' => $ip,
             'user' => $this->user,
             'pass' => $this->pass,
-            'port' => 52692
+            'port' => intval($this->port)
         ]);
 
         return $client;
@@ -40,9 +39,9 @@ class MikrotikAPIController extends Controller
 
     // ------------------------ Test RouterOS ---------------------------------
     // ---------------------- HTTP Method = [GET] -----------------------------
-    // --------------------------- /contract ----------------------------------
+    // --------------------------- /v1/test -----------------------------------
     // 
-    /* Function: test a Mikrotik server.
+    /* Function: test the Mikrotik server connection.
     /* Params: 
     //      Server IP  */
 
@@ -56,12 +55,13 @@ class MikrotikAPIController extends Controller
             $response = $connection->query($query)->read();
             return $response;
         } catch (Exception $e) {
-            $return = response('Ha ocurrido un error. Verifique la IP ingresada', 400);
+            $error = $e->getMessage(); 
+            $return = response($error, 500);
         }
             return $return;
     }   
 
-    // ------------------------ Get Contract ----------------------------------
+    // ------------------------ Get Contracts ---------------------------------
     // ---------------------- HTTP Method = [GET] -----------------------------
     // --------------------------- /contract ----------------------------------
     // 
@@ -121,11 +121,16 @@ class MikrotikAPIController extends Controller
         try {
             $data = $request->all();
             $connection = $this->connection($data['ip']);
-            #$colas = new MikrotikAPIController();
-            $colas = self::createClientQueue($connection, $data['clientes']);
+
+            $colas = $this->createClientQueue($connection, $data['clientes']);
             $return = response('¡Cola creada con éxito!', 200);
         } catch (Exception $e) {
-            $return = response('Ha ocurrido un error al actualizar el contrato', 400);
+            $error = $e->getMessage(); 
+            $return = [
+                'status' => 500,
+                'message' => 'BABEL: Ha ocurrido un error al actualizar el/los contrato/s',
+                'details' => $error
+            ];
         }
         return $return;
     }
@@ -133,6 +138,12 @@ class MikrotikAPIController extends Controller
         function createClientQueue($connection, $clientes)
         {
             foreach ($clientes as $cliente) {
+
+                $info =
+                    (new Query('/log/info'))
+                        ->equal('message', 'BABEL: Se procede a crear la queue ' . $cliente["cliente_ip"]);
+                $response = $connection->query($info)->read();
+
                 //Transform kbps a bytes
                 $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
                 $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
@@ -154,6 +165,11 @@ class MikrotikAPIController extends Controller
 
         function addAddressList($connection, $ip)
         {
+            $info =
+            (new Query('/log/info'))
+                ->equal('message', 'BABEL: Se procede a crear la address-list de: ' . $ip);
+            $response = $connection->query($info)->read();
+
             $query = (new Query("/ip/firewall/address-list/add"))
                 ->equal('list', 'clientes_activos')
                 ->equal('address', $ip);
@@ -819,6 +835,10 @@ class MikrotikAPIController extends Controller
 
     function findConnAddress ($connection,$client_ip)
     {
+        
+
+            /* $query = (new Query('/ip/firewall/address-list/print', ['?Address=' . $client_ip])); */
+
             $query = (new Query('/ip/firewall/address-list/print'))
                 ->where('address', $client_ip);
             $response = $connection->query($query)->read();
@@ -848,6 +868,72 @@ class MikrotikAPIController extends Controller
     /* puts them back in "clientes_activos" address-list 
     /* Params: The Mikrotik's IP and clients IP */
 
+    // public function enableConnection (Request $request)
+    // {
+    //     try {
+    //         $data = $request->all();
+    //         $connection = $this->connection($data['ip']); 
+    //         $clientes = $data['clientes'];
+
+    //         foreach ($clientes as $cliente) {
+    //             $client_ip = $cliente['cliente_ip'];
+
+    //             $queue = self::findQueueWithIP($connection,$client_ip);    
+
+    //             # Tries to find the queue
+    //             if (!$queue) {
+    //                 $http_response = [
+    //                     'status' => false,
+    //                     'message' => 'BABEL: Queue ' . $client_ip . ' inexistente'
+    //                 ];
+    //                 #return response($http_response, 404);
+    //             };
+                
+    //             # Tries to find that queue in the address list
+    //             $address = self::findConnAddress($connection,$client_ip);
+
+    //             if(!($address->getStatusCode() == 404)) {
+    //                 $rem_address = self::removeAddressListCutted($connection,$client_ip);
+    //             }
+                
+    //             $add_address = self::addAddressList($connection,$client_ip);
+
+    //         }
+    //         $http_response = [
+    //             'status' => true,
+    //             'message' => 'BABEL: Operación realizada con éxito. Cliente habilitado'
+    //             #'results' => $this->getDataMikrotik($request)
+    //         ];
+    //         return response($http_response, 200);
+
+    //     } catch (\Throwable $th) {
+    //         return response ("BABEL: Ha ocurrido un error", 400);
+    //     }
+    // }
+
+    //     function removeAddressListCutted($connection, $ip)
+    //     {
+    //         $query = (new Query("/ip/firewall/address-list/print"))
+    //             ->where('list', 'clientes_cortados')
+    //             ->where('address', $ip);
+    //         $response = $connection->query($query)->read();
+
+    //         if (isset($response[0])) {
+    //             $query = (new Query("/ip/firewall/address-list/remove"))
+    //                 ->equal('.id', $response[0]['.id']);
+    //             $response = $connection->query($query)->read();
+    //         }
+    //     }
+
+    
+        // ------------------------ Enable Connections on Mikrotik ---------------------
+    // ---------------------- HTTP Method = [POST] ---------------------------------
+    // --------------------------- /v2/connection ----------------------------------
+    // 
+    /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
+    /* puts them back in "clientes_activos" address-list 
+    /* Params: The Mikrotik's IP and clients IP */
+
     public function enableConnection (Request $request)
     {
         try {
@@ -857,8 +943,7 @@ class MikrotikAPIController extends Controller
 
             foreach ($clientes as $cliente) {
                 $client_ip = $cliente['cliente_ip'];
-
-                $queue = self::findQueueWithIP($connection,$client_ip);    
+                $queue = $this->findQueueWithIP($connection,$client_ip);    
 
                 # Tries to find the queue
                 if (!$queue) {
@@ -869,14 +954,23 @@ class MikrotikAPIController extends Controller
                     #return response($http_response, 404);
                 };
                 
-                # Tries to find that queue in the address list
-                $address = self::findConnAddress($connection,$client_ip);
+                $query = (new Query('/ip/firewall/address-list/print', ['?list=clientes_cortados', '?address='. $client_ip]));
+                $client = $connection->query($query)->read();
 
-                if(!($address->getStatusCode() == 404)) {
-                    $rem_address = self::removeAddressListCutted($connection,$client_ip);
+                $query = new Query('/ip/firewall/address-list/set', [
+                    '=list=clientes_activos',
+                    '=.id='. $client[0]['.id'],
+                    ]);
+                $response = $connection->query($query)->read();
+
+                # Tries to find that queue in the address list
+                /* $address = $this->findConnAddress($connection,$client_ip); */
+                
+/*                 if(!($address->getStatusCode() == 404)) {
+                    $rem_address = $this->removeAddressListCutted($connection,$client_ip);
                 }
                 
-                $add_address = self::addAddressList($connection,$client_ip);
+                $add_address = self::addAddressList($connection,$client_ip); */
 
             }
             $http_response = [
@@ -904,7 +998,6 @@ class MikrotikAPIController extends Controller
                 $response = $connection->query($query)->read();
             }
         }
-
 
     // ------------------------ Disable Connections on Mikrotik ---------------------
     // ---------------------- HTTP Method = [POST] ---------------------------------
