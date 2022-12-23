@@ -14,15 +14,14 @@ use function PHPUnit\Framework\isEmpty;
 class MikrotikAPIController extends Controller
 {
 
-    function __construct($ip = null, $nodos = null, $redes = null)
+    function __construct($ip = null)
     {
         $this-> ip = '';
         $this-> user = env("BABEL_USER");
         $this-> pass = env("BABEL_PASS");
 	    $this-> port = env("BABEL_PORT");
         $this-> middleware('auth');
-        #$this-> nodos = $nodos != null ? $nodos : array();
-        #$this-> redes = $redes != null ? $redes : array();
+
     }
 
     function connection($ip)
@@ -56,7 +55,7 @@ class MikrotikAPIController extends Controller
             return $response;
         } catch (Exception $e) {
             $error = $e->getMessage(); 
-            $return = response($error, 500);
+            $return = response('BABEL: ' . $error, 500);
         }
             return $return;
     }   
@@ -79,30 +78,34 @@ class MikrotikAPIController extends Controller
             $response = $connection->query($query)->read();
             $quantity = count ($response);
 
+            $info =
+            (new Query('/log/info'))
+                ->equal('message', 'BABEL: Obteniendo informacion de queues...');
+            $log_msg = $connection->query($info)->read();
+
             foreach ($response as $key => $queue) {
                 $colas[$key]['cliente_ip'] = (explode("/", $queue['target']))[0];
                 $ancho = explode("/", $queue['max-limit']);
                 $colas[$key]['download'] = strval ($ancho[1] / 1000) . " Kbps"; 
                 $colas[$key]['upload'] = strval ($ancho[0] / 1000) . " Kbps"; 
-
-                //$colas[$key]['target'] = strval ($queue['target']);
                 $colas[$key]['estado'] = "activo";
             };
 
             if ($response == null) {
-                $return = response ('No hay clientes en el equipo', 400);
+                $return = response ('BABEL: No hay clientes en el equipo', 404);
             } else {
 
             $queues = array
                 (
-                    'ip' => $request['ip'],
-                    'cantidad de colas' => $quantity,
-                    'clientes' => $colas
+                    'ip_server' => $request['ip'],
+                    'clientes_activos' => $quantity,
+                    'clientes_details' => $colas
                 );
             return $queues;
             }
         } catch (Exception $e) {
-            $return = response('Ha ocurrido un error al extraer la informacion', 400);
+            $error = $e->getMessage(); 
+            $return = response('BABEL: ' . $error, 500);
         }
             return $return;
     }
@@ -111,7 +114,7 @@ class MikrotikAPIController extends Controller
     // ---------------------- HTTP Method = [POST] ----------------------------
     // --------------------------- /contract ----------------------------------
     // 
-    /* Function: Create a contract in a Mikrotik server.
+    /* Function: Create a 'contract' in a Mikrotik server.
     /* Params: 
     //      Server IP 
     //      Contract IP */
@@ -123,25 +126,21 @@ class MikrotikAPIController extends Controller
             $connection = $this->connection($data['ip']);
 
             $colas = $this->createClientQueue($connection, $data['clientes']);
-            $return = response('¡Cola creada con éxito!', 200);
+            $return = response('BABEL : ¡Cola/s creada/s con éxito!', 200);
         } catch (Exception $e) {
             $error = $e->getMessage(); 
-            $return = [
-                'status' => 500,
-                'message' => 'BABEL: Ha ocurrido un error al actualizar el/los contrato/s',
-                'details' => $error
-            ];
+            $return = response('BABEL: ' . $error, 500);
         }
         return $return;
     }
 
+        /* Function: Creates a queue in a Mikrotik server. */
         function createClientQueue($connection, $clientes)
         {
             foreach ($clientes as $cliente) {
-
                 $info =
-                    (new Query('/log/info'))
-                        ->equal('message', 'BABEL: Se procede a crear la queue ' . $cliente["cliente_ip"]);
+                (new Query('/log/info'))
+                    ->equal('message', 'BABEL: Se procede a crear la queue: ' . $cliente["cliente_ip"]);
                 $response = $connection->query($info)->read();
 
                 //Transform kbps a bytes
@@ -156,20 +155,24 @@ class MikrotikAPIController extends Controller
                 $response = $connection->query($query)->read();
 
                 if ($cliente["estado"] === "activo") {
+                    $info =
+                    (new Query('/log/info'))
+                        ->equal('message', 'BABEL: Se procede a crear la address-list de: ' . $cliente["cliente_ip"]);
+                    $log_msg = $connection->query($info)->read();
                     $this->addAddressList($connection, $cliente["cliente_ip"]);
                 } else {
+                    $info =
+                    (new Query('/log/info'))
+                        ->equal('warning', 'BABEL: Se procede a ELIMINAR la address-list de: ' . $cliente["cliente_ip"]);
+                    $log_msg = $connection->query($info)->read();
                     $this->removeAddressList($connection, $cliente["cliente_ip"]);
                 }
             }
         }
 
+        /* Function: Creates an address-list for the queue in the Mikrotik server. */
         function addAddressList($connection, $ip)
         {
-            $info =
-            (new Query('/log/info'))
-                ->equal('message', 'BABEL: Se procede a crear la address-list de: ' . $ip);
-            $response = $connection->query($info)->read();
-
             $query = (new Query("/ip/firewall/address-list/add"))
                 ->equal('list', 'clientes_activos')
                 ->equal('address', $ip);
@@ -191,19 +194,24 @@ class MikrotikAPIController extends Controller
         try {
             $data = $request->all();
             $connection = $this->connection($data['ip']);
-            #$colas = new MikrotikAPIController();
-            $colas = self::removeClientQueue($connection, $data['clientes']);
-            $return = response('¡Cola eliminada con éxito!', 200);
+            $colas = $this->removeClientQueue($connection, $data['clientes']);
+            $return = response('¡Cola/s eliminada/s con éxito!', 200);
         } catch (Exception $e) {
-            $return = response('Ha ocurrido un error al eliminar la cola', 400);
+            $error = $e->getMessage(); 
+            $return = response('BABEL: ' . $error, 500);
         }
         return $return;
     }
 
-
+        /* Function: Removes a queue in a Mikrotik server. */
         function removeClientQueue($connection, $clientes)
         {
             foreach ($clientes as $cliente) {
+                $info =
+                    (new Query('/log/warning'))
+                        ->equal('message', 'BABEL: Se procede a ELIMINAR la queue: ' . $cliente["cliente_ip"]);
+                $log_msg = $connection->query($info)->read();
+
                 $query = (new Query("/queue/simple/print"))
                     ->where('name', $cliente["cliente_ip"]);
                 $response = $connection->query($query)->read();
@@ -213,10 +221,16 @@ class MikrotikAPIController extends Controller
                         ->equal('.id', $response[0][".id"]);
                     $response = $connection->query($query)->read();
                 }
+                $info =
+                (new Query('/log/warning'))
+                    ->equal('message', 'BABEL: Se procede a ELIMINAR la address-list de: ' . $cliente["cliente_ip"]);
+                $log_msg = $connection->query($info)->read();
+
                 $this->removeAddressList($connection, $cliente["cliente_ip"]);
             }
         }
 
+        /* Function: Removes the address-list of a queue in the Mikrotik server. */
         function removeAddressList($connection, $ip)
         {
             $query = (new Query("/ip/firewall/address-list/print"))

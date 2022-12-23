@@ -22,12 +22,13 @@ $router->get('/', function () use ($router) {return "<h1>". env('APP_TITLE') ."<
 
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
 
-/* RUTAS PARA QUEUES */
+/* RUTAS CRUD PARA QUEUES */
 $router->post('/v1/contracts','MikrotikAPIController@createContract');
 $router->get('/v1/contracts', 'MikrotikAPIController@getContract');
 $router->put('/v1/contracts','MikrotikAPIController@updateContract');
 $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 
+/* RUTAS MASIVAS PARA ROUTER */
 //$router->put('/v1/router','MikrotikAPIController@migrateContract');
 //$router->post('/v1/router','MikrotikAPIController@cleanRouter');
 //$router->delete('/v1/router','MikrotikAPIController@wipeRouter');
