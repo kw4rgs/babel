@@ -34,33 +34,19 @@ $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 //$router->delete('/v1/router','MikrotikAPIController@wipeRouter');
 //$router->delete('/v1/router','MikrotikAPIController@wipeRouterOnlyActives');
 
-$router->get('/v1/router/backup', 'MikrotikAPIController@backupRouter');
-$router->post('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
+//$router->get('/v1/router/backup', 'MikrotikAPIController@backupRouter');
+//$router->post('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
 
-/* RUTAS PARA PPPOE */
-$router->post('/v1/pppoe/client', 'MikrotikPPPOEController@disconnectClient');
-$router->get('/v1/pppoe/client', 'MikrotikPPPOEController@findclient');
-
-
-/* RUTAS PARA WIRELES */
+/* RUTAS PARA TRAER INFO */
+/* Trae toda la info de un mikrotik */
 $router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikrotik');
-$router->patch('/v1/router/revertChanges','MikrotikAPIController@revertChanges');
+/* Encuentra al cliente en los equipos mikrotik */
+$router->get('/v1/connection/findConn','MikrotikAPIController@findConn');
 
-    /* Habilitar conexión */
-#$router->patch('/v1/connection/enable','MikrotikAPIController@enableConnection');
-#$router->post('/v2/connection/enable','MikrotikAPIController@enableConn');
-    /* Deshabilitar conexión */
-#$router->patch('/v1/connection/disable','MikrotikAPIController@disableConnection');
-
-
-$router->get('/v2/connection/findConn','MikrotikAPIController@findConn');
-#$router->get('/v2/connection/findConnAddress','MikrotikAPIController@findConnAddress');
+/* RUTAS RESETEO DE ADDRESS-LIST */
+/* Restaura los cambios aplicados en la address-list , pasa todos los cortados a activos */
+$router->patch('/v1/connection/revertChanges','MikrotikAPIController@revertChanges');
 /* Habilitar conexión */
-$router->patch('/v2/connection/enableConnection','MikrotikAPIController@enableConnection');
+$router->patch('/v1/connection/enableConnection','MikrotikAPIController@enableConnection');
 /* Deshabilitar conexión */
-$router->patch('/v2/connection/disableConnection','MikrotikAPIController@disableConnection');
-
-
-/* $router->any('{any:.*}', function() {
-    abort(404);
-}); */
+$router->patch('/v1/connection/disableConnection','MikrotikAPIController@disableConnection');
