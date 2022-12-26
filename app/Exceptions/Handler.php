@@ -49,6 +49,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return response('BABEL: El método o función al que deseas acceder no existe. Favor de contactar al administrador.', 404);
+        }
+
         return parent::render($request, $exception);
     }
+
+    
+
+    
 }

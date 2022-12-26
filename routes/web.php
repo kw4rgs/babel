@@ -61,4 +61,6 @@ $router->patch('/v2/connection/enableConnection','MikrotikAPIController@enableCo
 $router->patch('/v2/connection/disableConnection','MikrotikAPIController@disableConnection');
 
 
-
+/* $router->any('{any:.*}', function() {
+    abort(404);
+}); */
