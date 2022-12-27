@@ -578,7 +578,6 @@ class MikrotikAPIController extends Controller
     //                 'message' => 'BABEL: Queue ' . $client_ip . ' encontrada'
     //             ];
     //             $return = response($http_response, 200);
-            
     //         } else {
     //             $http_response = [
     //                 'status' => false,
@@ -598,8 +597,7 @@ class MikrotikAPIController extends Controller
     /* Params: The Mikrotik's IP and clients IP */
 
     /* function findConnAddress ($connection,$client_ip)
-    {
-        
+    //{
  */
             /* $query = (new Query('/ip/firewall/address-list/print', ['?Address=' . $client_ip])); */
 
