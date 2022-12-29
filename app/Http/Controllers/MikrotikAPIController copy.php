@@ -502,6 +502,7 @@ class MikrotikAPIController extends Controller
         }
     }
 
+
     // ------------------------ Wipe Router Only Actives --------------------------
     // ---------------------- HTTP Method = [DEL] ---------------------------------
     // --------------------------- /router ----------------------------------------
@@ -557,11 +558,43 @@ class MikrotikAPIController extends Controller
         }
     }
 
-    // ------------------------ Finding methods on Mikrotik ---------------------
-    // ---------------------- HTTP Method = None --------------------------------
+    // ------------------------ Enable Connections on Mikrotik ---------------------
+    // ---------------------- HTTP Method = [GET] --------------------------------
     // --------------------------- /connection -----------------------------------------
     // 
-    /* Function: Finds specific queues and address-list */
+    /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
+    /* puts them back in "clientes_activos" address-list 
+    /* Params: The Mikrotik's IP and clients IP */
+
+    // public function findConn (Request $request)
+    // {
+    //         $data = $request->all();
+    //         $connection = $this->connection($data['ip']);         
+    //         $client_ip = $data['clientes'][0]['cliente_ip'];
+    //         $queue = $this ->findQueueWithIP($connection,$client_ip);
+    //         if (!empty($queue)) {
+    //             $http_response = [
+    //                 'status' => true,
+    //                 'message' => 'BABEL: Queue ' . $client_ip . ' encontrada'
+    //             ];
+    //             $return = response($http_response, 200);
+    //         } else {
+    //             $http_response = [
+    //                 'status' => false,
+    //                 'message' => 'BABEL: Queue ' . $client_ip . ' inexistente'
+    //             ];
+    //             $return = response($http_response, 404);
+    //         }
+    //         return $return;
+    //}
+
+    // ------------------------ Enable Connections on Mikrotik ---------------------
+    // ---------------------- HTTP Method = [PATCH] --------------------------------
+    // --------------------------- /connection -----------------------------------------
+    // 
+    /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
+    /* puts them back in "clientes_activos" address-list 
+    /* Params: The Mikrotik's IP and clients IP */
 
     function findConnAddress ($connection,$client_ip)
     {
@@ -609,58 +642,156 @@ class MikrotikAPIController extends Controller
     
     // ------------------------ Enable Connections on Mikrotik ---------------------
     // ---------------------- HTTP Method = [POST] ---------------------------------
-    // --------------------------- /v1/connection ----------------------------------
+    // --------------------------- /v2/connection ----------------------------------
     // 
     /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
     /* puts them back in "clientes_activos" address-list 
     /* Params: The Mikrotik's IP and clients IP */
 
-    public function enableConnection (Request $request)
+    /* public function enableConnection (Request $request)
     {
         try {
             $data = $request->all();
-            $connection = $this->connection($data['ip']);         
+            $connection = $this->connection($data['ip']); 
             $clientes = $data['clientes'];
 
             foreach ($clientes as $cliente) {
                 $client_ip = $cliente['cliente_ip'];
-                
+
                 $info = (new Query('/log/info'))->equal('message', 'BABEL: Se procede a habilitar el cliente: ' . $client_ip);
                 $response = $connection->query($info)->read();
 
-                $queue = $this ->findQueueWithIP($connection,$client_ip);    
+                $queue = $this->findQueueWithIP($connection,$client_ip);    
 
-                # Tries to find that queue in the address list
-                $address = $this ->findConnAddress($connection,$client_ip);
-
-                if(!($address->getStatusCode() == 404)) {
-                    $rem_address = $this ->removeAddressListCutted($connection,$client_ip);
-                }
+                # Tries to find the queue
+                if (!$queue) {
+                    $http_response = [
+                        'status' => false,
+                        'message' => 'BABEL: Queue ' . $client_ip . ' inexistente'
+                    ];
+                };
                 
-                $add_address = $this ->addAddressListActive($connection,$client_ip);
+                // Just in case that someone putted queues/addresses-list by hand (duplicated)
+                    $query = (new Query('/ip/firewall/address-list/print', ['?list=clientes_cortados', '?address='. $client_ip]));
+                    $client = $connection->query($query)->read();
+
+                    $query = (new Query("/ip/firewall/address-list/remove"))
+                        ->equal('.id', $client[0]['.id']);
+                    $response = $connection->query($query)->read();
+
+                $query = (new Query('/ip/firewall/address-list/print', ['?list=clientes_cortados', '?address='. $client_ip]));
+                $client = $connection->query($query)->read();
+
+                $query = new Query('/ip/firewall/address-list/set', [
+                    '=list=clientes_activos',
+                    '=.id='. $client[0]['.id'],
+                    ]);
+                $response = $connection->query($query)->read();
+
 
             }
+            $http_response = [
+                'status' => true,
+                'message' => 'BABEL: Operación realizada con éxito. Cliente/s habilitado/s'
+            ];
+            return response($http_response, 200);
+
+        } catch (Exception $e) {
+            $error = $e->getMessage(); 
+            $return = response('BABEL: ' . $error, 500);
+        }
+    }
+
+        function findQueueWithIP($connection, $client_ip)
+        {
+            try {
+                $response = false;
+                $query =
+                    (new Query('/queue/simple/print', ['?target=' . $client_ip . '/32']));
+                $queue = $connection->query($query)->read();
+                if(!empty($queue)){
+                    $response = $queue;
+                }
+                
+            } catch (\Throwable $e) {
+                $error = $e->getMessage(); 
+                $response = response('BABEL: ' . $error, 500);
+            }
+                return $response;
+        }
+ */
+
+    // ------------------------ Enable Connections on Mikrotik ---------------------
+    // ---------------------- HTTP Method = [POST] ---------------------------------
+    // --------------------------- /v2/connection ----------------------------------
+    // 
+    /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
+    /* puts them back in "clientes_activos" address-list 
+    /* Params: The Mikrotik's IP and clients IP */
+
+/*     public function enableConnection (Request $request)
+    {
+        try {
+            $data = $request->all();
+            $connection = $this->connection($data['ip']); 
+            $clientes = $data['clientes'];
+
+            foreach ($clientes as $cliente) {
+                $client_ip = $cliente['cliente_ip'];
+
+                $info = (new Query('/log/info'))->equal('message', 'BABEL: Se procede a habilitar el cliente: ' . $client_ip);
+                $response = $connection->query($info)->read();
+
+                $queue = $this->findQueueWithIP($connection,$client_ip);    
+                
+                $query = (new Query('/ip/firewall/address-list/print', ['?list=clientes_cortados', '?address='. $client_ip]));
+                $client = $connection->query($query)->read();
+
+                $query = new Query('/ip/firewall/address-list/set', [
+                    '=list=clientes_activos',
+                    '=.id='. $client[0]['.id'],
+                    ]);
+                $response = $connection->query($query)->read();
+
+                # Tries to find that queue in the address list
+                $address = $this->findConnAddress($connection,$client_ip);
+                
+                if(!($address->getStatusCode() == 404)) {
+                    $rem_address = $this->removeAddressListCutted($connection,$client_ip);
+                }
+                $add_address = $this ->addAddressList($connection,$client_ip);
+            }
+
+            $info = (new Query('/log/info'))->equal('message', 'BABEL: Tareas finalizadas');
+            $response = $connection->query($info)->read();
 
             $http_response = [
                 'status' => true,
                 'message' => 'BABEL: Operación realizada con éxito. Cliente/s habilitado/s'
             ];
-            
-            $info = (new Query('/log/info'))->equal('message', 'BABEL: Tareas finalizadas');
-            $response = $connection->query($info)->read();
 
             return response($http_response, 200);
+            //BABEL: Undefined array key 0"
+        } catch (\Throwable $e) {
+            $error = $e->getMessage(); 
+            $http_response = [
+                'status' => false,
+                'message' => 'BABEL: ' . $error
+            ];
 
-            } catch (\Throwable $e) {
-                $error = $e->getMessage(); 
+            if (preg_match('/Undefined array key 0/', $e)) {
+
                 $http_response = [
                     'status' => false,
-                    'message' => 'BABEL: ' . $error
-                ];
+                    'message' => 'BABEL: Ha ocurrido un error. Cliente/s ya habilitado/s o cliente/s sin cola/s'
+                ];         
+                return response($http_response, 500);
+            } else {
                 return response($http_response, 500);
             }
+        }
     }
-        /* Function: removes the address-list of that queue in the Mikrotik server, in this case, on the address-list "cortados". */
+
         function removeAddressListCutted($connection, $ip)
         {
             $query = (new Query("/ip/firewall/address-list/print"))
@@ -673,19 +804,11 @@ class MikrotikAPIController extends Controller
                     ->equal('.id', $response[0]['.id']);
                 $response = $connection->query($query)->read();
             }
-        }
-        /* Function: Add the "activos" address-list for that queue in the Mikrotik server. */
-        function addAddressListActive($connection, $ip)
-        {
-            $query = (new Query("/ip/firewall/address-list/add"))
-                ->equal('list', 'clientes_activos')
-                ->equal('address', $ip);
-            $response = $connection->query($query)->read();
-        }
+        } */
 
     // ------------------------ Disable Connections on Mikrotik ---------------------
     // ---------------------- HTTP Method = [POST] ---------------------------------
-    // --------------------------- /v1/connection ----------------------------------
+    // --------------------------- /v2/connection ----------------------------------
     // 
     /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
     /* puts them back in "clientes_activos" address-list 
@@ -736,28 +859,88 @@ class MikrotikAPIController extends Controller
             return response($http_response, 500);
         }
     }
-        /* Function: removes the address-list of that queue in the Mikrotik server, in this case, on the address-list "activos".. */
-        function removeAddressListActive($connection, $ip)
-        {
-            $query = (new Query("/ip/firewall/address-list/print"))
-                ->where('list', 'clientes_activos')
-                ->where('address', $ip);
-            $response = $connection->query($query)->read();
 
-            if (isset($response[0])) {
-                $query = (new Query("/ip/firewall/address-list/remove"))
-                    ->equal('.id', $response[0]['.id']);
-                $response = $connection->query($query)->read();
-            }
-        }
-        /* Function: Add the "cortados" address-list for that queue in the Mikrotik server. */
-        function addAddressListCutted($connection, $ip)
-        {
-            $query = (new Query("/ip/firewall/address-list/add"))
-                ->equal('list', 'clientes_cortados')
-                ->equal('address', $ip);
+    function removeAddressListActive($connection, $ip)
+    {
+        $query = (new Query("/ip/firewall/address-list/print"))
+            ->where('list', 'clientes_activos')
+            ->where('address', $ip);
+        $response = $connection->query($query)->read();
+
+        if (isset($response[0])) {
+            $query = (new Query("/ip/firewall/address-list/remove"))
+                ->equal('.id', $response[0]['.id']);
             $response = $connection->query($query)->read();
         }
+    }
+
+    function addAddressListCutted($connection, $ip)
+    {
+        $query = (new Query("/ip/firewall/address-list/add"))
+            ->equal('list', 'clientes_cortados')
+            ->equal('address', $ip);
+        $response = $connection->query($query)->read();
+    }
+
+    // ------------------------ Disable Connections on Mikrotik ---------------------
+    // ---------------------- HTTP Method = [POST] ---------------------------------
+    // --------------------------- /v2/connection ----------------------------------
+    // 
+    /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
+    /* puts them back in "clientes_activos" address-list 
+    /* Params: The Mikrotik's IP and clients IP */
+
+    // public function disableConnection (Request $request)
+    // {
+    //     try {
+    //         $data = $request->all();
+    //         $connection = $this->connection($data['ip']); 
+    //         $clientes = $data['clientes'];
+
+    //         foreach ($clientes as $cliente) {
+    //             $client_ip = $cliente['cliente_ip'];
+
+    //             $info = (new Query('/log/warning'))->equal('message', 'BABEL: Se procede a DESHABILITAR el cliente: ' . $client_ip);
+    //             $response = $connection->query($info)->read();
+    //             $queue = $this->findQueueWithIP($connection,$client_ip);    
+                
+    //             # Tries to find the queue
+    //             if (!$queue) {
+    //                 $http_response = [
+    //                     'status' => false,
+    //                     'message' => 'BABEL: Queue ' . $client_ip . ' inexistente'
+    //                 ];
+    //             };
+                
+    //             $query = (new Query('/ip/firewall/address-list/print', ['?list=clientes_activos', '?address='. $client_ip]));
+    //             $client = $connection->query($query)->read();
+
+    //             $query = new Query('/ip/firewall/address-list/set', [
+    //                 '=list=clientes_cortados',
+    //                 '=.id='. $client[0]['.id'],
+    //                 ]);
+    //             $response = $connection->query($query)->read();
+
+    //                 // Just in case that someone putted queues/addresses-list by hand (duplicated)
+    //                 $duplicated = (new Query('/ip/firewall/address-list/print', ['?list=clientes_activos', '?address='. $client_ip]));
+    //                 $client = $connection->query($duplicated)->read();
+
+    //                 $duplicated = (new Query("/ip/firewall/address-list/remove"))
+    //                     ->equal('.id', $client[0]['.id']);
+    //                 $response = $connection->query($duplicated)->read();
+    //         }
+            
+    //         $http_response = [
+    //             'status' => true,
+    //             'message' => 'BABEL: Operación realizada con éxito. Cliente/s deshabilitado/s'
+    //         ];
+    //         return response($http_response, 200);
+
+    //     } catch (Exception $e) {
+    //         $error = $e->getMessage(); 
+    //         $return = response('BABEL: ' . $error, 500);
+    //     }
+    // }
 
     // ------------------------ Get Data Mikrotik ----------------------------------
     // ---------------------- HTTP Method = [GET] ---------------------------------
