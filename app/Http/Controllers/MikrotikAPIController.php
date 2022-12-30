@@ -21,18 +21,21 @@ class MikrotikAPIController extends Controller
         $this-> pass = env("BABEL_PASS");
 	    $this-> port = env("BABEL_PORT");
         $this-> middleware('auth');
-
     }
 
     function connection($ip)
     {
-        $client = new Client([
-            'host' => $ip,
-            'user' => $this->user,
-            'pass' => $this->pass,
-            'port' => intval($this->port)
-        ]);
-
+        try {
+            $client = new Client([
+                'host' => $ip,
+                'user' => $this->user,
+                'pass' => $this->pass,
+                'port' => intval($this->port)
+            ]);
+            
+        } catch (\Throwable $th) {
+            throw $th;
+        }
         return $client;
     }
 
