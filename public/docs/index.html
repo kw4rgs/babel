@@ -1,0 +1,2005 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>BABEL v1</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../docs/css/theme-default.style.css" media="screen">
+    <link rel="stylesheet" href="../docs/css/theme-default.print.css" media="print">
+
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/@highlightjs/cdn-assets@11.6.0/styles/obsidian.min.css">
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.6.0/highlight.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jets/0.14.1/jets.min.js"></script>
+
+    <style id="language-style">
+        /* starts out as display none and is replaced with js later  */
+                    body .content .bash-example code { display: none; }
+                    body .content .javascript-example code { display: none; }
+                    body .content .php-example code { display: none; }
+                    body .content .python-example code { display: none; }
+            </style>
+
+    <script>
+        var baseUrl = "http://localhost";
+        var useCsrf = Boolean();
+        var csrfUrl = "/sanctum/csrf-cookie";
+    </script>
+    <script src="../docs/js/tryitout-4.11.0.js"></script>
+
+    <script src="../docs/js/theme-default-4.11.0.js"></script>
+
+</head>
+
+<body data-languages="[&quot;bash&quot;,&quot;javascript&quot;,&quot;php&quot;,&quot;python&quot;]">
+
+<a href="#" id="nav-button">
+    <span>
+        MENU
+        <img src="../docs/images/navbar.png" alt="navbar-image"/>
+    </span>
+</a>
+<div class="tocify-wrapper">
+            <img src="images/babel-logo.png" alt="logo" class="logo" style="padding-top: 10px;" width="100%"/>
+    
+            <div class="lang-selector">
+                                            <button type="button" class="lang-button" data-language-name="bash">bash</button>
+                                            <button type="button" class="lang-button" data-language-name="javascript">javascript</button>
+                                            <button type="button" class="lang-button" data-language-name="php">php</button>
+                                            <button type="button" class="lang-button" data-language-name="python">python</button>
+                    </div>
+    
+    <div class="search">
+        <input type="text" class="search" id="input-search" placeholder="Search">
+    </div>
+
+    <div id="toc">
+                    <ul id="tocify-header-introduction" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="introduction">
+                    <a href="#introduction">Introduction</a>
+                </li>
+                            </ul>
+                    <ul id="tocify-header-authenticating-requests" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="authenticating-requests">
+                    <a href="#authenticating-requests">Authenticating requests</a>
+                </li>
+                            </ul>
+                    <ul id="tocify-header-endpoints" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="endpoints">
+                    <a href="#endpoints">Endpoints</a>
+                </li>
+                                    <ul id="tocify-subheader-endpoints" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="endpoints-GETv1-test">
+                                <a href="#endpoints-GETv1-test">Test RouterOS</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETv1-contracts">
+                                <a href="#endpoints-GETv1-contracts">Get Contracts</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTv1-contracts">
+                                <a href="#endpoints-POSTv1-contracts">Create Contracts</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PUTv1-contracts">
+                                <a href="#endpoints-PUTv1-contracts">Update Contracts</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-DELETEv1-contracts">
+                                <a href="#endpoints-DELETEv1-contracts">Delete Contracts</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PATCHv1-connection-enableConnection">
+                                <a href="#endpoints-PATCHv1-connection-enableConnection">Enable Connections</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PATCHv1-connection-disableConnection">
+                                <a href="#endpoints-PATCHv1-connection-disableConnection">Disable Connections</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETv1-router-getDataMikrotik">
+                                <a href="#endpoints-GETv1-router-getDataMikrotik">Get Data Mikrotik</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
+            </div>
+
+    <ul class="toc-footer" id="toc-footer">
+                    <li style="padding-bottom: 5px;"><a href="../docs/collection.json">View Postman collection</a></li>
+                            <li style="padding-bottom: 5px;"><a href="../docs/openapi.yaml">View OpenAPI spec</a></li>
+                <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li>
+    </ul>
+
+    <ul class="toc-footer" id="last-updated">
+        <li>Last updated: January 12, 2023</li>
+    </ul>
+</div>
+
+<div class="page-wrapper">
+    <div class="dark-box"></div>
+    <div class="content">
+        <h1 id="introduction">Introduction</h1>
+<aside>
+    <strong>Base URL</strong>: <code>http://localhost</code>
+</aside>
+<p>This documentation aims to provide all the information you need to work with Babel. </p>
+<aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile). You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile) to suit your programming needs.</aside>
+
+        <h1 id="authenticating-requests">Authenticating requests</h1>
+<p>Authenticate requests to this API's endpoints by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer ed43530dcaa9ec5d061dd55e1e64c0e9"</code></strong>.</p>
+<p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
+
+        <h1 id="endpoints">Endpoints</h1>
+
+    
+
+                                <h2 id="endpoints-GETv1-test">Test RouterOS</h2>
+
+<p>
+</p>
+
+<p>This endpoint allows you to test the Mikrotik server connection with this API.
+It's a really useful endpoint and a start point to know if there is any problem.</p>
+<aside class="notice">I recommend you to use first, to debug any futher inconvenience. 😁</aside>
+
+<span id="example-requests-GETv1-test">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/v1/test" \
+    --header "Content-Type: application/xml" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ip\": \"192.168.1.1\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/test"
+);
+
+const headers = {
+    "Content-Type": "application/xml",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ip": "192.168.1.1"
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'http://localhost/v1/test',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/xml',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ip' =&gt; '192.168.1.1',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/test'
+payload = {
+    "ip": "192.168.1.1"
+}
+headers = {
+  'Content-Type': 'application/xml',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers, json=payload)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETv1-test">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;name&quot;: &quot;Mikrotik-Cristian&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no route to host):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Unable to establish socket session, No route to host&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no payload or body params):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Undefined array key &#039;ip&#039;&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETv1-test" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETv1-test"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETv1-test" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETv1-test" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETv1-test"></code></pre>
+</span>
+<form id="form-GETv1-test" data-method="GET"
+      data-path="v1/test"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETv1-test', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETv1-test"
+                    onclick="tryItOut('GETv1-test');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETv1-test"
+                    onclick="cancelTryOut('GETv1-test');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETv1-test" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>v1/test</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETv1-test"
+               value="application/xml"
+               data-component="header">
+    <br>
+<p>Example: <code>application/xml</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETv1-test"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="ip"                data-endpoint="GETv1-test"
+               value="192.168.1.1"
+               data-component="body">
+    <br>
+<p>The server ip. Example: <code>192.168.1.1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-GETv1-contracts">Get Contracts</h2>
+
+<p>
+</p>
+
+<p>This endpoint allows you to get contracts information from a Mikrotik server.</p>
+<aside class="notice">This will be useful to get the clients that are in an specific router. </aside>
+
+<span id="example-requests-GETv1-contracts">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/v1/contracts" \
+    --header "Content-Type: application/xml" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ip\": \"192.168.1.1\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/contracts"
+);
+
+const headers = {
+    "Content-Type": "application/xml",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ip": "192.168.1.1"
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'http://localhost/v1/contracts',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/xml',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ip' =&gt; '192.168.1.1',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/contracts'
+payload = {
+    "ip": "192.168.1.1"
+}
+headers = {
+  'Content-Type': 'application/xml',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers, json=payload)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETv1-contracts">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;ip_server&quot;: &quot;192.168.2.184&quot;,
+    &quot;clientes_activos&quot;: 1,
+    &quot;clientes_details&quot;: [
+        {
+            &quot;cliente_ip&quot;: &quot;1.1.1.1&quot;,
+            &quot;download&quot;: &quot;102400 Kbps&quot;,
+            &quot;upload&quot;: &quot;3072 Kbps&quot;,
+            &quot;estado&quot;: &quot;activo&quot;
+        }
+    ]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no route to host):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Unable to establish socket session, No route to host&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no payload or body params):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Undefined array key &#039;ip&#039;&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETv1-contracts" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETv1-contracts"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETv1-contracts" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETv1-contracts" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETv1-contracts"></code></pre>
+</span>
+<form id="form-GETv1-contracts" data-method="GET"
+      data-path="v1/contracts"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETv1-contracts', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETv1-contracts"
+                    onclick="tryItOut('GETv1-contracts');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETv1-contracts"
+                    onclick="cancelTryOut('GETv1-contracts');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETv1-contracts" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>v1/contracts</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETv1-contracts"
+               value="application/xml"
+               data-component="header">
+    <br>
+<p>Example: <code>application/xml</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETv1-contracts"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="ip"                data-endpoint="GETv1-contracts"
+               value="192.168.1.1"
+               data-component="body">
+    <br>
+<p>The server ip. Example: <code>192.168.1.1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-POSTv1-contracts">Create Contracts</h2>
+
+<p>
+</p>
+
+<p>This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.</p>
+<aside class="notice">With this you are able to create "contracts" (queues with address-list). </aside>
+
+<span id="example-requests-POSTv1-contracts">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/v1/contracts" \
+    --header "Content-Type: application/xml" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ip\": \"192.168.1.1\",
+    \"clientes\": {
+        \"cliente_ip\": \"1.1.1.1\",
+        \"download\": \"102400 Kbps\",
+        \"upload\": \"3072 Kbps\",
+        \"estado\": \"activo\"
+    }
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/contracts"
+);
+
+const headers = {
+    "Content-Type": "application/xml",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1",
+        "download": "102400 Kbps",
+        "upload": "3072 Kbps",
+        "estado": "activo"
+    }
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;post(
+    'http://localhost/v1/contracts',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/xml',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ip' =&gt; '192.168.1.1',
+            'clientes' =&gt; [
+                'cliente_ip' =&gt; '1.1.1.1',
+                'download' =&gt; '102400 Kbps',
+                'upload' =&gt; '3072 Kbps',
+                'estado' =&gt; 'activo',
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/contracts'
+payload = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1",
+        "download": "102400 Kbps",
+        "upload": "3072 Kbps",
+        "estado": "activo"
+    }
+}
+headers = {
+  'Content-Type': 'application/xml',
+  'Accept': 'application/json'
+}
+
+response = requests.request('POST', url, headers=headers, json=payload)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTv1-contracts">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL : &iexcl;Cola/s creada/s con &eacute;xito!&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no route to host):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Unable to establish socket session, No route to host&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no payload or missing params):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Undefined array key &#039;ip&#039;&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTv1-contracts" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTv1-contracts"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTv1-contracts" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTv1-contracts" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTv1-contracts"></code></pre>
+</span>
+<form id="form-POSTv1-contracts" data-method="POST"
+      data-path="v1/contracts"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTv1-contracts', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTv1-contracts"
+                    onclick="tryItOut('POSTv1-contracts');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTv1-contracts"
+                    onclick="cancelTryOut('POSTv1-contracts');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTv1-contracts" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>v1/contracts</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTv1-contracts"
+               value="application/xml"
+               data-component="header">
+    <br>
+<p>Example: <code>application/xml</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTv1-contracts"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="ip"                data-endpoint="POSTv1-contracts"
+               value="192.168.1.1"
+               data-component="body">
+    <br>
+<p>The server ip. Example: <code>192.168.1.1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>clientes</code></b>&nbsp;&nbsp;
+<small>object</small>&nbsp;
+ &nbsp;
+<br>
+<p>A list of objects that contains the clients params.</p>
+            </summary>
+                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>cliente_ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.cliente_ip"                data-endpoint="POSTv1-contracts"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>Client IP. Example: <code>1.1.1.1</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>download</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.download"                data-endpoint="POSTv1-contracts"
+               value="102400 Kbps"
+               data-component="body">
+    <br>
+<p>Client download speed. Example: <code>102400 Kbps</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>upload</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.upload"                data-endpoint="POSTv1-contracts"
+               value="3072 Kbps"
+               data-component="body">
+    <br>
+<p>Client upload speed. Example: <code>3072 Kbps</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>estado</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.estado"                data-endpoint="POSTv1-contracts"
+               value="activo"
+               data-component="body">
+    <br>
+<p>Client status account. Example: <code>activo</code></p>
+                    </div>
+                                    </details>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-PUTv1-contracts">Update Contracts</h2>
+
+<p>
+</p>
+
+<p>This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.</p>
+<aside class="notice">With this you are able to update the "contracts" (queues with address-list). </aside>
+
+<span id="example-requests-PUTv1-contracts">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://localhost/v1/contracts" \
+    --header "Content-Type: application/xml" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ip\": \"192.168.1.1\",
+    \"clientes\": {
+        \"cliente_ip\": \"1.1.1.1\",
+        \"download\": \"102400 Kbps\",
+        \"upload\": \"3072 Kbps\",
+        \"estado\": \"activo\"
+    }
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/contracts"
+);
+
+const headers = {
+    "Content-Type": "application/xml",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1",
+        "download": "102400 Kbps",
+        "upload": "3072 Kbps",
+        "estado": "activo"
+    }
+};
+
+fetch(url, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;put(
+    'http://localhost/v1/contracts',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/xml',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ip' =&gt; '192.168.1.1',
+            'clientes' =&gt; [
+                'cliente_ip' =&gt; '1.1.1.1',
+                'download' =&gt; '102400 Kbps',
+                'upload' =&gt; '3072 Kbps',
+                'estado' =&gt; 'activo',
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/contracts'
+payload = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1",
+        "download": "102400 Kbps",
+        "upload": "3072 Kbps",
+        "estado": "activo"
+    }
+}
+headers = {
+  'Content-Type': 'application/xml',
+  'Accept': 'application/json'
+}
+
+response = requests.request('PUT', url, headers=headers, json=payload)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTv1-contracts">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL : &iexcl;Cola/s actualizada/s con &eacute;xito!&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no route to host):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Unable to establish socket session, No route to host&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no payload or missing params):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Undefined array key &#039;ip&#039;&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-PUTv1-contracts" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTv1-contracts"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTv1-contracts" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTv1-contracts" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTv1-contracts"></code></pre>
+</span>
+<form id="form-PUTv1-contracts" data-method="PUT"
+      data-path="v1/contracts"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTv1-contracts', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTv1-contracts"
+                    onclick="tryItOut('PUTv1-contracts');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTv1-contracts"
+                    onclick="cancelTryOut('PUTv1-contracts');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTv1-contracts" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>v1/contracts</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="PUTv1-contracts"
+               value="application/xml"
+               data-component="header">
+    <br>
+<p>Example: <code>application/xml</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="PUTv1-contracts"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="ip"                data-endpoint="PUTv1-contracts"
+               value="192.168.1.1"
+               data-component="body">
+    <br>
+<p>The server ip. Example: <code>192.168.1.1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>clientes</code></b>&nbsp;&nbsp;
+<small>object</small>&nbsp;
+ &nbsp;
+<br>
+<p>A list of objects that contains the clients params.</p>
+            </summary>
+                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>cliente_ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.cliente_ip"                data-endpoint="PUTv1-contracts"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>Client IP. Example: <code>1.1.1.1</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>download</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.download"                data-endpoint="PUTv1-contracts"
+               value="102400 Kbps"
+               data-component="body">
+    <br>
+<p>Client download speed. Example: <code>102400 Kbps</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>upload</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.upload"                data-endpoint="PUTv1-contracts"
+               value="3072 Kbps"
+               data-component="body">
+    <br>
+<p>Client upload speed. Example: <code>3072 Kbps</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>estado</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.estado"                data-endpoint="PUTv1-contracts"
+               value="activo"
+               data-component="body">
+    <br>
+<p>Client status account. Example: <code>activo</code></p>
+                    </div>
+                                    </details>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-DELETEv1-contracts">Delete Contracts</h2>
+
+<p>
+</p>
+
+<p>This endpoint allows you to delete a 'contract or contracts' in a Mikrotik server.</p>
+<aside class="notice">With this you are able to delete the "contracts" (queues with address-list). BE CAREFUL 👀 . </aside>
+
+<span id="example-requests-DELETEv1-contracts">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request DELETE \
+    "http://localhost/v1/contracts" \
+    --header "Content-Type: application/xml" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ip\": \"192.168.1.1\",
+    \"clientes\": {
+        \"cliente_ip\": \"1.1.1.1\",
+        \"download\": \"102400 Kbps\",
+        \"upload\": \"3072 Kbps\",
+        \"estado\": \"activo\"
+    }
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/contracts"
+);
+
+const headers = {
+    "Content-Type": "application/xml",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1",
+        "download": "102400 Kbps",
+        "upload": "3072 Kbps",
+        "estado": "activo"
+    }
+};
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;delete(
+    'http://localhost/v1/contracts',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/xml',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ip' =&gt; '192.168.1.1',
+            'clientes' =&gt; [
+                'cliente_ip' =&gt; '1.1.1.1',
+                'download' =&gt; '102400 Kbps',
+                'upload' =&gt; '3072 Kbps',
+                'estado' =&gt; 'activo',
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/contracts'
+payload = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1",
+        "download": "102400 Kbps",
+        "upload": "3072 Kbps",
+        "estado": "activo"
+    }
+}
+headers = {
+  'Content-Type': 'application/xml',
+  'Accept': 'application/json'
+}
+
+response = requests.request('DELETE', url, headers=headers, json=payload)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-DELETEv1-contracts">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL : &iexcl;Cola/s eliminada/s con &eacute;xito!&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no route to host):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Unable to establish socket session, No route to host&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no payload or missing params):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Undefined array key &#039;ip&#039;&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-DELETEv1-contracts" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEv1-contracts"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEv1-contracts" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-DELETEv1-contracts" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEv1-contracts"></code></pre>
+</span>
+<form id="form-DELETEv1-contracts" data-method="DELETE"
+      data-path="v1/contracts"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEv1-contracts', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEv1-contracts"
+                    onclick="tryItOut('DELETEv1-contracts');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEv1-contracts"
+                    onclick="cancelTryOut('DELETEv1-contracts');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEv1-contracts" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>v1/contracts</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="DELETEv1-contracts"
+               value="application/xml"
+               data-component="header">
+    <br>
+<p>Example: <code>application/xml</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="DELETEv1-contracts"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="ip"                data-endpoint="DELETEv1-contracts"
+               value="192.168.1.1"
+               data-component="body">
+    <br>
+<p>The server ip. Example: <code>192.168.1.1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>clientes</code></b>&nbsp;&nbsp;
+<small>object</small>&nbsp;
+ &nbsp;
+<br>
+<p>A list of objects that contains the clients params.</p>
+            </summary>
+                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>cliente_ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.cliente_ip"                data-endpoint="DELETEv1-contracts"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>Client IP. Example: <code>1.1.1.1</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>download</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.download"                data-endpoint="DELETEv1-contracts"
+               value="102400 Kbps"
+               data-component="body">
+    <br>
+<p>Client download speed. Example: <code>102400 Kbps</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>upload</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.upload"                data-endpoint="DELETEv1-contracts"
+               value="3072 Kbps"
+               data-component="body">
+    <br>
+<p>Client upload speed. Example: <code>3072 Kbps</code></p>
+                    </div>
+                                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>estado</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.estado"                data-endpoint="DELETEv1-contracts"
+               value="activo"
+               data-component="body">
+    <br>
+<p>Client status account. Example: <code>activo</code></p>
+                    </div>
+                                    </details>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-PATCHv1-connection-enableConnection">Enable Connections</h2>
+
+<p>
+</p>
+
+<p>This endpoint gets the ip/s in the address-list &quot;clientes_cortados&quot;, then it puts it/them back in &quot;clientes_activos&quot; address-list</p>
+<aside class="notice">With this you are able to allow the "contracts" to have a valid connection to the internet </aside>
+
+<span id="example-requests-PATCHv1-connection-enableConnection">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PATCH \
+    "http://localhost/v1/connection/enableConnection" \
+    --header "Content-Type: application/xml" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ip\": \"192.168.1.1\",
+    \"clientes\": {
+        \"cliente_ip\": \"1.1.1.1\"
+    }
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/connection/enableConnection"
+);
+
+const headers = {
+    "Content-Type": "application/xml",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1"
+    }
+};
+
+fetch(url, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;patch(
+    'http://localhost/v1/connection/enableConnection',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/xml',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ip' =&gt; '192.168.1.1',
+            'clientes' =&gt; [
+                'cliente_ip' =&gt; '1.1.1.1',
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/connection/enableConnection'
+payload = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1"
+    }
+}
+headers = {
+  'Content-Type': 'application/xml',
+  'Accept': 'application/json'
+}
+
+response = requests.request('PATCH', url, headers=headers, json=payload)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-PATCHv1-connection-enableConnection">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: true,
+    &quot;message&quot;: &quot;BABEL: Operaci&oacute;n realizada con &eacute;xito. Cliente/s habilitado/s&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no route to host):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Unable to establish socket session, No route to host&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no payload or missing params):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Undefined array key &#039;ip&#039;&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-PATCHv1-connection-enableConnection" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PATCHv1-connection-enableConnection"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PATCHv1-connection-enableConnection" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PATCHv1-connection-enableConnection" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PATCHv1-connection-enableConnection"></code></pre>
+</span>
+<form id="form-PATCHv1-connection-enableConnection" data-method="PATCH"
+      data-path="v1/connection/enableConnection"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PATCHv1-connection-enableConnection', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PATCHv1-connection-enableConnection"
+                    onclick="tryItOut('PATCHv1-connection-enableConnection');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PATCHv1-connection-enableConnection"
+                    onclick="cancelTryOut('PATCHv1-connection-enableConnection');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PATCHv1-connection-enableConnection" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-purple">PATCH</small>
+            <b><code>v1/connection/enableConnection</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="PATCHv1-connection-enableConnection"
+               value="application/xml"
+               data-component="header">
+    <br>
+<p>Example: <code>application/xml</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="PATCHv1-connection-enableConnection"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="ip"                data-endpoint="PATCHv1-connection-enableConnection"
+               value="192.168.1.1"
+               data-component="body">
+    <br>
+<p>The server ip. Example: <code>192.168.1.1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>clientes</code></b>&nbsp;&nbsp;
+<small>object</small>&nbsp;
+ &nbsp;
+<br>
+<p>A list of objects that contains the clients params.</p>
+            </summary>
+                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>cliente_ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.cliente_ip"                data-endpoint="PATCHv1-connection-enableConnection"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>Client IP. Example: <code>1.1.1.1</code></p>
+                    </div>
+                                    </details>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-PATCHv1-connection-disableConnection">Disable Connections</h2>
+
+<p>
+</p>
+
+<p>This endpoint gets the ip/s in the address-list &quot;clientes_activos&quot;, then it puts them in the &quot;clientes_cortados&quot; address-list</p>
+<aside class="notice">With this you are able to restrict the "contracts" to have a valid connection to the internet 😈</aside>
+
+<span id="example-requests-PATCHv1-connection-disableConnection">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PATCH \
+    "http://localhost/v1/connection/disableConnection" \
+    --header "Content-Type: application/xml" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ip\": \"192.168.1.1\",
+    \"clientes\": {
+        \"cliente_ip\": \"1.1.1.1\"
+    }
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/connection/disableConnection"
+);
+
+const headers = {
+    "Content-Type": "application/xml",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1"
+    }
+};
+
+fetch(url, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;patch(
+    'http://localhost/v1/connection/disableConnection',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/xml',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ip' =&gt; '192.168.1.1',
+            'clientes' =&gt; [
+                'cliente_ip' =&gt; '1.1.1.1',
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/connection/disableConnection'
+payload = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1"
+    }
+}
+headers = {
+  'Content-Type': 'application/xml',
+  'Accept': 'application/json'
+}
+
+response = requests.request('PATCH', url, headers=headers, json=payload)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-PATCHv1-connection-disableConnection">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: true,
+    &quot;message&quot;: &quot;BABEL: Operaci&oacute;n realizada con &eacute;xito. Cliente/s deshabilitado/s&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no route to host):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Unable to establish socket session, No route to host&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no payload or missing params):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Undefined array key &#039;ip&#039;&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-PATCHv1-connection-disableConnection" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PATCHv1-connection-disableConnection"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PATCHv1-connection-disableConnection" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PATCHv1-connection-disableConnection" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PATCHv1-connection-disableConnection"></code></pre>
+</span>
+<form id="form-PATCHv1-connection-disableConnection" data-method="PATCH"
+      data-path="v1/connection/disableConnection"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PATCHv1-connection-disableConnection', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PATCHv1-connection-disableConnection"
+                    onclick="tryItOut('PATCHv1-connection-disableConnection');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PATCHv1-connection-disableConnection"
+                    onclick="cancelTryOut('PATCHv1-connection-disableConnection');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PATCHv1-connection-disableConnection" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-purple">PATCH</small>
+            <b><code>v1/connection/disableConnection</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="PATCHv1-connection-disableConnection"
+               value="application/xml"
+               data-component="header">
+    <br>
+<p>Example: <code>application/xml</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="PATCHv1-connection-disableConnection"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="ip"                data-endpoint="PATCHv1-connection-disableConnection"
+               value="192.168.1.1"
+               data-component="body">
+    <br>
+<p>The server ip. Example: <code>192.168.1.1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>clientes</code></b>&nbsp;&nbsp;
+<small>object</small>&nbsp;
+ &nbsp;
+<br>
+<p>A list of objects that contains the clients params.</p>
+            </summary>
+                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>cliente_ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.cliente_ip"                data-endpoint="PATCHv1-connection-disableConnection"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>Client IP. Example: <code>1.1.1.1</code></p>
+                    </div>
+                                    </details>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-GETv1-router-getDataMikrotik">Get Data Mikrotik</h2>
+
+<p>
+</p>
+
+<p>This endpoint gets info from the router (clients connected, active clients, clipped, etc)</p>
+<aside class="notice">VERY USEFUL endpoint</aside>
+
+<span id="example-requests-GETv1-router-getDataMikrotik">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/v1/router/getDataMikrotik" \
+    --header "Content-Type: application/xml" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ip\": \"192.168.1.1\",
+    \"clientes\": {
+        \"cliente_ip\": \"1.1.1.1\"
+    }
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/router/getDataMikrotik"
+);
+
+const headers = {
+    "Content-Type": "application/xml",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1"
+    }
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'http://localhost/v1/router/getDataMikrotik',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/xml',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ip' =&gt; '192.168.1.1',
+            'clientes' =&gt; [
+                'cliente_ip' =&gt; '1.1.1.1',
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/router/getDataMikrotik'
+payload = {
+    "ip": "192.168.1.1",
+    "clientes": {
+        "cliente_ip": "1.1.1.1"
+    }
+}
+headers = {
+  'Content-Type': 'application/xml',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers, json=payload)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETv1-router-getDataMikrotik">
+            <blockquote>
+            <p>Example response (200, succes):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;name&quot;: &quot;Mikrotik-Cristian&quot;,
+    &quot;server_ip&quot;: &quot;192.168.2.184&quot;,
+    &quot;queues&quot;: {
+        &quot;total_queues&quot;: 1,
+        &quot;queues_details&quot;: [
+            {
+                &quot;name&quot;: &quot;1.1.1.1&quot;,
+                &quot;target&quot;: &quot;1.1.1.1&quot;,
+                &quot;download&quot;: &quot;102400 Kbps&quot;,
+                &quot;upload&quot;: &quot;3072 Kbps&quot;
+            }
+        ]
+    },
+    &quot;address_list&quot;: {
+        &quot;total_address_list&quot;: 1,
+        &quot;address_list_details&quot;: [
+            {
+                &quot;client_ip&quot;: &quot;1.1.1.1&quot;,
+                &quot;address_list&quot;: &quot;clientes_activos&quot;
+            }
+        ],
+        &quot;other_lists&quot;: 0
+    },
+    &quot;firewall&quot;: {
+        &quot;clientes_activos&quot;: 1,
+        &quot;clientes_cortados&quot;: 0
+    },
+    &quot;diferencias&quot;: {
+        &quot;total_diferencias&quot;: 0,
+        &quot;queues_sin_address&quot;: 0,
+        &quot;addresses_sin_queue&quot;: 0,
+        &quot;diferencias_detail&quot;: 0
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no route to host):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Unable to establish socket session, No route to host&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, no payload or missing params):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;BABEL: Undefined array key &#039;ip&#039;&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETv1-router-getDataMikrotik" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETv1-router-getDataMikrotik"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETv1-router-getDataMikrotik" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETv1-router-getDataMikrotik" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETv1-router-getDataMikrotik"></code></pre>
+</span>
+<form id="form-GETv1-router-getDataMikrotik" data-method="GET"
+      data-path="v1/router/getDataMikrotik"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETv1-router-getDataMikrotik', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETv1-router-getDataMikrotik"
+                    onclick="tryItOut('GETv1-router-getDataMikrotik');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETv1-router-getDataMikrotik"
+                    onclick="cancelTryOut('GETv1-router-getDataMikrotik');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETv1-router-getDataMikrotik" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>v1/router/getDataMikrotik</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETv1-router-getDataMikrotik"
+               value="application/xml"
+               data-component="header">
+    <br>
+<p>Example: <code>application/xml</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETv1-router-getDataMikrotik"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="ip"                data-endpoint="GETv1-router-getDataMikrotik"
+               value="192.168.1.1"
+               data-component="body">
+    <br>
+<p>The server ip. Example: <code>192.168.1.1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>clientes</code></b>&nbsp;&nbsp;
+<small>object</small>&nbsp;
+ &nbsp;
+<br>
+<p>A list of objects that contains the clients params.</p>
+            </summary>
+                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>cliente_ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="clientes.cliente_ip"                data-endpoint="GETv1-router-getDataMikrotik"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>Client IP. Example: <code>1.1.1.1</code></p>
+                    </div>
+                                    </details>
+        </div>
+        </form>
+
+            
+
+        
+    </div>
+    <div class="dark-box">
+                    <div class="lang-selector">
+                                                        <button type="button" class="lang-button" data-language-name="bash">bash</button>
+                                                        <button type="button" class="lang-button" data-language-name="javascript">javascript</button>
+                                                        <button type="button" class="lang-button" data-language-name="php">php</button>
+                                                        <button type="button" class="lang-button" data-language-name="python">python</button>
+                            </div>
+            </div>
+</div>
+</body>
+</html>

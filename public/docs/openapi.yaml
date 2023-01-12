@@ -1,0 +1,748 @@
+openapi: 3.0.3
+info:
+  title: 'BABEL v1'
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /v1/test:
+    get:
+      summary: 'Test RouterOS'
+      operationId: testRouterOS
+      description: "This endpoint allows you to test the Mikrotik server connection with this API.\nIt's a really useful endpoint and a start point to know if there is any problem.\n<aside class=\"notice\">I recommend you to use first, to debug any futher inconvenience. 😁</aside>"
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/xml
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: Mikrotik-Cristian
+                properties:
+                  name:
+                    type: string
+                    example: Mikrotik-Cristian
+        500:
+          description: 'no payload or body params'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: "BABEL: Undefined array key 'ip'"
+                properties:
+                  message:
+                    type: string
+                    example: "BABEL: Undefined array key 'ip'"
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+              properties:
+                ip:
+                  type: string
+                  description: 'The server ip.'
+                  example: 192.168.1.1
+              required:
+                - ip
+      security: []
+  /v1/contracts:
+    get:
+      summary: 'Get Contracts'
+      operationId: getContracts
+      description: "This endpoint allows you to get contracts information from a Mikrotik server.\n<aside class=\"notice\">This will be useful to get the clients that are in an specific router. </aside>"
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/xml
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ip_server: 192.168.2.184
+                  clientes_activos: 1
+                  clientes_details:
+                    -
+                      cliente_ip: 1.1.1.1
+                      download: '102400 Kbps'
+                      upload: '3072 Kbps'
+                      estado: activo
+                properties:
+                  ip_server:
+                    type: string
+                    example: 192.168.2.184
+                  clientes_activos:
+                    type: integer
+                    example: 1
+                  clientes_details:
+                    type: array
+                    example:
+                      -
+                        cliente_ip: 1.1.1.1
+                        download: '102400 Kbps'
+                        upload: '3072 Kbps'
+                        estado: activo
+                    items:
+                      type: object
+                      properties:
+                        cliente_ip:
+                          type: string
+                          example: 1.1.1.1
+                        download:
+                          type: string
+                          example: '102400 Kbps'
+                        upload:
+                          type: string
+                          example: '3072 Kbps'
+                        estado:
+                          type: string
+                          example: activo
+        500:
+          description: 'no payload or body params'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: "BABEL: Undefined array key 'ip'"
+                properties:
+                  message:
+                    type: string
+                    example: "BABEL: Undefined array key 'ip'"
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+              properties:
+                ip:
+                  type: string
+                  description: 'The server ip.'
+                  example: 192.168.1.1
+              required:
+                - ip
+      security: []
+    post:
+      summary: 'Create Contracts'
+      operationId: createContracts
+      description: "This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to create \"contracts\" (queues with address-list). </aside>"
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/xml
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'BABEL : ¡Cola/s creada/s con éxito!'
+                properties:
+                  message:
+                    type: string
+                    example: 'BABEL : ¡Cola/s creada/s con éxito!'
+        500:
+          description: 'no payload or missing params'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: "BABEL: Undefined array key 'ip'"
+                properties:
+                  message:
+                    type: string
+                    example: "BABEL: Undefined array key 'ip'"
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+              properties:
+                ip:
+                  type: string
+                  description: 'The server ip.'
+                  example: 192.168.1.1
+                clientes:
+                  type: object
+                  description: 'A list of objects that contains the clients params.'
+                  example: []
+                  properties:
+                    cliente_ip:
+                      type: string
+                      description: 'Client IP.'
+                      example: 1.1.1.1
+                    download:
+                      type: string
+                      description: 'Client download speed.'
+                      example: '102400 Kbps'
+                    upload:
+                      type: string
+                      description: 'Client upload speed.'
+                      example: '3072 Kbps'
+                    estado:
+                      type: string
+                      description: 'Client status account.'
+                      example: activo
+              required:
+                - ip
+                - clientes
+      security: []
+    put:
+      summary: 'Update Contracts'
+      operationId: updateContracts
+      description: "This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.\n<aside class=\"notice\">With this you are able to update the \"contracts\" (queues with address-list). </aside>"
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/xml
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'BABEL : ¡Cola/s actualizada/s con éxito!'
+                properties:
+                  message:
+                    type: string
+                    example: 'BABEL : ¡Cola/s actualizada/s con éxito!'
+        500:
+          description: 'no payload or missing params'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: "BABEL: Undefined array key 'ip'"
+                properties:
+                  message:
+                    type: string
+                    example: "BABEL: Undefined array key 'ip'"
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+              properties:
+                ip:
+                  type: string
+                  description: 'The server ip.'
+                  example: 192.168.1.1
+                clientes:
+                  type: object
+                  description: 'A list of objects that contains the clients params.'
+                  example: []
+                  properties:
+                    cliente_ip:
+                      type: string
+                      description: 'Client IP.'
+                      example: 1.1.1.1
+                    download:
+                      type: string
+                      description: 'Client download speed.'
+                      example: '102400 Kbps'
+                    upload:
+                      type: string
+                      description: 'Client upload speed.'
+                      example: '3072 Kbps'
+                    estado:
+                      type: string
+                      description: 'Client status account.'
+                      example: activo
+              required:
+                - ip
+                - clientes
+      security: []
+    delete:
+      summary: 'Delete Contracts'
+      operationId: deleteContracts
+      description: "This endpoint allows you to delete a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to delete the \"contracts\" (queues with address-list). BE CAREFUL 👀 . </aside>"
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/xml
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'BABEL : ¡Cola/s eliminada/s con éxito!'
+                properties:
+                  message:
+                    type: string
+                    example: 'BABEL : ¡Cola/s eliminada/s con éxito!'
+        500:
+          description: 'no payload or missing params'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: "BABEL: Undefined array key 'ip'"
+                properties:
+                  message:
+                    type: string
+                    example: "BABEL: Undefined array key 'ip'"
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+              properties:
+                ip:
+                  type: string
+                  description: 'The server ip.'
+                  example: 192.168.1.1
+                clientes:
+                  type: object
+                  description: 'A list of objects that contains the clients params.'
+                  example: []
+                  properties:
+                    cliente_ip:
+                      type: string
+                      description: 'Client IP.'
+                      example: 1.1.1.1
+                    download:
+                      type: string
+                      description: 'Client download speed.'
+                      example: '102400 Kbps'
+                    upload:
+                      type: string
+                      description: 'Client upload speed.'
+                      example: '3072 Kbps'
+                    estado:
+                      type: string
+                      description: 'Client status account.'
+                      example: activo
+              required:
+                - ip
+                - clientes
+      security: []
+  /v1/connection/enableConnection:
+    patch:
+      summary: 'Enable Connections'
+      operationId: enableConnections
+      description: "This endpoint gets the ip/s in the address-list \"clientes_cortados\", then it puts it/them back in \"clientes_activos\" address-list\n<aside class=\"notice\">With this you are able to allow the \"contracts\" to have a valid connection to the internet </aside>"
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/xml
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'BABEL: Operación realizada con éxito. Cliente/s habilitado/s'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'BABEL: Operación realizada con éxito. Cliente/s habilitado/s'
+        500:
+          description: 'no payload or missing params'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: "BABEL: Undefined array key 'ip'"
+                properties:
+                  message:
+                    type: string
+                    example: "BABEL: Undefined array key 'ip'"
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+              properties:
+                ip:
+                  type: string
+                  description: 'The server ip.'
+                  example: 192.168.1.1
+                clientes:
+                  type: object
+                  description: 'A list of objects that contains the clients params.'
+                  example: []
+                  properties:
+                    cliente_ip:
+                      type: string
+                      description: 'Client IP.'
+                      example: 1.1.1.1
+              required:
+                - ip
+                - clientes
+      security: []
+  /v1/connection/disableConnection:
+    patch:
+      summary: 'Disable Connections'
+      operationId: disableConnections
+      description: "This endpoint gets the ip/s in the address-list \"clientes_activos\", then it puts them in the \"clientes_cortados\" address-list\n<aside class=\"notice\">With this you are able to restrict the \"contracts\" to have a valid connection to the internet 😈</aside>"
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/xml
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'BABEL: Operación realizada con éxito. Cliente/s deshabilitado/s'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'BABEL: Operación realizada con éxito. Cliente/s deshabilitado/s'
+        500:
+          description: 'no payload or missing params'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: "BABEL: Undefined array key 'ip'"
+                properties:
+                  message:
+                    type: string
+                    example: "BABEL: Undefined array key 'ip'"
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+              properties:
+                ip:
+                  type: string
+                  description: 'The server ip.'
+                  example: 192.168.1.1
+                clientes:
+                  type: object
+                  description: 'A list of objects that contains the clients params.'
+                  example: []
+                  properties:
+                    cliente_ip:
+                      type: string
+                      description: 'Client IP.'
+                      example: 1.1.1.1
+              required:
+                - ip
+                - clientes
+      security: []
+  /v1/router/getDataMikrotik:
+    get:
+      summary: 'Get Data Mikrotik'
+      operationId: getDataMikrotik
+      description: "This endpoint gets info from the router (clients connected, active clients, clipped, etc)\n<aside class=\"notice\">VERY USEFUL endpoint</aside>"
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/xml
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: succes
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  name: Mikrotik-Cristian
+                  server_ip: 192.168.2.184
+                  queues:
+                    total_queues: 1
+                    queues_details:
+                      -
+                        name: 1.1.1.1
+                        target: 1.1.1.1
+                        download: '102400 Kbps'
+                        upload: '3072 Kbps'
+                  address_list:
+                    total_address_list: 1
+                    address_list_details:
+                      -
+                        client_ip: 1.1.1.1
+                        address_list: clientes_activos
+                    other_lists: 0
+                  firewall:
+                    clientes_activos: 1
+                    clientes_cortados: 0
+                  diferencias:
+                    total_diferencias: 0
+                    queues_sin_address: 0
+                    addresses_sin_queue: 0
+                    diferencias_detail: 0
+                properties:
+                  name:
+                    type: string
+                    example: Mikrotik-Cristian
+                  server_ip:
+                    type: string
+                    example: 192.168.2.184
+                  queues:
+                    type: object
+                    properties:
+                      total_queues:
+                        type: integer
+                        example: 1
+                      queues_details:
+                        type: array
+                        example:
+                          -
+                            name: 1.1.1.1
+                            target: 1.1.1.1
+                            download: '102400 Kbps'
+                            upload: '3072 Kbps'
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: 1.1.1.1
+                            target:
+                              type: string
+                              example: 1.1.1.1
+                            download:
+                              type: string
+                              example: '102400 Kbps'
+                            upload:
+                              type: string
+                              example: '3072 Kbps'
+                  address_list:
+                    type: object
+                    properties:
+                      total_address_list:
+                        type: integer
+                        example: 1
+                      address_list_details:
+                        type: array
+                        example:
+                          -
+                            client_ip: 1.1.1.1
+                            address_list: clientes_activos
+                        items:
+                          type: object
+                          properties:
+                            client_ip:
+                              type: string
+                              example: 1.1.1.1
+                            address_list:
+                              type: string
+                              example: clientes_activos
+                      other_lists:
+                        type: integer
+                        example: 0
+                  firewall:
+                    type: object
+                    properties:
+                      clientes_activos:
+                        type: integer
+                        example: 1
+                      clientes_cortados:
+                        type: integer
+                        example: 0
+                  diferencias:
+                    type: object
+                    properties:
+                      total_diferencias:
+                        type: integer
+                        example: 0
+                      queues_sin_address:
+                        type: integer
+                        example: 0
+                      addresses_sin_queue:
+                        type: integer
+                        example: 0
+                      diferencias_detail:
+                        type: integer
+                        example: 0
+        500:
+          description: 'no payload or missing params'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: "BABEL: Undefined array key 'ip'"
+                properties:
+                  message:
+                    type: string
+                    example: "BABEL: Undefined array key 'ip'"
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+              properties:
+                ip:
+                  type: string
+                  description: 'The server ip.'
+                  example: 192.168.1.1
+                clientes:
+                  type: object
+                  description: 'A list of objects that contains the clients params.'
+                  example: []
+                  properties:
+                    cliente_ip:
+                      type: string
+                      description: 'Client IP.'
+                      example: 1.1.1.1
+              required:
+                - ip
+                - clientes
+      security: []
+tags:
+  -
+    name: Endpoints
+    description: ''
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: ''
+security:
+  -
+    default: []

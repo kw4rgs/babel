@@ -1,0 +1,670 @@
+name: Endpoints
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: v1/test
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Test RouterOS'
+      description: |-
+        This endpoint allows you to test the Mikrotik server connection with this API.
+        It's a really useful endpoint and a start point to know if there is any problem.
+        <aside class="notice">I recommend you to use first, to debug any futher inconvenience. 😁</aside>
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/xml
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ip:
+        name: ip
+        description: 'The server ip.'
+        required: true
+        example: 192.168.1.1
+        type: string
+        custom: []
+    cleanBodyParameters:
+      ip: 192.168.1.1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"name" : "Mikrotik-Cristian"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Unable to establish socket session, No route to host"}'
+        headers: []
+        description: 'no route to host'
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Undefined array key ''ip''"}'
+        headers: []
+        description: 'no payload or body params'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: v1/contracts
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Contracts'
+      description: |-
+        This endpoint allows you to get contracts information from a Mikrotik server.
+        <aside class="notice">This will be useful to get the clients that are in an specific router. </aside>
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/xml
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ip:
+        name: ip
+        description: 'The server ip.'
+        required: true
+        example: 192.168.1.1
+        type: string
+        custom: []
+    cleanBodyParameters:
+      ip: 192.168.1.1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"ip_server": "192.168.2.184", "clientes_activos": 1, "clientes_details": [{"cliente_ip": "1.1.1.1","download": "102400 Kbps", "upload": "3072 Kbps", "estado": "activo"}]}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Unable to establish socket session, No route to host"}'
+        headers: []
+        description: 'no route to host'
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Undefined array key ''ip''"}'
+        headers: []
+        description: 'no payload or body params'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: v1/contracts
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create Contracts'
+      description: |-
+        This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.
+        <aside class="notice">With this you are able to create "contracts" (queues with address-list). </aside>
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/xml
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ip:
+        name: ip
+        description: 'The server ip.'
+        required: true
+        example: 192.168.1.1
+        type: string
+        custom: []
+      clientes:
+        name: clientes
+        description: 'A list of objects that contains the clients params.'
+        required: true
+        example: []
+        type: object
+        custom: []
+      clientes.cliente_ip:
+        name: clientes.cliente_ip
+        description: 'Client IP.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+      clientes.download:
+        name: clientes.download
+        description: 'Client download speed.'
+        required: true
+        example: '102400 Kbps'
+        type: string
+        custom: []
+      clientes.upload:
+        name: clientes.upload
+        description: 'Client upload speed.'
+        required: true
+        example: '3072 Kbps'
+        type: string
+        custom: []
+      clientes.estado:
+        name: clientes.estado
+        description: 'Client status account.'
+        required: true
+        example: activo
+        type: string
+        custom: []
+    cleanBodyParameters:
+      ip: 192.168.1.1
+      clientes:
+        cliente_ip: 1.1.1.1
+        download: '102400 Kbps'
+        upload: '3072 Kbps'
+        estado: activo
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message": "BABEL : ¡Cola/s creada/s con éxito!"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Unable to establish socket session, No route to host"}'
+        headers: []
+        description: 'no route to host'
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Undefined array key ''ip''"}'
+        headers: []
+        description: 'no payload or missing params'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: v1/contracts
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Contracts'
+      description: |-
+        This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.
+        <aside class="notice">With this you are able to update the "contracts" (queues with address-list). </aside>
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/xml
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ip:
+        name: ip
+        description: 'The server ip.'
+        required: true
+        example: 192.168.1.1
+        type: string
+        custom: []
+      clientes:
+        name: clientes
+        description: 'A list of objects that contains the clients params.'
+        required: true
+        example: []
+        type: object
+        custom: []
+      clientes.cliente_ip:
+        name: clientes.cliente_ip
+        description: 'Client IP.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+      clientes.download:
+        name: clientes.download
+        description: 'Client download speed.'
+        required: true
+        example: '102400 Kbps'
+        type: string
+        custom: []
+      clientes.upload:
+        name: clientes.upload
+        description: 'Client upload speed.'
+        required: true
+        example: '3072 Kbps'
+        type: string
+        custom: []
+      clientes.estado:
+        name: clientes.estado
+        description: 'Client status account.'
+        required: true
+        example: activo
+        type: string
+        custom: []
+    cleanBodyParameters:
+      ip: 192.168.1.1
+      clientes:
+        cliente_ip: 1.1.1.1
+        download: '102400 Kbps'
+        upload: '3072 Kbps'
+        estado: activo
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message": "BABEL : ¡Cola/s actualizada/s con éxito!"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Unable to establish socket session, No route to host"}'
+        headers: []
+        description: 'no route to host'
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Undefined array key ''ip''"}'
+        headers: []
+        description: 'no payload or missing params'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: v1/contracts
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Contracts'
+      description: |-
+        This endpoint allows you to delete a 'contract or contracts' in a Mikrotik server.
+        <aside class="notice">With this you are able to delete the "contracts" (queues with address-list). BE CAREFUL 👀 . </aside>
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/xml
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ip:
+        name: ip
+        description: 'The server ip.'
+        required: true
+        example: 192.168.1.1
+        type: string
+        custom: []
+      clientes:
+        name: clientes
+        description: 'A list of objects that contains the clients params.'
+        required: true
+        example: []
+        type: object
+        custom: []
+      clientes.cliente_ip:
+        name: clientes.cliente_ip
+        description: 'Client IP.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+      clientes.download:
+        name: clientes.download
+        description: 'Client download speed.'
+        required: true
+        example: '102400 Kbps'
+        type: string
+        custom: []
+      clientes.upload:
+        name: clientes.upload
+        description: 'Client upload speed.'
+        required: true
+        example: '3072 Kbps'
+        type: string
+        custom: []
+      clientes.estado:
+        name: clientes.estado
+        description: 'Client status account.'
+        required: true
+        example: activo
+        type: string
+        custom: []
+    cleanBodyParameters:
+      ip: 192.168.1.1
+      clientes:
+        cliente_ip: 1.1.1.1
+        download: '102400 Kbps'
+        upload: '3072 Kbps'
+        estado: activo
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message": "BABEL : ¡Cola/s eliminada/s con éxito!"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Unable to establish socket session, No route to host"}'
+        headers: []
+        description: 'no route to host'
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Undefined array key ''ip''"}'
+        headers: []
+        description: 'no payload or missing params'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PATCH
+    uri: v1/connection/enableConnection
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Enable Connections'
+      description: |-
+        This endpoint gets the ip/s in the address-list "clientes_cortados", then it puts it/them back in "clientes_activos" address-list
+        <aside class="notice">With this you are able to allow the "contracts" to have a valid connection to the internet </aside>
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/xml
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ip:
+        name: ip
+        description: 'The server ip.'
+        required: true
+        example: 192.168.1.1
+        type: string
+        custom: []
+      clientes:
+        name: clientes
+        description: 'A list of objects that contains the clients params.'
+        required: true
+        example: []
+        type: object
+        custom: []
+      clientes.cliente_ip:
+        name: clientes.cliente_ip
+        description: 'Client IP.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+    cleanBodyParameters:
+      ip: 192.168.1.1
+      clientes:
+        cliente_ip: 1.1.1.1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{ "status": true, "message": "BABEL: Operación realizada con éxito. Cliente/s habilitado/s"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Unable to establish socket session, No route to host"}'
+        headers: []
+        description: 'no route to host'
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Undefined array key ''ip''"}'
+        headers: []
+        description: 'no payload or missing params'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PATCH
+    uri: v1/connection/disableConnection
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Disable Connections'
+      description: |-
+        This endpoint gets the ip/s in the address-list "clientes_activos", then it puts them in the "clientes_cortados" address-list
+        <aside class="notice">With this you are able to restrict the "contracts" to have a valid connection to the internet 😈</aside>
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/xml
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ip:
+        name: ip
+        description: 'The server ip.'
+        required: true
+        example: 192.168.1.1
+        type: string
+        custom: []
+      clientes:
+        name: clientes
+        description: 'A list of objects that contains the clients params.'
+        required: true
+        example: []
+        type: object
+        custom: []
+      clientes.cliente_ip:
+        name: clientes.cliente_ip
+        description: 'Client IP.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+    cleanBodyParameters:
+      ip: 192.168.1.1
+      clientes:
+        cliente_ip: 1.1.1.1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{ "status": true, "message": "BABEL: Operación realizada con éxito. Cliente/s deshabilitado/s"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Unable to establish socket session, No route to host"}'
+        headers: []
+        description: 'no route to host'
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Undefined array key ''ip''"}'
+        headers: []
+        description: 'no payload or missing params'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: v1/router/getDataMikrotik
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Data Mikrotik'
+      description: |-
+        This endpoint gets info from the router (clients connected, active clients, clipped, etc)
+        <aside class="notice">VERY USEFUL endpoint</aside>
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/xml
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ip:
+        name: ip
+        description: 'The server ip.'
+        required: true
+        example: 192.168.1.1
+        type: string
+        custom: []
+      clientes:
+        name: clientes
+        description: 'A list of objects that contains the clients params.'
+        required: true
+        example: []
+        type: object
+        custom: []
+      clientes.cliente_ip:
+        name: clientes.cliente_ip
+        description: 'Client IP.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+    cleanBodyParameters:
+      ip: 192.168.1.1
+      clientes:
+        cliente_ip: 1.1.1.1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "name": "Mikrotik-Cristian",
+             "server_ip": "192.168.2.184",
+             "queues": {
+                 "total_queues": 1,
+                 "queues_details": [
+                 {
+                     "name": "1.1.1.1",
+                     "target": "1.1.1.1",
+                     "download": "102400 Kbps",
+                     "upload": "3072 Kbps"
+                 }
+                 ]
+             },
+             "address_list": {
+                 "total_address_list": 1,
+                 "address_list_details": [
+                 {
+                     "client_ip": "1.1.1.1",
+                     "address_list": "clientes_activos"
+                 }
+                 ],
+                 "other_lists": 0
+             },
+             "firewall": {
+                 "clientes_activos": 1,
+                 "clientes_cortados": 0
+             },
+             "diferencias": {
+                 "total_diferencias": 0,
+                 "queues_sin_address": 0,
+                 "addresses_sin_queue": 0,
+                 "diferencias_detail": 0
+             }}
+        headers: []
+        description: succes
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Unable to establish socket session, No route to host"}'
+        headers: []
+        description: 'no route to host'
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Undefined array key ''ip''"}'
+        headers: []
+        description: 'no payload or missing params'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

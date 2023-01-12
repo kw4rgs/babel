@@ -14,17 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/* $router->get('/', function () use ($router) {
-    return $router->app->version();
-}); */
 
-$router->get('/', function () use ($router) {return "<h1>". env('APP_TITLE') ."<h1>";});
+$router->get('/v1/', function () use ($router) {return "<h1>". env('APP_TITLE') ."<h1>";});
 
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
 
 /* RUTAS CRUD PARA QUEUES */
-$router->post('/v1/contracts','MikrotikAPIController@createContract');
 $router->get('/v1/contracts', 'MikrotikAPIController@getContract');
+$router->post('/v1/contracts','MikrotikAPIController@createContract');
 $router->put('/v1/contracts','MikrotikAPIController@updateContract');
 $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 
@@ -37,16 +34,16 @@ $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 //$router->get('/v1/router/backup', 'MikrotikAPIController@backupRouter');
 //$router->post('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
 
-/* RUTAS PARA TRAER INFO */
-/* Trae toda la info de un mikrotik */
-$router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikrotik');
-/* Encuentra al cliente en los equipos mikrotik */
-$router->get('/v1/connection/findConn','MikrotikAPIController@findConn');
-
 /* RUTAS RESETEO DE ADDRESS-LIST */
-/* Restaura los cambios aplicados en la address-list , pasa todos los cortados a activos */
-$router->patch('/v1/connection/revertChanges','MikrotikAPIController@revertChanges');
 /* Habilitar conexión */
 $router->patch('/v1/connection/enableConnection','MikrotikAPIController@enableConnection');
 /* Deshabilitar conexión */
 $router->patch('/v1/connection/disableConnection','MikrotikAPIController@disableConnection');
+/* Restaura los cambios aplicados en la address-list , pasa todos los cortados a activos */
+//$router->patch('/v1/connection/revertChanges','MikrotikAPIController@revertChanges');
+
+/* RUTAS PARA TRAER INFO */
+/* Trae toda la info de un mikrotik */
+$router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikrotik');
+/* Encuentra al cliente en los equipos mikrotik */
+#$router->get('/v1/connection/findConn','MikrotikAPIController@findConn');

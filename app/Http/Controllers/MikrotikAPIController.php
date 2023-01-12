@@ -42,10 +42,22 @@ class MikrotikAPIController extends Controller
     // ------------------------ Test RouterOS ---------------------------------
     // ---------------------- HTTP Method = [GET] -----------------------------
     // --------------------------- /v1/test -----------------------------------
-    // 
-    /* Function: test the Mikrotik server connection.
-    /* Params: 
-    //      Server IP  */
+    
+    /** 
+    * Test RouterOS
+    *
+    * This endpoint allows you to test the Mikrotik server connection with this API.
+    * It's a really useful endpoint and a start point to know if there is any problem. 
+    * <aside class="notice">I recommend you to use first, to debug any futher inconvenience. 😁</aside>
+
+    * @header Content-Type application/xml
+
+    * @bodyParam ip string required The server ip. Example: 192.168.1.1
+
+    * @response status=200 scenario="success" {"name" : "Mikrotik-Cristian"}
+    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
+    * @response status=500 scenario="no payload or body params" {"message": "BABEL: Undefined array key 'ip'"}
+    */
 
     public function testRouterOS(Request $request)
     {
@@ -66,10 +78,21 @@ class MikrotikAPIController extends Controller
     // ------------------------ Get Contracts ---------------------------------
     // ---------------------- HTTP Method = [GET] -----------------------------
     // --------------------------- /contract ----------------------------------
-    // 
-    /* Function: Get contract info from a Mikrotik server.
-    /* Params: 
-    //      Server IP  */
+
+    /** 
+    * Get Contracts
+    *
+    * This endpoint allows you to get contracts information from a Mikrotik server.
+    * <aside class="notice">This will be useful to get the clients that are in an specific router. </aside>
+
+    * @header Content-Type application/xml
+
+    * @bodyParam ip string required The server ip. Example: 192.168.1.1
+
+    * @response status=200 scenario="success" {"ip_server": "192.168.2.184", "clientes_activos": 1, "clientes_details": [{"cliente_ip": "1.1.1.1","download": "102400 Kbps", "upload": "3072 Kbps", "estado": "activo"}]}
+    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
+    * @response status=500 scenario="no payload or body params" {"message": "BABEL: Undefined array key 'ip'"}
+    */
 
     public function getContract(Request $request)
     {
@@ -116,11 +139,26 @@ class MikrotikAPIController extends Controller
     // ------------------------ Create Contracts ------------------------------
     // ---------------------- HTTP Method = [POST] ----------------------------
     // --------------------------- /contract ----------------------------------
-    // 
-    /* Function: Create a 'contract' in a Mikrotik server.
-    /* Params: 
-    //      Server IP 
-    //      Contract/s IP */
+
+    /** 
+    * Create Contracts
+    *
+    * This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.
+    * <aside class="notice">With this you are able to create "contracts" (queues with address-list). </aside>
+
+    * @header Content-Type application/xml
+
+    * @bodyParam ip string required The server ip. Example: 192.168.1.1
+    * @bodyParam clientes object required A list of objects that contains the clients params. 
+    * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
+    * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
+    * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
+    * @bodyParam clientes.estado string required Client status account. Example: activo
+
+    * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s creada/s con éxito!"}
+    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
+    * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
+    */
 
     public function createContract(Request $request)
     {
@@ -182,15 +220,101 @@ class MikrotikAPIController extends Controller
             $response = $connection->query($query)->read();
         }
 
-    
+    // ------------------------ Update Contracts ------------------------------
+    // ---------------------- HTTP Method = [PUT] -----------------------------
+    // --------------------------- /contract ----------------------------------
+
+    /** 
+    * Update Contracts
+    *
+    * This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.
+    * <aside class="notice">With this you are able to update the "contracts" (queues with address-list). </aside>
+
+    * @header Content-Type application/xml
+
+    * @bodyParam ip string required The server ip. Example: 192.168.1.1
+    * @bodyParam clientes object required A list of objects that contains the clients params. 
+    * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
+    * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
+    * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
+    * @bodyParam clientes.estado string required Client status account. Example: activo
+
+    * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s actualizada/s con éxito!"}
+    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
+    * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
+    */
+
+    function updateContract(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $connection = $this->connection($data['ip']);
+            $colas = $this ->updateClientQueue($connection, $data['clientes']);
+            $return = response('¡BABEL: Cola/s actualizada/s con éxito!', 200);
+        } catch (Exception $e) {
+            $error = $e->getMessage(); 
+            $return = response('BABEL: ' . $error, 500);
+        }
+        return $return;
+    }
+
+        /* Function: Update the queue' params in the Mikrotik server. */
+        function updateClientQueue($connection, $clientes)
+        {
+            foreach ($clientes as $cliente) {   
+
+            $info = (new Query('/log/info'))->equal('message', 'BABEL: Se procede a actualizar la queue: ' . $cliente["cliente_ip"]);
+            $response = $connection->query($info)->read();
+            
+            /* Transform kbps to bytes */
+            $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+            $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+            /* List the queue */
+            $query = (new Query("/queue/simple/print"))
+                ->where('name', $cliente["cliente_ip"]);
+            $response = $connection->query($query)->read();
+            /* Add queue */
+            if (isset($response[0])) {
+                $query = (new Query("/queue/simple/set"))
+                    ->equal('.id', $response[0]['.id'])
+                    ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
+                    ->equal('parent', 'none');
+                $response = $connection->query($query)->read();
+                /* Only if contract is "active" adds it, otherwise it doesn't */
+                if ($cliente["estado"] === "activo") {
+                    $this->addAddressList($connection, $cliente["cliente_ip"]);
+                } else {
+                    $this->removeAddressList($connection, $cliente["cliente_ip"]);
+                    }
+            } else {
+                $this->createClientQueue($connection, $clientes);
+                }  
+            }
+        }
+
     // ------------------------ Delete Contracts ------------------------------
     // ---------------------- HTTP Method = [DEL] -----------------------------
     // --------------------------- /contract ----------------------------------
-    // 
-    /* Function: Delete the contract from a Mikrotik server.
-    /* Params: 
-    //      Server IP 
-    //      Contract/s IP */
+
+    /** 
+    * Delete Contracts
+    *
+    * This endpoint allows you to delete a 'contract or contracts' in a Mikrotik server.
+    * <aside class="notice">With this you are able to delete the "contracts" (queues with address-list). BE CAREFUL 👀 . </aside>
+
+    * @header Content-Type application/xml
+
+    * @bodyParam ip string required The server ip. Example: 192.168.1.1
+    * @bodyParam clientes object required A list of objects that contains the clients params. 
+    * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
+    * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
+    * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
+    * @bodyParam clientes.estado string required Client status account. Example: activo
+
+    * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s eliminada/s con éxito!"}
+    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
+    * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
+    */
 
     public function deleteContract(Request $request)
     {
@@ -259,62 +383,6 @@ class MikrotikAPIController extends Controller
             }
         }
 
-    // ------------------------ Update Contracts ------------------------------
-    // ---------------------- HTTP Method = [PUT] -----------------------------
-    // --------------------------- /contract ----------------------------------
-    // 
-    /* Function: Update upload/download params of a contract in a Mikrotik server.
-    /* Params: 
-    //      Server IP 
-    //      Contract/s IP */
-
-    function updateContract(Request $request)
-    {
-        try {
-            $data = $request->all();
-            $connection = $this->connection($data['ip']);
-            $colas = $this ->updateClientQueue($connection, $data['clientes']);
-            $return = response('¡Cola actualizada con éxito!', 200);
-        } catch (Exception $e) {
-            $error = $e->getMessage(); 
-            $return = response('BABEL: ' . $error, 500);
-        }
-        return $return;
-    }
-
-        /* Function: Update the queue' params in the Mikrotik server. */
-        function updateClientQueue($connection, $clientes)
-        {
-            foreach ($clientes as $cliente) {   
-
-            $info = (new Query('/log/info'))->equal('message', 'BABEL: Se procede a actualizar la queue: ' . $cliente["cliente_ip"]);
-            $response = $connection->query($info)->read();
-            
-            /* Transform kbps to bytes */
-            $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-            $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-            /* List the queue */
-            $query = (new Query("/queue/simple/print"))
-                ->where('name', $cliente["cliente_ip"]);
-            $response = $connection->query($query)->read();
-            /* Add queue */
-            if (isset($response[0])) {
-                $query = (new Query("/queue/simple/set"))
-                    ->equal('.id', $response[0]['.id'])
-                    ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
-                    ->equal('parent', 'none');
-                $response = $connection->query($query)->read();
-                /* Only if contract is "active" adds it, otherwise it doesn't */
-                if ($cliente["estado"] === "activo") {
-                    $this->addAddressList($connection, $cliente["cliente_ip"]);
-                } else {
-                    $this->removeAddressList($connection, $cliente["cliente_ip"]);
-                    }
-            } else {
-                $this->createClientQueue($connection, $clientes);
-                }  
-            }
-        }
 
     // ------------------------ Migrate Contracts ---------------------------
     // ---------------------- HTTP Method = [PUT] ---------------------------
@@ -562,7 +630,7 @@ class MikrotikAPIController extends Controller
 
     // ------------------------ Finding methods on Mikrotik ---------------------
     // ---------------------- HTTP Method = None --------------------------------
-    // --------------------------- /connection -----------------------------------------
+    // --------------------------- /connection ----------------------------------
     // 
     /* Function: Finds specific queues and address-list */
 
@@ -611,12 +679,25 @@ class MikrotikAPIController extends Controller
     }
     
     // ------------------------ Enable Connections on Mikrotik ---------------------
-    // ---------------------- HTTP Method = [POST] ---------------------------------
-    // --------------------------- /v1/connection ----------------------------------
-    // 
-    /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
-    /* puts them back in "clientes_activos" address-list 
-    /* Params: The Mikrotik's IP and clients IP */
+    // ---------------------- HTTP Method = [PATCH] ---------------------------------
+    // --------------------------- /v1/connection  ----------------------------------
+
+    /** 
+    * Enable Connections
+    *
+    * This endpoint gets the ip/s in the address-list "clientes_cortados", then it puts it/them back in "clientes_activos" address-list 
+    * <aside class="notice">With this you are able to allow the "contracts" to have a valid connection to the internet </aside>
+
+    * @header Content-Type application/xml
+
+    * @bodyParam ip string required The server ip. Example: 192.168.1.1
+    * @bodyParam clientes object required A list of objects that contains the clients params. 
+    * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
+
+    * @response status=200 scenario="success" { "status": true, "message": "BABEL: Operación realizada con éxito. Cliente/s habilitado/s"}
+    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
+    * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
+    */
 
     public function enableConnection (Request $request)
     {
@@ -687,12 +768,25 @@ class MikrotikAPIController extends Controller
         }
 
     // ------------------------ Disable Connections on Mikrotik ---------------------
-    // ---------------------- HTTP Method = [POST] ---------------------------------
-    // --------------------------- /v1/connection ----------------------------------
-    // 
-    /* Function: Enable connections on Mikrotik. Gets ips in the address-list "cortados", then it
-    /* puts them back in "clientes_activos" address-list 
-    /* Params: The Mikrotik's IP and clients IP */
+    // ---------------------- HTTP Method = [PATCH] ---------------------------------
+    // --------------------------- /v1/connection  ----------------------------------
+
+    /** 
+    * Disable Connections
+    *
+    * This endpoint gets the ip/s in the address-list "clientes_activos", then it puts them in the "clientes_cortados" address-list 
+    * <aside class="notice">With this you are able to restrict the "contracts" to have a valid connection to the internet 😈</aside>
+
+    * @header Content-Type application/xml
+
+    * @bodyParam ip string required The server ip. Example: 192.168.1.1
+    * @bodyParam clientes object required A list of objects that contains the clients params. 
+    * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
+
+    * @response status=200 scenario="success" { "status": true, "message": "BABEL: Operación realizada con éxito. Cliente/s deshabilitado/s"}
+    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
+    * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
+    */
 
     public function disableConnection (Request $request)
     {
@@ -765,9 +859,56 @@ class MikrotikAPIController extends Controller
     // ------------------------ Get Data Mikrotik ----------------------------------
     // ---------------------- HTTP Method = [GET] ---------------------------------
     // --------------------------- /router --------------------------------------
-    // 
-    /* Function: It gets info from the router (clients connected, active clients, clipped, etc)
-    /* Params: The Mikrotik's IP */
+
+    /** 
+    * Get Data Mikrotik
+    *
+    * This endpoint gets info from the router (clients connected, active clients, clipped, etc)
+    * <aside class="notice">VERY USEFUL endpoint</aside>
+
+    * @header Content-Type application/xml
+
+    * @bodyParam ip string required The server ip. Example: 192.168.1.1
+    * @bodyParam clientes object required A list of objects that contains the clients params. 
+    * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
+
+    * @response status=200 scenario="success" {
+    *    "name": "Mikrotik-Cristian",
+    *    "server_ip": "192.168.2.184",
+    *    "queues": {
+    *        "total_queues": 1,
+    *        "queues_details": [
+    *        {
+    *            "name": "1.1.1.1",
+    *            "target": "1.1.1.1",
+    *            "download": "102400 Kbps",
+    *            "upload": "3072 Kbps"
+    *        }
+    *        ]
+    *    },
+    *    "address_list": {
+    *        "total_address_list": 1,
+    *        "address_list_details": [
+    *        {
+    *            "client_ip": "1.1.1.1",
+    *            "address_list": "clientes_activos"
+    *        }
+    *        ],
+    *        "other_lists": 0
+    *    },
+    *    "firewall": {
+    *        "clientes_activos": 1,
+    *        "clientes_cortados": 0
+    *    },
+    *    "diferencias": {
+    *        "total_diferencias": 0,
+    *        "queues_sin_address": 0,
+    *        "addresses_sin_queue": 0,
+    *        "diferencias_detail": 0
+    *    }}
+    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
+    * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
+    */
 
     public function getDataMikrotik(Request $request)
     {
@@ -859,6 +1000,57 @@ class MikrotikAPIController extends Controller
             $return = response('BABEL: ' . $error, 500);
         }
         return $return;
+    }
+
+    // ------------------------ Revert data on Mikrotik ----------------------------
+    // ---------------------- HTTP Method = [PATCH] --------------------------------
+    // --------------------------- /router -----------------------------------------
+    // 
+    /* Function: It gets info from the router (clients connected, active clients, clipped, etc)
+    /* Params: The Mikrotik's IP */
+
+    public function revertChanges(Request $request)
+    {
+        try {
+            $server = $request->all();
+            $connection = $this->connection($server['ip']);
+
+            $query =
+                (new Query('/ip/firewall/address-list/print'))
+                ->where('list', 'clientes_cortados');
+            $cortados = $connection->query($query)->read();
+
+            if ($cortados == null) {
+
+                $response = [
+                    'status' => false,
+                    'message' => 'BABEL: No existen clientes para restaurar',
+                ];
+
+                return response($response, $status = 404);
+            } else {
+
+                foreach ($cortados as $cortado) {
+                    $query =
+                        (new Query('/ip/firewall/address-list/set'))
+                        ->equal('.id', $cortado['.id'])
+                        ->equal('list', 'clientes_activos');
+                    $activos = $connection->query($query)->read();
+                }
+
+                $response = [
+                    'restored' => true,
+                    'message' => 'BABEL: Clientes restaurados con éxito',
+                ];
+                return response($response, $status = 200);
+            }
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => false,
+                'message' => 'BABEL: Ha ocurrido un error',
+            ];
+            return response( $response, $status = 500);
+        }
     }
     
 }
