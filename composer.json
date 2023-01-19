@@ -7,7 +7,8 @@
     "require": {
         "php": "^7.3|^8.0",
         "laravel/lumen-framework": "^8.3.1",
-        "evilfreelancer/routeros-api-php": "^1.4"
+        "evilfreelancer/routeros-api-php": "^1.4",
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

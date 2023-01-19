@@ -14,36 +14,50 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group([
 
-$router->get('/v1/', function () use ($router) {return "<h1>". env('APP_TITLE') ."<h1>";});
+    'prefix' => 'v1'
 
-$router->get('/v1/test','MikrotikAPIController@testRouterOS');
+], function ($router) {
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('user-profile', 'AuthController@me');
+});
 
-/* RUTAS CRUD PARA QUEUES */
-$router->get('/v1/contracts', 'MikrotikAPIController@getContract');
-$router->post('/v1/contracts','MikrotikAPIController@createContract');
-$router->put('/v1/contracts','MikrotikAPIController@updateContract');
-$router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
+    Route::get('/v1/', function () use ($router) {return "<h1>". env('APP_TITLE') ."<h1>";});
 
-/* RUTAS MASIVAS PARA ROUTER */
-//$router->put('/v1/router','MikrotikAPIController@migrateContract');
-//$router->post('/v1/router','MikrotikAPIController@cleanRouter');
-//$router->delete('/v1/router','MikrotikAPIController@wipeRouter');
-//$router->delete('/v1/router','MikrotikAPIController@wipeRouterOnlyActives');
+    Route::group(['middleware' => 'auth:api'], function() {
+    
+        Route::get('/api/v1/test','MikrotikAPIController@testRouterOS');
 
-//$router->get('/v1/router/backup', 'MikrotikAPIController@backupRouter');
-//$router->post('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
+        /* RUTAS CRUD PARA QUEUES */
+        Route::get('/api/v1/contracts', 'MikrotikAPIController@getContract');
+        Route::post('/api/v1/contracts','MikrotikAPIController@createContract');
+        Route::put('/api/v1/contracts','MikrotikAPIController@updateContract');
+        Route::delete('/api/v1/contracts','MikrotikAPIController@deleteContract');
 
-/* RUTAS RESETEO DE ADDRESS-LIST */
-/* Habilitar conexión */
-$router->patch('/v1/connection/enableConnection','MikrotikAPIController@enableConnection');
-/* Deshabilitar conexión */
-$router->patch('/v1/connection/disableConnection','MikrotikAPIController@disableConnection');
-/* Restaura los cambios aplicados en la address-list , pasa todos los cortados a activos */
-//$router->patch('/v1/connection/revertChanges','MikrotikAPIController@revertChanges');
+    /* RUTAS MASIVAS PARA ROUTER */
+    //$router->put('/v1/router','MikrotikAPIController@migrateContract');
+    //$router->post('/v1/router','MikrotikAPIController@cleanRouter');
+    //$router->delete('/v1/router','MikrotikAPIController@wipeRouter');
+    //$router->delete('/v1/router','MikrotikAPIController@wipeRouterOnlyActives');
 
-/* RUTAS PARA TRAER INFO */
-/* Trae toda la info de un mikrotik */
-$router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikrotik');
-/* Encuentra al cliente en los equipos mikrotik */
-#$router->get('/v1/connection/findConn','MikrotikAPIController@findConn');
+    //$router->get('/v1/router/backup', 'MikrotikAPIController@backupRouter');
+    //$router->post('/v1/router/restore', 'MikrotikAPIController@restoreRouter');
+
+    /* RUTAS RESETEO DE ADDRESS-LIST */
+    /* Habilitar conexión */
+    Route::patch('/api/v1/connection/enableConnection','MikrotikAPIController@enableConnection');
+    /* Deshabilitar conexión */
+    Route::patch('/api/v1/connection/disableConnection','MikrotikAPIController@disableConnection');
+    /* Restaura los cambios aplicados en la address-list , pasa todos los cortados a activos */
+    //$router->patch('/v1/connection/revertChanges','MikrotikAPIController@revertChanges');
+
+    /* RUTAS PARA TRAER INFO */
+    Route::get('/api/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikrotik');
+    /* Trae toda la info de un mikrotik */
+    #$router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikrotik');
+    /* Encuentra al cliente en los equipos mikrotik */
+    #$router->get('/v1/connection/findConn','MikrotikAPIController@findConn');
+});
