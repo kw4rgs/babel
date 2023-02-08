@@ -13,5 +13,20 @@
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
+
+        <!-- ENV VARIABLES FOR BABEL -->
+        <env name="USER" value="babel-westnet"/>
+        <env name="PASS" value="'!N1mr0d!1119!W3stn3t!'"/>
+        <env name="PORT" value="52692"/>
+        <env name="SERVER" value="http://babel.loc/v1/"/>
+            <!-- ENVS DE SERVERS -->
+            <env name="ISPMikrotikPruebas" value="192.168.2.86"/>
+            <env name="ISPMikrotik01" value="172.29.100.113"/>
+            <env name="ISPMikrotik02" value="172.29.100.129"/>
+            <env name="ISPMikrotik03" value="172.29.100.137"/>
+            <env name="ISPMikrotik04" value="172.29.100.145"/>
+            <env name="ISPMikrotik05" value="172.29.100.138"/>
+            <env name="ISPMikrotikx86" value="172.29.100.121"/>
+            <env name="ISPMikrotikx862" value="172.29.100.153"/>
     </php>
 </phpunit>
