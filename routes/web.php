@@ -20,16 +20,14 @@ $router->get('/v1/', function () use ($router) {return "<h1>". env('APP_TITLE') 
 $router->get('/v1/test','MikrotikAPIController@testRouterOS');
 
 /* RUTAS CRUD PARA QUEUES */
-// $router->get('/v1/contracts', 'MikrotikAPIController@getContract');
-// $router->post('/v1/contracts','MikrotikAPIController@createContract');
-// $router->put('/v1/contracts','MikrotikAPIController@updateContract');
-// $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
+$router->get('/v1/contracts', 'MikrotikAPIController@getContract');
+$router->post('/v1/contracts','MikrotikAPIController@createContract');
+$router->put('/v1/contracts','MikrotikAPIController@updateContract');
+$router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 
-/* RUTAS CRUD v1.1 */
-$router->post('/v1.1/contracts','MikrotikAPIController@createContract');
-$router->get('/v1.1/contracts', 'MikrotikAPIController@getContract');
-$router->put('/v1.1/contracts','MikrotikAPIController@updateContract');
-$router->delete('/v1.1/contracts','MikrotikAPIController@deleteContract');
+
+$router->post('/v1.1/contracts','MikrotikAPIController@createQueueAddress');
+
 
 /* RUTAS MASIVAS PARA ROUTER */
 //$router->put('/v1/router','MikrotikAPIController@migrateContract');

@@ -89,7 +89,7 @@ class MikrotikAPIController extends Controller
 
     * @bodyParam ip string required The server ip. Example: 192.168.1.1
 
-    * @response status=200 scenario="success" {"ip_server": "192.168.2.184", "clientes_activos": 1, "clientes_details": [{"cliente_ip": "1.1.1.1","download": "102400 Kbps", "upload": "3072 Kbps", "estado": "clientes_activos"}]}
+    * @response status=200 scenario="success" {"ip_server": "192.168.2.184", "clientes_activos": 1, "clientes_details": [{"cliente_ip": "1.1.1.1","download": "102400 Kbps", "upload": "3072 Kbps", "estado": "activo"}]}
     * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
     * @response status=500 scenario="no payload or body params" {"message": "BABEL: Undefined array key 'ip'"}
     */
@@ -114,7 +114,7 @@ class MikrotikAPIController extends Controller
                 $ancho = explode("/", $queue['max-limit']);
                 $colas[$key]['download'] = strval ($ancho[1] / 1000) . " Kbps"; 
                 $colas[$key]['upload'] = strval ($ancho[0] / 1000) . " Kbps"; 
-                $colas[$key]['estado'] = "clientes_activos";
+                $colas[$key]['estado'] = "activo";
             };
 
             if ($response == null) {
@@ -153,90 +153,6 @@ class MikrotikAPIController extends Controller
     * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
     * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
     * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
-    * @bodyParam clientes.estado string required Client status account. Example: clientes_activos
-
-    * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s creada/s con éxito!"}
-    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
-    * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
-    */
-
-    // public function createContract(Request $request)
-    // {
-    //     try {
-    //         $data = $request->all();
-    //         $connection = $this->connection($data['ip']);
-
-    //         $colas = $this->createClientQueue($connection, $data['clientes']);
-    //         $return = response('BABEL : ¡Cola/s creada/s con éxito!', 200);
-    //     } catch (Exception $e) {
-    //         $error = $e->getMessage(); 
-    //         $return = response('BABEL: ' . $error, 500);
-    //     }
-    //     return $return;
-    // }
-
-    //     /* Function: Creates a queue in a Mikrotik server. */
-    //     function createClientQueue($connection, $clientes)
-    //     {
-    //         foreach ($clientes as $cliente) {
-    //             $info =
-    //             (new Query('/log/info'))
-    //                 ->equal('message', 'BABEL: Se procede a crear la queue: ' . $cliente["cliente_ip"]);
-    //             $response = $connection->query($info)->read();
-
-    //             //Transform kbps a bytes
-    //             $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-    //             $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-
-    //             $query = (new Query("/queue/simple/add"))
-    //                 ->equal('name', $cliente["cliente_ip"])
-    //                 ->equal('target', $cliente["cliente_ip"])
-    //                 ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
-    //                 ->equal('queue', "pcq-upload-default/pcq-download-default");
-    //             $response = $connection->query($query)->read();
-
-    //             if ($cliente["estado"] === "clientes_activos") {
-    //                 $info =
-    //                 (new Query('/log/info'))
-    //                     ->equal('message', 'BABEL: Se procede a crear la address-list de: ' . $cliente["cliente_ip"]);
-    //                 $log_msg = $connection->query($info)->read();
-    //                 $this->addAddressList($connection, $cliente["cliente_ip"]);
-    //             } else {
-    //                 $info =
-    //                 (new Query('/log/info'))
-    //                     ->equal('warning', 'BABEL: Se procede a ELIMINAR la address-list de: ' . $cliente["cliente_ip"]);
-    //                 $log_msg = $connection->query($info)->read();
-    //                 $this->removeAddressList($connection, $cliente["cliente_ip"]);
-    //             }
-    //         }
-    //     }
-
-    //     /* Function: Creates an address-list for the queue in the Mikrotik server. */
-    //     function addAddressList($connection, $ip)
-    //     {
-    //         $query = (new Query("/ip/firewall/address-list/add"))
-    //             ->equal('list', 'clientes_activos')
-    //             ->equal('address', $ip);
-    //         $response = $connection->query($query)->read();
-    //     }
-
-    // ------------------------ Create Contracts ------------------------------
-    // ---------------------- HTTP Method = [POST] ----------------------------
-    // --------------------------- /v1.1/contract -----------------------------
-
-    /** 
-    * Create Contracts
-    *
-    * This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.
-    * <aside class="notice">With this you are able to create "contracts" (queues with address-list). </aside>
-
-    * @header Content-Type application/xml
-
-    * @bodyParam ip string required The server ip. Example: 192.168.1.1
-    * @bodyParam clientes object required A list of objects that contains the clients params. 
-    * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
-    * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
-    * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
     * @bodyParam clientes.estado string required Client status account. Example: activo
 
     * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s creada/s con éxito!"}
@@ -244,60 +160,65 @@ class MikrotikAPIController extends Controller
     * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
     */
 
-
     public function createContract(Request $request)
     {
-            try {
-                $data = $request->all();
-                $connection = $this->connection($data['ip']);
-    
-                $colas = $this->createQueue($connection, $data['clientes']);
-                $return = response('BABEL : ¡Cola/s creada/s con éxito!', 200);
-            } catch (Exception $e) {
-                $error = $e->getMessage(); 
-                $return = response('BABEL: ' . $error, 500);
-            }
-            return $return;
+        try {
+            $data = $request->all();
+            $connection = $this->connection($data['ip']);
+
+            $colas = $this->createClientQueue($connection, $data['clientes']);
+            $return = response('BABEL : ¡Cola/s creada/s con éxito!', 200);
+        } catch (Exception $e) {
+            $error = $e->getMessage(); 
+            $return = response('BABEL: ' . $error, 500);
         }
-    
-            /* Function: Creates a queue in a Mikrotik server. */
-            function createQueue($connection, $clientes)
-            {
-                foreach ($clientes as $cliente) {
+        return $return;
+    }
+
+        /* Function: Creates a queue in a Mikrotik server. */
+        function createClientQueue($connection, $clientes)
+        {
+            foreach ($clientes as $cliente) {
+                $info =
+                (new Query('/log/info'))
+                    ->equal('message', 'BABEL: Se procede a crear la queue: ' . $cliente["cliente_ip"]);
+                $response = $connection->query($info)->read();
+
+                //Transform kbps a bytes
+                $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+                $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+
+                $query = (new Query("/queue/simple/add"))
+                    ->equal('name', $cliente["cliente_ip"])
+                    ->equal('target', $cliente["cliente_ip"])
+                    ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
+                    ->equal('queue', "pcq-upload-default/pcq-download-default");
+                $response = $connection->query($query)->read();
+
+                if ($cliente["estado"] === "activo") {
                     $info =
                     (new Query('/log/info'))
-                        ->equal('message', 'BABEL: Se procede a crear la queue: ' . $cliente["cliente_ip"]);
-                    $response = $connection->query($info)->read();
-    
-                    //Transform kbps a bytes
-                    $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-                    $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-    
-                    $query = (new Query("/queue/simple/add"))
-                        ->equal('name', $cliente["cliente_ip"])
-                        ->equal('target', $cliente["cliente_ip"])
-                        ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
-                        ->equal('queue', "pcq-upload-default/pcq-download-default");
-                    $response = $connection->query($query)->read();
-    
-                    $info = (new Query('/log/info'))
-                            ->equal('message', 'BABEL: Se procede a crear la address-list de: ' . $cliente["cliente_ip"]);
+                        ->equal('message', 'BABEL: Se procede a crear la address-list de: ' . $cliente["cliente_ip"]);
                     $log_msg = $connection->query($info)->read();
-                    $this->createAddressList($connection, $cliente);
-    
+                    $this->addAddressList($connection, $cliente["cliente_ip"]);
+                } else {
+                    $info =
+                    (new Query('/log/info'))
+                        ->equal('warning', 'BABEL: Se procede a ELIMINAR la address-list de: ' . $cliente["cliente_ip"]);
+                    $log_msg = $connection->query($info)->read();
+                    $this->removeAddressList($connection, $cliente["cliente_ip"]);
                 }
             }
-    
-            /* Function: Creates an address-list for the queue in the Mikrotik server. */
-            function createAddressList($connection, $cliente)
-            {   
-                $query = (new Query("/ip/firewall/address-list/add"))
-                    ->equal('list', $cliente['estado'])
-                    ->equal('address', $cliente['cliente_ip']);
-                $response = $connection->query($query)->read();
-            }
-    
+        }
 
+        /* Function: Creates an address-list for the queue in the Mikrotik server. */
+        function addAddressList($connection, $ip)
+        {
+            $query = (new Query("/ip/firewall/address-list/add"))
+                ->equal('list', 'clientes_activos')
+                ->equal('address', $ip);
+            $response = $connection->query($query)->read();
+        }
 
     // ------------------------ Update Contracts ------------------------------
     // ---------------------- HTTP Method = [PUT] -----------------------------
@@ -316,7 +237,7 @@ class MikrotikAPIController extends Controller
     * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
     * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
     * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
-    * @bodyParam clientes.estado string required Client status account. Example: clientes_activos
+    * @bodyParam clientes.estado string required Client status account. Example: activo
 
     * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s actualizada/s con éxito!"}
     * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
@@ -359,14 +280,11 @@ class MikrotikAPIController extends Controller
                     ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
                     ->equal('parent', 'none');
                 $response = $connection->query($query)->read();
-                
                 /* Only if contract is "active" adds it, otherwise it doesn't */
-                if ($cliente["estado"] === "clientes_activos") {
-                    $this->removeAddressListCutted($connection, $cliente["cliente_ip"]);
-                    $this->addAddressListActive($connection, $cliente["cliente_ip"]);
+                if ($cliente["estado"] === "activo") {
+                    $this->addAddressList($connection, $cliente["cliente_ip"]);
                 } else {
-                    $this->removeAddressListActive($connection, $cliente["cliente_ip"]);
-                    $this->addAddressListCutted($connection, $cliente["cliente_ip"]);
+                    $this->removeAddressList($connection, $cliente["cliente_ip"]);
                     }
             } else {
                 $this->createClientQueue($connection, $clientes);
@@ -391,7 +309,7 @@ class MikrotikAPIController extends Controller
     * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
     * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
     * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
-    * @bodyParam clientes.estado string required Client status account. Example: clientes_activos
+    * @bodyParam clientes.estado string required Client status account. Example: activo
 
     * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s eliminada/s con éxito!"}
     * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
@@ -1134,5 +1052,82 @@ class MikrotikAPIController extends Controller
             return response( $response, $status = 500);
         }
     }
+
+    // ------------------------ Create Contracts ------------------------------
+    // ---------------------- HTTP Method = [POST] ----------------------------
+    // --------------------------- /v1.1/contract -----------------------------
+
+    /** 
+    * Create Contracts
+    *
+    * This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.
+    * <aside class="notice">With this you are able to create "contracts" (queues with address-list). </aside>
+
+    * @header Content-Type application/xml
+
+    * @bodyParam ip string required The server ip. Example: 192.168.1.1
+    * @bodyParam clientes object required A list of objects that contains the clients params. 
+    * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
+    * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
+    * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
+    * @bodyParam clientes.estado string required Client status account. Example: activo
+
+    * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s creada/s con éxito!"}
+    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
+    * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
+    */
+
+
+    public function createQueueAddress(Request $request)
+    {
+            try {
+                $data = $request->all();
+                $connection = $this->connection($data['ip']);
+    
+                $colas = $this->createQueue($connection, $data['clientes']);
+                $return = response('BABEL : ¡Cola/s creada/s con éxito!', 200);
+            } catch (Exception $e) {
+                $error = $e->getMessage(); 
+                $return = response('BABEL: ' . $error, 500);
+            }
+            return $return;
+        }
+    
+            /* Function: Creates a queue in a Mikrotik server. */
+            function createQueue($connection, $clientes)
+            {
+                foreach ($clientes as $cliente) {
+                    $info =
+                    (new Query('/log/info'))
+                        ->equal('message', 'BABEL: Se procede a crear la queue: ' . $cliente["cliente_ip"]);
+                    $response = $connection->query($info)->read();
+    
+                    //Transform kbps a bytes
+                    $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+                    $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+    
+                    $query = (new Query("/queue/simple/add"))
+                        ->equal('name', $cliente["cliente_ip"])
+                        ->equal('target', $cliente["cliente_ip"])
+                        ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
+                        ->equal('queue', "pcq-upload-default/pcq-download-default");
+                    $response = $connection->query($query)->read();
+    
+                    $info = (new Query('/log/info'))
+                            ->equal('message', 'BABEL: Se procede a crear la address-list de: ' . $cliente["cliente_ip"]);
+                    $log_msg = $connection->query($info)->read();
+                    $this->createAddressList($connection, $cliente);
+    
+                }
+            }
+    
+            /* Function: Creates an address-list for the queue in the Mikrotik server. */
+            function createAddressList($connection, $cliente)
+            {   
+                $query = (new Query("/ip/firewall/address-list/add"))
+                    ->equal('list', $cliente['estado'])
+                    ->equal('address', $cliente['cliente_ip']);
+                $response = $connection->query($query)->read();
+            }
     
 }
