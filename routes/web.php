@@ -25,8 +25,11 @@ $router->post('/v1/contracts','MikrotikAPIController@createContract');
 $router->put('/v1/contracts','MikrotikAPIController@updateContract');
 $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 
+/* RUTAS CRUD v1.1 */
 $router->post('/v1.1/contracts','MikrotikAPIController@createQueueAddress');
-
+$router->get('/v1.1/contracts', 'MikrotikAPIController@getContract');
+$router->put('/v1.1/contracts','MikrotikAPIController@updateContract');
+$router->delete('/v1.1/contracts','MikrotikAPIController@deleteContract');
 
 /* RUTAS MASIVAS PARA ROUTER */
 //$router->put('/v1/router','MikrotikAPIController@migrateContract');
