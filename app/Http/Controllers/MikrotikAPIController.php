@@ -89,7 +89,7 @@ class MikrotikAPIController extends Controller
 
     * @bodyParam ip string required The server ip. Example: 192.168.1.1
 
-    * @response status=200 scenario="success" {"ip_server": "192.168.2.184", "clientes_activos": 1, "clientes_details": [{"cliente_ip": "1.1.1.1","download": "102400 Kbps", "upload": "3072 Kbps", "estado": "activo"}]}
+    * @response status=200 scenario="success" {"ip_server": "192.168.2.184", "clientes_activos": 1, "clientes_details": [{"cliente_ip": "1.1.1.1","download": "102400 Kbps", "upload": "3072 Kbps", "estado": "clientes_activos"}]}
     * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
     * @response status=500 scenario="no payload or body params" {"message": "BABEL: Undefined array key 'ip'"}
     */
@@ -114,7 +114,7 @@ class MikrotikAPIController extends Controller
                 $ancho = explode("/", $queue['max-limit']);
                 $colas[$key]['download'] = strval ($ancho[1] / 1000) . " Kbps"; 
                 $colas[$key]['upload'] = strval ($ancho[0] / 1000) . " Kbps"; 
-                $colas[$key]['estado'] = "activo";
+                $colas[$key]['estado'] = "clientes_activos";
             };
 
             if ($response == null) {
@@ -153,7 +153,7 @@ class MikrotikAPIController extends Controller
     * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
     * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
     * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
-    * @bodyParam clientes.estado string required Client status account. Example: activo
+    * @bodyParam clientes.estado string required Client status account. Example: clientes_activos
 
     * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s creada/s con éxito!"}
     * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
@@ -195,7 +195,7 @@ class MikrotikAPIController extends Controller
                     ->equal('queue', "pcq-upload-default/pcq-download-default");
                 $response = $connection->query($query)->read();
 
-                if ($cliente["estado"] === "activo") {
+                if ($cliente["estado"] === "clientes_activos") {
                     $info =
                     (new Query('/log/info'))
                         ->equal('message', 'BABEL: Se procede a crear la address-list de: ' . $cliente["cliente_ip"]);
@@ -237,7 +237,7 @@ class MikrotikAPIController extends Controller
     * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
     * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
     * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
-    * @bodyParam clientes.estado string required Client status account. Example: activo
+    * @bodyParam clientes.estado string required Client status account. Example: clientes_activos
 
     * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s actualizada/s con éxito!"}
     * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
@@ -281,7 +281,7 @@ class MikrotikAPIController extends Controller
                     ->equal('parent', 'none');
                 $response = $connection->query($query)->read();
                 /* Only if contract is "active" adds it, otherwise it doesn't */
-                if ($cliente["estado"] === "activo") {
+                if ($cliente["estado"] === "clientes_activos") {
                     $this->addAddressList($connection, $cliente["cliente_ip"]);
                 } else {
                     $this->removeAddressList($connection, $cliente["cliente_ip"]);
@@ -309,7 +309,7 @@ class MikrotikAPIController extends Controller
     * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
     * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
     * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
-    * @bodyParam clientes.estado string required Client status account. Example: activo
+    * @bodyParam clientes.estado string required Client status account. Example: clientes_activos
 
     * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s eliminada/s con éxito!"}
     * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
