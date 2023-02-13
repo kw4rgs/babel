@@ -3,7 +3,7 @@
 
 
 <aside>
-    <strong>Base URL</strong>: <code>http://localhost</code>
+    <strong>Base URL</strong>: <code>http://localhost/v1/</code>
 </aside>
 
 This documentation aims to provide all the information you need to work with Babel. 

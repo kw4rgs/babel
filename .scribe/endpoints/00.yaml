@@ -414,6 +414,202 @@ endpoints:
     custom: []
   -
     httpMethods:
+      - POST
+    uri: v1.1/contracts
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create Contracts'
+      description: |-
+        This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.
+        <aside class="notice">With this you are able to create "contracts" (queues with address-list). </aside>
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/xml
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ip:
+        name: ip
+        description: 'The server ip.'
+        required: true
+        example: 192.168.1.1
+        type: string
+        custom: []
+      clientes:
+        name: clientes
+        description: 'A list of objects that contains the clients params.'
+        required: true
+        example: []
+        type: object
+        custom: []
+      clientes.cliente_ip:
+        name: clientes.cliente_ip
+        description: 'Client IP.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+      clientes.download:
+        name: clientes.download
+        description: 'Client download speed.'
+        required: true
+        example: '102400 Kbps'
+        type: string
+        custom: []
+      clientes.upload:
+        name: clientes.upload
+        description: 'Client upload speed.'
+        required: true
+        example: '3072 Kbps'
+        type: string
+        custom: []
+      clientes.estado:
+        name: clientes.estado
+        description: 'Client status account.'
+        required: true
+        example: activo
+        type: string
+        custom: []
+    cleanBodyParameters:
+      ip: 192.168.1.1
+      clientes:
+        cliente_ip: 1.1.1.1
+        download: '102400 Kbps'
+        upload: '3072 Kbps'
+        estado: activo
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message": "BABEL : ¡Cola/s creada/s con éxito!"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Unable to establish socket session, No route to host"}'
+        headers: []
+        description: 'no route to host'
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Undefined array key ''ip''"}'
+        headers: []
+        description: 'no payload or missing params'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: v1.1/contracts
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Contracts'
+      description: |-
+        This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.
+        <aside class="notice">With this you are able to update the "contracts" (queues with address-list). </aside>
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/xml
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ip:
+        name: ip
+        description: 'The server ip.'
+        required: true
+        example: 192.168.1.1
+        type: string
+        custom: []
+      clientes:
+        name: clientes
+        description: 'A list of objects that contains the clients params.'
+        required: true
+        example: []
+        type: object
+        custom: []
+      clientes.cliente_ip:
+        name: clientes.cliente_ip
+        description: 'Client IP.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+      clientes.download:
+        name: clientes.download
+        description: 'Client download speed.'
+        required: true
+        example: '102400 Kbps'
+        type: string
+        custom: []
+      clientes.upload:
+        name: clientes.upload
+        description: 'Client upload speed.'
+        required: true
+        example: '3072 Kbps'
+        type: string
+        custom: []
+      clientes.estado:
+        name: clientes.estado
+        description: 'Client status account.'
+        required: true
+        example: activo
+        type: string
+        custom: []
+    cleanBodyParameters:
+      ip: 192.168.1.1
+      clientes:
+        cliente_ip: 1.1.1.1
+        download: '102400 Kbps'
+        upload: '3072 Kbps'
+        estado: activo
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message": "BABEL : ¡Cola/s actualizada/s con éxito!"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Unable to establish socket session, No route to host"}'
+        headers: []
+        description: 'no route to host'
+        custom: []
+      -
+        status: 500
+        content: '{"message": "BABEL: Undefined array key ''ip''"}'
+        headers: []
+        description: 'no payload or missing params'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
       - PATCH
     uri: v1/connection/enableConnection
     metadata:
@@ -648,7 +844,7 @@ endpoints:
                  "diferencias_detail": 0
              }}
         headers: []
-        description: succes
+        description: success
         custom: []
       -
         status: 500

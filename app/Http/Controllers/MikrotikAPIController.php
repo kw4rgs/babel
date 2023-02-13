@@ -293,15 +293,15 @@ class MikrotikAPIController extends Controller
         }
 
 
-    // ------------------------ Update Contracts ------------------------------
+// ------------------------ Update Contracts ------------------------------
     // ---------------------- HTTP Method = [PUT] -----------------------------
-    // --------------------------- /v1.1/queues -------------------------------
+    // --------------------------- /contract ----------------------------------
 
     /** 
-    * Update Queues
+    * Update Contracts
     *
-    * This endpoint allows you to update the banwidth profile of a queue or queues or ip in a Mikrotik server.
-    * <aside class="notice">With this you are able to update the "queues" params. </aside>
+    * This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.
+    * <aside class="notice">With this you are able to update the "contracts" (queues with address-list). </aside>
 
     * @header Content-Type application/xml
 
@@ -310,18 +310,19 @@ class MikrotikAPIController extends Controller
     * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
     * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
     * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
+    * @bodyParam clientes.estado string required Client status account. Example: activo
 
     * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s actualizada/s con éxito!"}
     * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
     * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
     */
 
-    function updateQueue(Request $request)
+    function updateQueueAddress(Request $request)
     {
         try {
             $data = $request->all();
             $connection = $this->connection($data['ip']);
-            $colas = $this ->updateQueueParams($connection, $data['clientes']);
+            $colas = $this ->updateClient($connection, $data['clientes']);
             $return = response('¡BABEL: Cola/s actualizada/s con éxito!', 200);
         } catch (Exception $e) {
             $error = $e->getMessage(); 
@@ -331,11 +332,12 @@ class MikrotikAPIController extends Controller
     }
 
         /* Function: Update the queue' params in the Mikrotik server. */
-        function updateQueueParams($connection, $clientes)
+        function updateClient($connection, $clientes)
         {
             foreach ($clientes as $cliente) {   
                 $info = (new Query('/log/info'))->equal('message', 'BABEL: Se procede a actualizar la queue: ' . $cliente["cliente_ip"]);
-                $response = $connection->query($info)->read();      
+                $response = $connection->query($info)->read();
+                
                 /* Transform kbps to bytes */
                 $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
                 $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
@@ -349,10 +351,21 @@ class MikrotikAPIController extends Controller
                         ->equal('.id', $response[0]['.id'])
                         ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
                         ->equal('parent', 'none');
-                    $response = $connection->query($query)->read(); 
-                }
+                    $response = $connection->query($query)->read();
+
+                    $this->removeAddressList($connection, $cliente["cliente_ip"]);
+
+                    $query = (new Query("/ip/firewall/address-list/add"))
+                        ->equal('list', $cliente['estado'])
+                        ->equal('address', $cliente['cliente_ip']);
+                    $response = $connection->query($query)->read();
+
+                } else {
+                    $this->createClientQueue($connection, $clientes);
+                    }  
             }
         }
+
 
 
 
