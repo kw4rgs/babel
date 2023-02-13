@@ -26,7 +26,7 @@ $router->put('/v1/contracts','MikrotikAPIController@updateContract');
 $router->delete('/v1/contracts','MikrotikAPIController@deleteContract');
 
 
-$router->post('/v1.1/contracts','MikrotikAPIController@createQueueAddress');
+
 
 
 /* RUTAS MASIVAS PARA ROUTER */
@@ -51,3 +51,7 @@ $router->patch('/v1/connection/disableConnection','MikrotikAPIController@disable
 $router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikrotik');
 /* Encuentra al cliente en los equipos mikrotik */
 #$router->get('/v1/connection/findConn','MikrotikAPIController@findConn');
+
+/* RUTAS PARA TESTEO */
+#$router->get('/v1.1/queues', 'MikrotikAPIController@findQueue');
+$router->patch('/v1.1/queues', 'MikrotikAPIController@updateQueue');

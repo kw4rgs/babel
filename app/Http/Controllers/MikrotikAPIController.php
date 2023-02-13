@@ -292,6 +292,73 @@ class MikrotikAPIController extends Controller
             }
         }
 
+
+    // ------------------------ Update Contracts ------------------------------
+    // ---------------------- HTTP Method = [PUT] -----------------------------
+    // --------------------------- /v1.1/queues -------------------------------
+
+    /** 
+    * Update Queues
+    *
+    * This endpoint allows you to update the banwidth profile of a queue or queues or ip in a Mikrotik server.
+    * <aside class="notice">With this you are able to update the "queues" params. </aside>
+
+    * @header Content-Type application/xml
+
+    * @bodyParam ip string required The server ip. Example: 192.168.1.1
+    * @bodyParam clientes object required A list of objects that contains the clients params. 
+    * @bodyParam clientes.cliente_ip string required Client IP. Example: 1.1.1.1
+    * @bodyParam clientes.download string required Client download speed. Example: 102400 Kbps
+    * @bodyParam clientes.upload string required Client upload speed. Example: 3072 Kbps
+
+    * @response status=200 scenario="success" {"message": "BABEL : ¡Cola/s actualizada/s con éxito!"}
+    * @response status=500 scenario="no route to host" {"message": "BABEL: Unable to establish socket session, No route to host"}
+    * @response status=500 scenario="no payload or missing params" {"message": "BABEL: Undefined array key 'ip'"}
+    */
+
+    function updateQueue(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $connection = $this->connection($data['ip']);
+            $colas = $this ->updateQueueParams($connection, $data['clientes']);
+            $return = response('¡BABEL: Cola/s actualizada/s con éxito!', 200);
+        } catch (Exception $e) {
+            $error = $e->getMessage(); 
+            $return = response('BABEL: ' . $error, 500);
+        }
+        return $return;
+    }
+
+        /* Function: Update the queue' params in the Mikrotik server. */
+        function updateQueueParams($connection, $clientes)
+        {
+            foreach ($clientes as $cliente) {   
+                $info = (new Query('/log/info'))->equal('message', 'BABEL: Se procede a actualizar la queue: ' . $cliente["cliente_ip"]);
+                $response = $connection->query($info)->read();      
+                /* Transform kbps to bytes */
+                $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+                $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+                /* List the queue */
+                $query = (new Query("/queue/simple/print"))
+                    ->where('name', $cliente["cliente_ip"]);
+                $response = $connection->query($query)->read();
+                /* Add queue */
+                if (isset($response[0])) {
+                    $query = (new Query("/queue/simple/set"))
+                        ->equal('.id', $response[0]['.id'])
+                        ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
+                        ->equal('parent', 'none');
+                    $response = $connection->query($query)->read(); 
+                }
+            }
+        }
+
+
+
+
+
+
     // ------------------------ Delete Contracts ------------------------------
     // ---------------------- HTTP Method = [DEL] -----------------------------
     // --------------------------- /contract ----------------------------------
@@ -1091,43 +1158,42 @@ class MikrotikAPIController extends Controller
                 $return = response('BABEL: ' . $error, 500);
             }
             return $return;
-        }
+    }
     
-            /* Function: Creates a queue in a Mikrotik server. */
-            function createQueue($connection, $clientes)
-            {
-                foreach ($clientes as $cliente) {
-                    $info =
-                    (new Query('/log/info'))
-                        ->equal('message', 'BABEL: Se procede a crear la queue: ' . $cliente["cliente_ip"]);
-                    $response = $connection->query($info)->read();
-    
-                    //Transform kbps a bytes
-                    $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-                    $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-    
-                    $query = (new Query("/queue/simple/add"))
-                        ->equal('name', $cliente["cliente_ip"])
-                        ->equal('target', $cliente["cliente_ip"])
-                        ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
-                        ->equal('queue', "pcq-upload-default/pcq-download-default");
-                    $response = $connection->query($query)->read();
-    
-                    $info = (new Query('/log/info'))
-                            ->equal('message', 'BABEL: Se procede a crear la address-list de: ' . $cliente["cliente_ip"]);
-                    $log_msg = $connection->query($info)->read();
-                    $this->createAddressList($connection, $cliente);
-    
-                }
-            }
-    
-            /* Function: Creates an address-list for the queue in the Mikrotik server. */
-            function createAddressList($connection, $cliente)
-            {   
-                $query = (new Query("/ip/firewall/address-list/add"))
-                    ->equal('list', $cliente['estado'])
-                    ->equal('address', $cliente['cliente_ip']);
+        /* Function: Creates a queue in a Mikrotik server. */
+        function createQueue($connection, $clientes)
+        {
+            foreach ($clientes as $cliente) {
+                $info =
+                (new Query('/log/info'))
+                    ->equal('message', 'BABEL: Se procede a crear la queue: ' . $cliente["cliente_ip"]);
+                $response = $connection->query($info)->read();
+
+                //Transform kbps a bytes
+                $cliente['download'] = (int) filter_var($cliente['download'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+                $cliente['upload'] = (int) filter_var($cliente['upload'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+
+                $query = (new Query("/queue/simple/add"))
+                    ->equal('name', $cliente["cliente_ip"])
+                    ->equal('target', $cliente["cliente_ip"])
+                    ->equal('max-limit', $cliente['upload'] . "/" . $cliente['download'])
+                    ->equal('queue', "pcq-upload-default/pcq-download-default");
                 $response = $connection->query($query)->read();
-            }
+
+                $info = (new Query('/log/info'))
+                        ->equal('message', 'BABEL: Se procede a crear la address-list de: ' . $cliente["cliente_ip"]);
+                $log_msg = $connection->query($info)->read();
+                $this->createAddressList($connection, $cliente);
+                }
+        }
+
+        /* Function: Creates an address-list for the queue in the Mikrotik server. */
+        function createAddressList($connection, $cliente)
+        {   
+            $query = (new Query("/ip/firewall/address-list/add"))
+                ->equal('list', $cliente['estado'])
+                ->equal('address', $cliente['cliente_ip']);
+            $response = $connection->query($query)->read();
+        }
     
 }
