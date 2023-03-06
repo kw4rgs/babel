@@ -45,7 +45,7 @@ $router->patch('/v1/connection/enableConnection','MikrotikAPIController@enableCo
 /* Deshabilitar conexión */
 $router->patch('/v1/connection/disableConnection','MikrotikAPIController@disableConnection');
 /* Restaura los cambios aplicados en la address-list , pasa todos los cortados a activos */
-//$router->patch('/v1/connection/revertChanges','MikrotikAPIController@revertChanges');
+$router->patch('/v1/connection/revertChanges','MikrotikAPIController@revertChanges');
 
 /* RUTAS PARA TRAER INFO */
 /* Trae toda la info de un mikrotik */

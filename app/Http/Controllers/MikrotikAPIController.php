@@ -67,6 +67,12 @@ class MikrotikAPIController extends Controller
             $query =
                 (new Query('/system/identity/print'));
             $response = $connection->query($query)->read();
+
+            $info =
+            (new Query('/log/info'))
+                ->equal('message', 'BABEL: Verificando la salud del equipo');
+            $response = $connection->query($info)->read();
+
             return $response;
         } catch (Exception $e) {
             $error = $e->getMessage(); 
@@ -1010,8 +1016,11 @@ class MikrotikAPIController extends Controller
             
             $colas=array();
             $queues_list = array();
-            
+
             foreach ($queues as $key => $queue) {
+                if(!isset($queue['target'])){
+			    continue;
+		    }
                 $queues_list[$key]['name'] = $queue['name'];
                 $colas[$key] = strval((explode("/", $queue['target'])[0]));
                 $queues_list[$key]['target'] = (explode("/", $queue['target'])[0]);
