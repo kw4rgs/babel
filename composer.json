@@ -7,12 +7,13 @@
     "require": {
         "php": "^7.3|^8.0",
         "laravel/lumen-framework": "^8.3.1",
-        "evilfreelancer/routeros-api-php": "^1.4"
+        "evilfreelancer/routeros-api-php": "^1.4",
+        "guzzlehttp/guzzle": "^7.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
         "mockery/mockery": "^1.3.1",
-        "phpunit/phpunit": "^9.5.10",
+        "phpunit/phpunit": "^10",
         "knuckleswtf/scribe": "^4.11"
     },
     "autoload": {
