@@ -56,3 +56,34 @@ $router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikroti
 /* RUTAS PARA TESTEO */
 #$router->get('/v1.1/queues', 'MikrotikAPIController@findQueue');
 
+
+/* RUTAS PARA RADIUS CONTROLLER */
+
+/* Trae todos los usuarios del radius */
+$router->get('/v1/radius/users_data', 'RadiusController@getAllUserss');
+
+/* RADIUS CRUD */
+
+/* Crear un usuario en el radius */
+$router->post('/v1/radius/users', 'RadiusController@createUser');
+
+/* Trae un usuario del radius */
+$router->get('/v1/radius/users', 'RadiusController@getUser');
+
+/* Actualiza un usuario del radius */
+$router->put('/v1/radius/users', 'RadiusController@updateUser');
+
+/* Elimina un usuario del radius */ 
+$router->delete('/v1/radius/users', 'RadiusController@deleteUser');
+
+
+
+
+
+/* Actualiza el Mikrotik-Rate-Limit de un usuario del radius */
+#$router->put('/v1/radius/users/{username}', 'RadiusController@updateMikrotikRateLimit');
+
+
+/* Busca un usuario en el radius con el mismo Framed-IP-Address */
+$router->get('/v1/radius/find-by-framed-ip', 'RadiusController@findUsersByFramedIP');
+

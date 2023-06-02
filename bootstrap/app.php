@@ -66,6 +66,8 @@ if (class_exists(\Knuckles\Scribe\ScribeServiceProvider::class)) {
     $app->configure('scribe');
 }
 
+$app->configure('database');
+
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -116,5 +118,19 @@ $app->router->group([
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
 });
+
+if (! function_exists('lang_path')) {
+    /**
+     * Get the path to the language files.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    function lang_path($path = '')
+    {
+        return app()->basePath('resources/lang/' . $path);
+    }
+}
+
 
 return $app;
