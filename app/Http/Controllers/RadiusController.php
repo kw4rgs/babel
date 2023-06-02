@@ -21,6 +21,7 @@ class RadiusController extends Controller
     public function getAllUsers() 
     {
         try {
+
             $radreply_data = DB::connection('radius')
                 ->table('radreply')
                 ->select('id', 'username', 'attribute', 'value')
@@ -85,7 +86,7 @@ class RadiusController extends Controller
                 'error' => $e->getMessage(),
             ];
     
-            throw new HttpException($response['code'], $response['message']);
+            return response()->json($response, $response['code']);
         }
     }
 
@@ -436,7 +437,7 @@ class RadiusController extends Controller
         }
     }
 
-    
+}
 
         // public function updateUser (Request $request)
         // {
@@ -530,4 +531,4 @@ class RadiusController extends Controller
         
         //         return response()->json($response, $response['code']);
         //     }
-        // }
+        

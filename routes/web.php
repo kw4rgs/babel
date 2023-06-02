@@ -60,7 +60,7 @@ $router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikroti
 /* RUTAS PARA RADIUS CONTROLLER */
 
 /* Trae todos los usuarios del radius */
-$router->get('/v1/radius/users_data', 'RadiusController@getAllUserss');
+$router->get('/v1/radius/users_data', 'RadiusController@getAllUsers');
 
 /* RADIUS CRUD */
 
