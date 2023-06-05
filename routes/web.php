@@ -77,13 +77,19 @@ $router->put('/v1/radius/users', 'RadiusController@updateUser');
 $router->delete('/v1/radius/users', 'RadiusController@deleteUser');
 
 
+/* RUTAS SMARTOLT CONTROLLER */
+
+/* Trae el estado de una ONU */
+$router->get('/v1/smartolt/onu/status', 'SmartoltController@getOnuStatus');
+
+/* Reinicia una ONU */
+$router->post('/v1/smartolt/onu/reboot', 'SmartoltController@rebootOnu');
 
 
+/* RUTAS FTTH CONTROLLER */
 
-/* Actualiza el Mikrotik-Rate-Limit de un usuario del radius */
-#$router->put('/v1/radius/users/{username}', 'RadiusController@updateMikrotikRateLimit');
+/* Trae el estado de un customer */
+$router->get('/v1/ftth/customer', 'FtthController@getCustomerStatus');
 
-
-/* Busca un usuario en el radius con el mismo Framed-IP-Address */
-$router->get('/v1/radius/find-by-framed-ip', 'RadiusController@findUsersByFramedIP');
-
+/* Actualiza un customer y reinicia la ONU */
+$router->put('/v1/ftth/customer', 'FtthController@updateCustomer');

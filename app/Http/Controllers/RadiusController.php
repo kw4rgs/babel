@@ -90,7 +90,6 @@ class RadiusController extends Controller
         }
     }
 
-
     /**
      * Get a user from the radius database
      *
@@ -468,97 +467,3 @@ class RadiusController extends Controller
     }
 
 }
-
-        // public function updateUser (Request $request)
-        // {
-        //     try {
-        //         $data = $request->input();
-        
-        //         $username = strtolower($data['username']);
-        //         $name = ucwords(strtolower($data['name']));
-        //         $node = strtoupper($data['node']);
-        //         $bandwidth = $data['bandwidth_plan'];
-        //         $password = substr(md5($data['username']), 0, 8);
-        //         $ip = $data['main_ip'];
-    
-    
-    
-        //         // Check if the user exists
-        //         $userExists = DB::connection('radius')
-        //             ->table('radcheck')
-        //             ->where('username', $old_username)
-        //             ->exists();
-        
-        //         if (!$userExists) {
-        //             $response = [
-        //                 'status' => 'error',
-        //                 'code' => 404,
-        //                 'message' => 'User does not exist.',
-        //             ];
-        
-        //             return response()->json($response, $response['code']);
-        //         }
-    
-            
-        //         // Update username in radcheck table
-        //         DB::connection('radius')
-        //             ->table('radcheck')
-        //             ->where('username', $old_username)
-        //             ->update([
-        //                 'username' => $new_username,
-        //             ]);
-        
-        //         // Update username in radreply table
-        //         DB::connection('radius')
-        //             ->table('radreply')
-        //             ->where('username', $old_username)
-        //             ->update([
-        //                 'username' => $new_username,
-        //             ]);
-        
-        //         // Update Mikrotik-Rate-Limit in radreply table
-        //         DB::connection('radius')
-        //             ->table('radreply')
-        //             ->where('username', $new_username)
-        //             ->where('attribute', 'Mikrotik-Rate-Limit')
-        //             ->update([
-        //                 'value' => $new_bandwidth,
-        //             ]);
-        
-        //         // Update Framed-Ip-Address in radreply table
-        //         DB::connection('radius')
-        //             ->table('radreply')
-        //             ->where('username', $new_username)
-        //             ->where('attribute', 'Framed-Ip-Address')
-        //             ->update([
-        //                 'value' => $new_ip,
-        //             ]);
-        
-        //         // Update username in userinfo table
-        //         DB::connection('radius')
-        //             ->table('userinfo')
-        //             ->where('username', $old_username)
-        //             ->update([
-        //                 'username' => $new_username,
-        //                 'updateddate' => date('Y-m-d H:i:s'),
-        //             ]);
-        
-        //         $response = [
-        //             'status' => 'success',
-        //             'code' => 200,
-        //             'message' => 'Username updated successfully.',
-        //         ];
-        
-        //         return response()->json($response, $response['code']);
-    
-        //     } catch (\Exception $e) {
-        //         $response = [
-        //             'status' => 'error',
-        //             'code' => 500,
-        //             'message' => 'An error occurred while updating the username.',
-        //             'error' => $e->getMessage(),
-        //         ];
-        
-        //         return response()->json($response, $response['code']);
-        //     }
-        
