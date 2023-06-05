@@ -12,5 +12,5 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FtthController extends Controller
 {
-
+    
 }
