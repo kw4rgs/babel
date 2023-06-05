@@ -102,12 +102,15 @@ class RadiusController extends Controller
     {
         try {
             $username = $request->input('username');
-
+    
+            if (empty($username)) {
+                throw new ValidationException('Username is required.');
+            }
+    
             $radreply_framed = $this->getRadreplyFramedData($username);
             $radreply_ratelimit = $this->getRadreplyMikrotikData($username);
             $radcheck_creds = $this->getRadcheckData($username);
-
-
+    
             $data_radius = [
                 'Id' => $radreply_framed[0]->id,
                 'Username' => $radreply_framed[0]->username,
@@ -115,37 +118,40 @@ class RadiusController extends Controller
                 'Mikrotik-Rate-Limit' => $radreply_ratelimit[0]->value,
                 'Framed-Ip-Address' => $radreply_framed[0]->value,
             ];
-
-            return $data_radius;
-
+    
             $response = [
                 'status' => 'success',
                 'code' => 200,
                 'data' => [
-                'radius_user_quantity' => 1,
-                'radius_user_data' => $data_radius,
+                    'radius_user_quantity' => 1,
+                    'radius_user_data' => $data_radius,
                 ],
             ];
-
+    
             return response()->json($response, $response['code']);
-        
+    
+        } catch (ValidationException $e) {
+            $response = [
+                'status' => 'error',
+                'code' => 400,
+                'message' => $e->getMessage(),
+            ];
+    
         } catch (NotFoundHttpException $e) {
             $response = [
                 'status' => 'error',
                 'code' => 404,
                 'message' => 'User does not exist.',
-                'error' => $e->getMessage(),
             ];
-
+    
         } catch (\Exception $e) {
             $response = [
                 'status' => 'error',
                 'code' => 500,
                 'message' => 'An error occurred while retrieving user data.',
-                'error' => $e->getMessage(),
             ];
         }
-
+    
         return response()->json($response, $response['code']);
     }
 
@@ -294,7 +300,7 @@ class RadiusController extends Controller
      * @return void
      */    
 
-    public function updateUser (Request $request)
+    public function updateUser(Request $request)
     {
         try {
             $data = $request->input();
@@ -305,6 +311,16 @@ class RadiusController extends Controller
             $bandwidth = $data['bandwidth_plan'];
             $password = substr(md5($data['username']), 0, 8);
             $ip = $data['main_ip'];
+    
+            if (empty($username) || empty($name) || empty($node) || empty($bandwidth) || empty($password) || empty($ip)) {
+                $response = [
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Missing parameters',
+                ];
+    
+                return response()->json($response, $response['code']);
+            }
     
             // Check if the user exists
             $userExists = DB::connection('radius')
@@ -358,6 +374,21 @@ class RadiusController extends Controller
             ];
     
             return response()->json($response, $response['code']);
+    
+        } catch (ValidationException $e) {
+            $response = [
+                'status' => 'error',
+                'code' => 400,
+                'message' => $e->getMessage(),
+            ];
+    
+        } catch (NotFoundHttpException $e) {
+            $response = [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'User does not exist.',
+            ];
+    
         } catch (\Exception $e) {
             $response = [
                 'status' => 'error',
@@ -365,11 +396,10 @@ class RadiusController extends Controller
                 'message' => 'An error occurred while updating the username.',
                 'error' => $e->getMessage(),
             ];
-    
-            return response()->json($response, $response['code']);
         }
+    
+        return response()->json($response, $response['code']);
     }
-
     /**
      * Delete a user from the radius database.
      *
