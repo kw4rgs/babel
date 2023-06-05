@@ -36,7 +36,7 @@ class SmartoltController extends Controller
         $response = curl_exec($curl);
     
         curl_close($curl);
-        echo $response;
+        return json_decode($response,true);
     }
 
     public function rebootOnu (Request $request)
@@ -62,6 +62,6 @@ class SmartoltController extends Controller
         $response = curl_exec($curl);
     
         curl_close($curl);
-        echo $response;
+        return json_decode($response,true);
     }
 }

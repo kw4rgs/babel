@@ -92,4 +92,4 @@ $router->post('/v1/smartolt/onu/reboot', 'SmartoltController@rebootOnu');
 $router->get('/v1/ftth/customer', 'FtthController@getCustomerStatus');
 
 /* Actualiza un customer y reinicia la ONU */
-$router->put('/v1/ftth/customer', 'FtthController@updateCustomer');
+$router->put('/v1/ftth/customer', 'FtthController@updateCustomerConnection');
