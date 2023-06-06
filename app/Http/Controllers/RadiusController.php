@@ -109,9 +109,11 @@ class RadiusController extends Controller
             $radreply_framed = $this->getRadreplyFramedData($username);
             $radreply_ratelimit = $this->getRadreplyMikrotikData($username);
             $radcheck_creds = $this->getRadcheckData($username);
+            $userinfo_data = $this->getName($username); 
     
             $data_radius = [
                 'Id' => $radreply_framed[0]->id,
+                'Name' => $userinfo_data[0]->firstname . ' ' . $userinfo_data[0]->lastname,
                 'Username' => $radreply_framed[0]->username,
                 'Password' => $radcheck_creds[0]->value,
                 'Mikrotik-Rate-Limit' => $radreply_ratelimit[0]->value,
@@ -189,7 +191,7 @@ class RadiusController extends Controller
     }
 
     private function getRadcheckData($username)
-    {
+    {   
         $radcheck_data = DB::connection('radius')
             ->table('radcheck')
             ->select('*')
@@ -205,6 +207,22 @@ class RadiusController extends Controller
         return $radcheck_data;
     }
 
+    private function getName ($username)
+    {
+        $userinfo_data = DB::connection('radius')
+            ->table('userinfo')
+            ->select('*')
+            ->where('username', $username)
+            ->get();
+        
+        if ($userinfo_data->isEmpty()) {
+            throw new NotFoundHttpException();
+        }
+
+        return $userinfo_data;
+    }
+
+    //private function getUsername ($)
     /**
      * Create a new user in the radius database
      *
@@ -304,14 +322,13 @@ class RadiusController extends Controller
         try {
             $data = $request->input();
     
-            $username = strtolower($data['username']);
             $name = ucwords(strtolower($data['name']));
-            $node = strtoupper($data['node']);
+            $username = strtolower($data['username']);
             $bandwidth = $data['bandwidth_plan'];
-            $password = substr(md5($data['username']), 0, 8);
+            $node = strtoupper($data['node']);
             $ip = $data['main_ip'];
     
-            if (empty($username) || empty($name) || empty($node) || empty($bandwidth) || empty($password) || empty($ip)) {
+            if (empty($username) || empty($name) || empty($node) || empty($bandwidth) || empty($ip)) {
                 $response = [
                     'status' => 'error',
                     'code' => 400,
@@ -399,6 +416,7 @@ class RadiusController extends Controller
     
         return response()->json($response, $response['code']);
     }
+
     /**
      * Delete a user from the radius database.
      *
