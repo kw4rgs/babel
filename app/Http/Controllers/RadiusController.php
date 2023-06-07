@@ -270,7 +270,7 @@ class RadiusController extends Controller
     {
         try {
 
-            $validate = $this->validateInput($request);
+            $validate = $this->validateRequest($request);
             
             if ($validate['code'] != 200) {
 
@@ -361,14 +361,14 @@ class RadiusController extends Controller
         }
     }
 
-    /**
-     * Validate the input data
-     * 
-     * @param Request $request
-     * @return array $response
-     */
+        /**
+         * Validate the input data
+         * 
+         * @param Request $request
+         * @return array $response
+         */
 
-        private function validateInput (Request $request)
+        private function validateRequest (Request $request)
         {
             $data = $request->input();
 
@@ -401,6 +401,41 @@ class RadiusController extends Controller
 
         }
 
+        /**
+         * Validate the username
+         * 
+         * @param Request $request
+         * @return array $response
+         */
+
+        private function validateUser (Request $request)
+        {
+            $data = $request->input();
+
+            $validator = Validator::make($request->all(), [
+                'username' => 'required|string',
+            ]);
+        
+            if ($validator->fails()) {
+
+                $response = [
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Invalid data.',
+                    'detail' => $validator->errors(),
+                ];
+
+            } else {
+                $response = [
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Data is valid.',
+                ];
+            }
+
+            return $response;
+        }
+
     /**
      * Update user paramas in the radius database
      *
@@ -416,13 +451,13 @@ class RadiusController extends Controller
     public function updateUser(Request $request)
     {
         try {
-            $validate = $this->validateInput($request);
+            $validate = $this->validateRequest($request);
             
             if ($validate['code'] != 200) {
 
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Error creating user',
+                    'message' => 'Error updating user',
                     'detail' => $validate['detail'],
                 ], Response::HTTP_BAD_REQUEST);
 
@@ -492,6 +527,7 @@ class RadiusController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while updating the user.',
+                'detail' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -500,66 +536,75 @@ class RadiusController extends Controller
      * Delete a user from the radius database.
      *
      * @param Request $request
-     * @return void
+     * @param string $username
+     * @return Illuminate\Http\Response
      */
     
     public function deleteUser(Request $request)
     {
         try {
-            $data = $request->input();
-            $username = $data['username'];
+            $validate = $this->validateUser($request);
             
-            // Check if the user exists
-            $userExists = DB::connection('radius')
-                ->table('radcheck')
-                ->where('username', $username)
-                ->exists();
+            if ($validate['code'] != 200) {
 
-            if (!$userExists) {
-                $response = [
+                return response()->json([
                     'status' => 'error',
-                    'code' => 404,
-                    'message' => 'User does not exist.',
-                ];
+                    'message' => 'Error deleting user',
+                    'detail' => $validate['detail'],
+                ], Response::HTTP_BAD_REQUEST);
 
-                return response()->json($response, $response['code']);
+            } else {
+
+                $data = $request->input();
+                $username = $data['username'];
+                
+                // Check if the user exists
+                $userExists = DB::connection('radius')
+                    ->table('radcheck')
+                    ->where('username', $username)
+                    ->exists();
+
+                if (!$userExists) {
+
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'User does not exist.',
+                    ], Response::HTTP_NOT_FOUND);
+
+                } else {
+                    // Delete user from radcheck table
+                    DB::connection('radius')
+                        ->table('radcheck')
+                        ->where('username', $username)
+                        ->delete();
+
+                    // Delete user from radreply table
+                    DB::connection('radius')
+                        ->table('radreply')
+                        ->where('username', $username)
+                        ->delete();
+
+                    // Delete user from userinfo table
+                    DB::connection('radius')
+                        ->table('userinfo')
+                        ->where('username', $username)
+                        ->delete();
+
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'User deleted successfully',
+                    ], Response::HTTP_OK);
+                }
             }
 
-            // Delete user from radcheck table
-            DB::connection('radius')
-                ->table('radcheck')
-                ->where('username', $username)
-                ->delete();
-
-            // Delete user from radreply table
-            DB::connection('radius')
-                ->table('radreply')
-                ->where('username', $username)
-                ->delete();
-
-            // Delete user from userinfo table
-            DB::connection('radius')
-                ->table('userinfo')
-                ->where('username', $username)
-                ->delete();
-
-            $response = [
-                'status' => 'success',
-                'code' => 200,
-                'message' => 'User deleted successfully.',
-            ];
-
-            return response()->json($response, $response['code']);
         } catch (\Exception $e) {
-            $response = [
+
+            return response()->json([
                 'status' => 'error',
-                'code' => 500,
-                'message' => 'An error occurred while deleting the user.',
-                'error' => $e->getMessage(),
-            ];
-            
-            return response()->json($response, $response['code']);
-            #throw new HttpException($response['code'], $response['message']);
+                'message' => 'Error deleting user',
+                'detail' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+ 
         }
     }
 
