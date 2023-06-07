@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\HttpException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Support\Facades\Validator;
 
 class RadiusController extends Controller
 {
@@ -14,8 +16,7 @@ class RadiusController extends Controller
     /**
      * Get all users from the radius database
      *
-     * @param Request $request
-     * @return void
+     * @return Illuminate\Http\Response
      */
 
     public function getAllUsers() 
@@ -91,13 +92,13 @@ class RadiusController extends Controller
     }
 
     /**
-     * Get a user from the radius database
+     * Get a user from the radius database based on the username in the request
      *
-     * @param Request $request
-     * @return void
+     * @param Request $request 
+     * @return Illuminate\Http\Response
      */
 
-    public function getUser(Request $request)
+    public function getUser (Request $request)
     {
         try {
             $username = $request->input('username');
@@ -106,27 +107,29 @@ class RadiusController extends Controller
                 throw new ValidationException('Username is required.');
             }
     
-            $radreply_framed = $this->getRadreplyFramedData($username);
-            $radreply_ratelimit = $this->getRadreplyMikrotikData($username);
-            $radcheck_creds = $this->getRadcheckData($username);
-            $userinfo_data = $this->getName($username); 
-    
+            $radreply_framed = $this->getUserFramedIP($username);
+            $radreply_ratelimit = $this->getUserMikrotikRateLimit($username);
+            $radcheck_creds = $this->getUserPassword($username);
+            $userinfo_data = $this->getUserInfo($username); 
+            $created_at = explode(' ', $userinfo_data[0]->creationdate);
+            $update_at = explode(' ', $userinfo_data[0]->updatedate);
+
             $data_radius = [
-                'Id' => $radreply_framed[0]->id,
-                'Name' => $userinfo_data[0]->firstname . ' ' . $userinfo_data[0]->lastname,
-                'Username' => $radreply_framed[0]->username,
-                'Password' => $radcheck_creds[0]->value,
-                'Mikrotik-Rate-Limit' => $radreply_ratelimit[0]->value,
-                'Framed-Ip-Address' => $radreply_framed[0]->value,
+                'id' => $radreply_framed[0]->id,
+                'name' => $userinfo_data[0]->firstname . $userinfo_data[0]->lastname,
+                'username' => $radreply_framed[0]->username,
+                'password' => $radcheck_creds[0]->value,
+                'bandwith_plan' => $radreply_ratelimit[0]->value,
+                'main_ip' => $radreply_framed[0]->value,
+                'node' => $userinfo_data[0]->nodo,
+                'created_at' => $created_at[0],
+                'updated_at' => $update_at[0],
             ];
     
             $response = [
                 'status' => 'success',
                 'code' => 200,
-                'data' => [
-                    'radius_user_quantity' => 1,
-                    'radius_user_data' => $data_radius,
-                ],
+                'data' => $data_radius,
             ];
     
             return response()->json($response, $response['code']);
@@ -156,166 +159,259 @@ class RadiusController extends Controller
         return response()->json($response, $response['code']);
     }
 
-    private function getRadreplyFramedData($username)
-    {
-        $radius_data = DB::connection('radius')
-            ->table('radreply')
-            ->select('*')
-            ->where('username', '=', $username)
-            ->where('attribute', '=', 'Framed-IP-Address')
-            ->orderBy('id')
-            ->get();
+        /* 
+        * Get the user's Framed-Ip-Address from the radius database based on the username
+        *
+        * @param str $username 
+        * @return array $radreply_data
+        */
 
-        if ($radius_data->isEmpty()) {
-            throw new NotFoundHttpException();
+        private function getUserFramedIP ($username)
+        {
+            $radreply_data = DB::connection('radius')
+                ->table('radreply')
+                ->select('*')
+                ->where('username', '=', $username)
+                ->where('attribute', '=', 'Framed-IP-Address')
+                ->orderBy('id')
+                ->get();
+
+            if ($radreply_data->isEmpty()) {
+                throw new NotFoundHttpException();
+            }
+
+            return $radreply_data;
         }
 
-        return $radius_data;
-    }
+        /* 
+        * Get the user's Mikrotik-Rate-Limit from the radius database based on the username
+        *
+        * @param str $username 
+        * @return array $radius_data
+        */
 
-    private function getRadreplyMikrotikData($username)
-    {
-        $radius_data = DB::connection('radius')
-            ->table('radreply')
-            ->select('*')
-            ->where('username', $username)
-            ->where('attribute', 'Mikrotik-Rate-Limit')
-            ->get();
+        private function getUserMikrotikRateLimit ($username)
+        {
+            $radreply_data = DB::connection('radius')
+                ->table('radreply')
+                ->select('*')
+                ->where('username', $username)
+                ->where('attribute', 'Mikrotik-Rate-Limit')
+                ->get();
 
 
-        if ($radius_data->isEmpty()) {
-            throw new NotFoundHttpException();
+            if ($radreply_data->isEmpty()) {
+                throw new NotFoundHttpException();
+            }
+
+            return $radreply_data;
         }
 
-        return $radius_data;
-    }
+        /* 
+        * Get the user's password from the radius database based on the username
+        *
+        * @param str $username
+        * @return array $radcheck_data
+        */
 
-    private function getRadcheckData($username)
-    {   
-        $radcheck_data = DB::connection('radius')
-            ->table('radcheck')
-            ->select('*')
-            ->where('username', $username)
-            ->orderBy('id', 'asc')
-            ->limit('')
-            ->get();
+        private function getUserPassword ($username)
+        {   
+            $radcheck_data = DB::connection('radius')
+                ->table('radcheck')
+                ->select('*')
+                ->where('username', $username)
+                ->orderBy('id', 'asc')
+                ->limit('')
+                ->get();
 
-        if ($radcheck_data->isEmpty()) {
-            throw new NotFoundHttpException();
+            if ($radcheck_data->isEmpty()) {
+                throw new NotFoundHttpException();
+            }
+
+            return $radcheck_data;
         }
 
-        return $radcheck_data;
-    }
+        /* 
+        * Get the user's name from the radius database based on the username
+        *
+        * @param str $username
+        * @return array $userinfo_data
+        */
 
-    private function getName ($username)
-    {
-        $userinfo_data = DB::connection('radius')
-            ->table('userinfo')
-            ->select('*')
-            ->where('username', $username)
-            ->get();
-        
-        if ($userinfo_data->isEmpty()) {
-            throw new NotFoundHttpException();
+
+        private function getUserInfo ($username)
+        {
+            $userinfo_data = DB::connection('radius')
+                ->table('userinfo')
+                ->select('*')
+                ->where('username', $username)
+                ->get();
+            
+            if ($userinfo_data->isEmpty()) {
+                throw new NotFoundHttpException();
+            }
+
+            return $userinfo_data;
         }
 
-        return $userinfo_data;
-    }
-
-    //private function getUsername ($)
     /**
      * Create a new user in the radius database
      *
      * @param Request $request
-     * @return void
+     *  @param string $username
+     *  @param string $name
+     *  @param string $bandwidth_plan
+     *  @param string $node
+     *  @param string $main_ip
+     * @return Illuminate\Http\Response
      */
 
     public function createUser (Request $request)
     {
         try {
-            $data = $request->input();
-    
-            $username = strtolower($data['username']);
-            $name = ucwords(strtolower($data['name']));
-            $node = strtoupper($data['node']);
-            $bandwidth = $data['bandwidth_plan'];
-            $password = substr(md5($data['username']), 0, 8);
-            $ip = $data['main_ip'];
-    
-            // Check if user already exists
-            $existingUser = DB::connection('radius')->table('userinfo')
-                ->where('username', $username)
-                ->first();
-    
-            if ($existingUser) {
+
+            $validate = $this->validateInput($request);
+            
+            if ($validate['code'] != 200) {
+
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'User already exists.',
-                ], 409);
+                    'message' => 'Error creating user',
+                    'detail' => $validate['detail'],
+                ], Response::HTTP_BAD_REQUEST);
+
+            } else {
+                $data = $request->input();
+                $username = strtolower($data['username']);
+                $name = ucwords(strtolower($data['name']));
+                $node = strtoupper($data['node']);
+                $bandwidth = $data['bandwidth_plan'];
+                $ip = $data['main_ip'];
+                $password = substr(md5($data['username']), 0, 8);
+
+                // Check if user already exists
+                $existingUser = DB::connection('radius')->table('userinfo')
+                    ->where('username', $username)
+                    ->first();
+        
+                if ($existingUser) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'User already exists.',
+                    ], Response::HTTP_CONFLICT);
+                }
+
+                // Create user in radius database
+        
+                DB::beginTransaction();
+        
+                DB::connection('radius')->table('radreply')->insert([
+                    'username' => $username,
+                    'attribute' => 'Mikrotik-Rate-Limit',
+                    'op' => '=',
+                    'value' => $bandwidth,
+                    'ip_old' => '',
+                    'nodo' => $node,
+                    'nodo_old' => '',
+                ]);
+        
+                DB::connection('radius')->table('radreply')->insert([
+                    'username' => $username,
+                    'attribute' => 'Framed-IP-Address',
+                    'op' => '=',
+                    'value' => $ip,
+                    'ip_old' => '',
+                    'nodo' => $node,
+                    'nodo_old' => '',
+                ]);
+        
+                DB::connection('radius')->table('radcheck')->insert([
+                    'username' => $username,
+                    'attribute' => 'Cleartext-Password',
+                    'op' => ':=',
+                    'value' => $password,
+                ]);
+        
+                DB::connection('radius')->table('userinfo')->insert([
+                    'username' => $username,
+                    'firstname' => $name,
+                    'nodo' => $node,
+                    'creationdate' => date('Y-m-d H:i:s'),
+                    'creationby' => 'Babel',
+                    'updatedate' => date('Y-m-d H:i:s'),
+                ]);
+
+                DB::commit();
+        
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'User created successfully.',
+                ], Response::HTTP_CREATED);
+
             }
-    
-            DB::beginTransaction();
-    
-            DB::connection('radius')->table('radreply')->insert([
-                'username' => $username,
-                'attribute' => 'Mikrotik-Rate-Limit',
-                'op' => '=',
-                'value' => $bandwidth,
-                'ip_old' => '',
-                'nodo' => $node,
-                'nodo_old' => '',
-            ]);
-    
-            DB::connection('radius')->table('radreply')->insert([
-                'username' => $username,
-                'attribute' => 'Framed-IP-Address',
-                'op' => '=',
-                'value' => $ip,
-                'ip_old' => '',
-                'nodo' => $node,
-                'nodo_old' => '',
-            ]);
-    
-            DB::connection('radius')->table('radcheck')->insert([
-                'username' => $username,
-                'attribute' => 'Cleartext-Password',
-                'op' => ':=',
-                'value' => $password,
-            ]);
-    
-            DB::connection('radius')->table('userinfo')->insert([
-                'username' => $username,
-                'firstname' => $name,
-                'creationdate' => date('Y-m-d H:i:s'),
-                'creationby' => 'Babel',
-                'updatedate' => date('Y-m-d H:i:s'),
-            ]);
-    
-            DB::commit();
-    
-            return response()->json([
-                'status' => 'success',
-                'message' => 'User created successfully.',
-            ], 201);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            $response = [
+
+            return response()->json([
                 'status' => 'error',
-                'code' => 500,
                 'message' => 'An error occurred while creating the user.',
-                'error' => $e->getMessage(),
-            ];
-            
-            return response()->json($response, $response['code']);
+                'detail' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Update a user in the radius database
+     * Validate the input data
+     * 
+     * @param Request $request
+     * @return array $response
+     */
+
+        private function validateInput (Request $request)
+        {
+            $data = $request->input();
+
+            $validator = Validator::make($request->all(), [
+                'username' => 'required|string',
+                'name' => 'required|string',
+                'bandwidth_plan' => 'required|string',
+                'node' => 'required|string',
+                'main_ip' => 'required|ip',
+            ]);
+        
+            if ($validator->fails()) {
+
+                $response = [
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Invalid data.',
+                    'detail' => $validator->errors(),
+                ];
+
+            } else {
+                $response = [
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Data is valid.',
+                ];
+            }
+
+            return $response;
+
+        }
+
+    /**
+     * Update user paramas in the radius database
      *
      * @param Request $request
-     * @return void
-     */    
+     *  @param string $username
+     *  @param string $name
+     *  @param string $bandwidth_plan
+     *  @param string $node
+     *  @param string $main_ip
+     * @return Illuminate\Http\Response
+     */ 
 
     public function updateUser(Request $request)
     {
