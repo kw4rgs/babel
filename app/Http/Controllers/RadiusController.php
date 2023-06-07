@@ -416,101 +416,84 @@ class RadiusController extends Controller
     public function updateUser(Request $request)
     {
         try {
-            $data = $request->input();
-    
-            $name = ucwords(strtolower($data['name']));
-            $username = strtolower($data['username']);
-            $bandwidth = $data['bandwidth_plan'];
-            $node = strtoupper($data['node']);
-            $ip = $data['main_ip'];
-    
-            if (empty($username) || empty($name) || empty($node) || empty($bandwidth) || empty($ip)) {
-                $response = [
+            $validate = $this->validateInput($request);
+            
+            if ($validate['code'] != 200) {
+
+                return response()->json([
                     'status' => 'error',
-                    'code' => 400,
-                    'message' => 'Missing parameters',
-                ];
+                    'message' => 'Error creating user',
+                    'detail' => $validate['detail'],
+                ], Response::HTTP_BAD_REQUEST);
+
+            } else {
+                $data = $request->input();
+                $username = strtolower($data['username']);
+                $name = ucwords(strtolower($data['name']));
+                $node = strtoupper($data['node']);
+                $bandwidth = $data['bandwidth_plan'];
+                $ip = $data['main_ip'];
     
-                return response()->json($response, $response['code']);
+                // Check if the user exists
+                $userExists = DB::connection('radius')
+                    ->table('radcheck')
+                    ->where('username', $username)
+                    ->exists();
+        
+                if (!$userExists) {
+                    
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'User does not exist.',
+                    ], Response::HTTP_NOT_FOUND);
+
+                } else {
+                    // Update Mikrotik-Rate-Limit in radreply table
+                    DB::connection('radius')
+                        ->table('radreply')
+                        ->where('username', $username)
+                        ->where('attribute', 'Mikrotik-Rate-Limit')
+                        ->update([
+                            'value' => $bandwidth,
+                        ]);
+                    
+                    // Update Framed-Ip-Address in radreply table
+                    DB::connection('radius')
+                        ->table('radreply')
+                        ->where('username', $username)
+                        ->where('attribute', 'Framed-Ip-Address')
+                        ->update([
+                            'value' => $ip,
+                        ]);
+
+                    // Update userinfo table
+                    DB::connection('radius')
+                        ->table('userinfo')
+                        ->where('username', $username)
+                        ->update([
+                            'firstname' => $name,
+                            'nodo' => $node,
+                            'updatedate' => date('Y-m-d H:i:s'),
+                        ]);
+
+                    
+                    $new_data = $this->getUser($request);
+
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Bandwidth updated successfully',
+                        'detail' => $new_data->original,
+                    ], Response::HTTP_OK);
+                }
             }
-    
-            // Check if the user exists
-            $userExists = DB::connection('radius')
-                ->table('radcheck')
-                ->where('username', $username)
-                ->exists();
-    
-            if (!$userExists) {
-                $response = [
-                    'status' => 'error',
-                    'code' => 404,
-                    'message' => 'User does not exist.',
-                ];
-    
-                return response()->json($response, $response['code']);
-            }
-    
-            // Update Mikrotik-Rate-Limit in radreply table
-            DB::connection('radius')
-                ->table('radreply')
-                ->where('username', $username)
-                ->where('attribute', 'Mikrotik-Rate-Limit')
-                ->update([
-                    'value' => $bandwidth,
-                ]);
-    
-            // Update Framed-Ip-Address in radreply table
-            DB::connection('radius')
-                ->table('radreply')
-                ->where('username', $username)
-                ->where('attribute', 'Framed-Ip-Address')
-                ->update([
-                    'value' => $ip,
-                ]);
-    
-            // Update username in userinfo table
-            DB::connection('radius')
-                ->table('userinfo')
-                ->where('username', $username)
-                ->update([
-                    'updatedate' => date('Y-m-d H:i:s'),
-                ]);
-    
-            $new_data = $this->getUser($request);
-    
-            $response = [
-                'status' => 'success',
-                'code' => 200,
-                'message' => 'Bandwidth updated successfully.',
-                'new_data' => $new_data,
-            ];
-    
-            return response()->json($response, $response['code']);
-    
-        } catch (ValidationException $e) {
-            $response = [
-                'status' => 'error',
-                'code' => 400,
-                'message' => $e->getMessage(),
-            ];
-    
-        } catch (NotFoundHttpException $e) {
-            $response = [
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'User does not exist.',
-            ];
     
         } catch (\Exception $e) {
-            $response = [
+
+            return response()->json([
                 'status' => 'error',
-                'code' => 500,
-                'message' => 'An error occurred while updating the username.',
-                'error' => $e->getMessage(),
-            ];
+                'message' => 'An error occurred while updating the user.',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    
-        return response()->json($response, $response['code']);
     }
 
     /**
