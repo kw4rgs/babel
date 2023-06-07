@@ -19,10 +19,9 @@ class RadiusController extends Controller
      * @return Illuminate\Http\Response
      */
 
-    public function getAllUsers() 
+    public function getAllUsers()
     {
         try {
-
             $radreply_data = DB::connection('radius')
                 ->table('radreply')
                 ->select('id', 'username', 'attribute', 'value')
@@ -35,13 +34,19 @@ class RadiusController extends Controller
                 ->orderBy('id', 'asc')
                 ->get();
     
-            $mergedUsers = [];
+            $userinfo_data = DB::connection('radius')
+                ->table('userinfo')
+                ->select('username', 'firstname', 'lastname', 'nodo', 'creationdate', 'updatedate')
+                ->orderBy('id', 'asc')
+                ->get();
+    
+            $merged_data = [];
     
             foreach ($radreply_data as $user) {
                 $username = $user->username;
     
-                if (!isset($mergedUsers[$username])) {
-                    $mergedUsers[$username] = [
+                if (!isset($merged_data[$username])) {
+                    $merged_data[$username] = [
                         'Id' => $user->id,
                         'Username' => $username,
                         'Password' => '',
@@ -55,39 +60,49 @@ class RadiusController extends Controller
                     $attribute = trim($attribute);
                     $value = trim($values[$index]);
     
-                    $mergedUsers[$username][$attribute] = $value;
+                    $merged_data[$username][$attribute] = $value;
                 }
             }
     
             foreach ($radcheck_data as $user) {
                 $username = $user->username;
     
-                if (isset($mergedUsers[$username])) {
-                    $mergedUsers[$username]['Password'] = $user->value;
+                if (isset($merged_data[$username])) {
+                    $merged_data[$username]['Password'] = $user->value;
                 }
             }
     
-            $data_radius = array_values($mergedUsers);
+            foreach ($userinfo_data as $user) {
+                $username = $user->username;
+                $created_at = explode(' ', $user->creationdate);
+                $updated_at = explode(' ', $user->updatedate);
     
-            $response = [
+                if (isset($merged_data[$username])) {
+                    $merged_data[$username]['Name'] = $user->firstname . $user->lastname;
+                    $merged_data[$username]['Node'] = $user->nodo;
+                    $merged_data[$username]['Creation Date'] = $created_at[0];
+                    $merged_data[$username]['Update Date'] = $updated_at[0];
+                }
+            }
+    
+            $data_radius = array_values($merged_data);
+    
+            return response()->json([
                 'status' => 'success',
-                'code' => 200,
-                'data' => [
+                'message' => 'Users found',
+                'detail' => [
                     'radius_users_quantity' => count($data_radius),
-                    'radius_users_data' => $data_radius,
-                ],
-            ];
-    
-            return response()->json($response, $response['code']);
+                    'radius_users_data' => $data_radius
+                ]
+            ], Response::HTTP_OK);
         } catch (\Exception $e) {
-            $response = [
-                'status' => 'error',
-                'code' => 500,
-                'message' => 'An error occurred while retrieving user data.',
-                'error' => $e->getMessage(),
-            ];
+            $errorMessage = 'Error retrieving users';
     
-            return response()->json($response, $response['code']);
+            return response()->json([
+                'status' => 'error',
+                'message' => $errorMessage,
+                'detail' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -101,62 +116,72 @@ class RadiusController extends Controller
     public function getUser (Request $request)
     {
         try {
-            $username = $request->input('username');
-    
-            if (empty($username)) {
-                throw new ValidationException('Username is required.');
-            }
-    
-            $radreply_framed = $this->getUserFramedIP($username);
-            $radreply_ratelimit = $this->getUserMikrotikRateLimit($username);
-            $radcheck_creds = $this->getUserPassword($username);
-            $userinfo_data = $this->getUserInfo($username); 
-            $created_at = explode(' ', $userinfo_data[0]->creationdate);
-            $update_at = explode(' ', $userinfo_data[0]->updatedate);
+            $validate = $this->validateUser($request);
+            
+            if ($validate['code'] != 200) {
 
-            $data_radius = [
-                'id' => $radreply_framed[0]->id,
-                'name' => $userinfo_data[0]->firstname . $userinfo_data[0]->lastname,
-                'username' => $radreply_framed[0]->username,
-                'password' => $radcheck_creds[0]->value,
-                'bandwith_plan' => $radreply_ratelimit[0]->value,
-                'main_ip' => $radreply_framed[0]->value,
-                'node' => $userinfo_data[0]->nodo,
-                'created_at' => $created_at[0],
-                'updated_at' => $update_at[0],
-            ];
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Error getting user',
+                    'detail' => $validate['detail'],
+                ], Response::HTTP_BAD_REQUEST);
+
+            } else {
+
+                $data = $request->input();
+                $username = $data['username'];
+
+                // Check if the user exists
+                $userExists = DB::connection('radius')
+                    ->table('radcheck')
+                    ->where('username', $username)
+                    ->exists();
     
-            $response = [
-                'status' => 'success',
-                'code' => 200,
-                'data' => $data_radius,
-            ];
+                if (!$userExists) {
+                
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'User does not exist.',
+                    ], Response::HTTP_NOT_FOUND);
+
+                } else {
     
-            return response()->json($response, $response['code']);
+                    $radreply_framed = $this->getUserFramedIP($username);
+                    $radreply_ratelimit = $this->getUserMikrotikRateLimit($username);
+                    $radcheck_creds = $this->getUserPassword($username);
+                    $userinfo_data = $this->getUserInfo($username); 
+                    $created_at = explode(' ', $userinfo_data[0]->creationdate);
+                    $update_at = explode(' ', $userinfo_data[0]->updatedate);
+
+                    $data_radius = [
+                        'id' => $radreply_framed[0]->id,
+                        'name' => $userinfo_data[0]->firstname . $userinfo_data[0]->lastname,
+                        'username' => $radreply_framed[0]->username,
+                        'password' => $radcheck_creds[0]->value,
+                        'bandwith_plan' => $radreply_ratelimit[0]->value,
+                        'main_ip' => $radreply_framed[0]->value,
+                        'node' => $userinfo_data[0]->nodo,
+                        'created_at' => $created_at[0],
+                        'updated_at' => $update_at[0],
+                    ];
+            
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'User found',
+                        'detail' => $data_radius,
+                    ], Response::HTTP_OK);
+                };
+            };
     
-        } catch (ValidationException $e) {
-            $response = [
+            } catch (\Exception $e) {
+
+            return response()->json([
                 'status' => 'error',
-                'code' => 400,
-                'message' => $e->getMessage(),
-            ];
-    
-        } catch (NotFoundHttpException $e) {
-            $response = [
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'User does not exist.',
-            ];
-    
-        } catch (\Exception $e) {
-            $response = [
-                'status' => 'error',
-                'code' => 500,
-                'message' => 'An error occurred while retrieving user data.',
-            ];
+                'message' => 'Error retrieving user',
+                'detail' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    
-        return response()->json($response, $response['code']);
+
     }
 
         /* 
