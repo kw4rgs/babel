@@ -127,7 +127,7 @@ class FTTHController extends Controller
                 }
             }
         } catch (HttpException $e) {
-            
+
             return response()->json([
                 'status' => false,
                 'message' => 'Error getting customer connection.',
@@ -139,172 +139,74 @@ class FTTHController extends Controller
     }
 
 
-    //             // Call the getUser function from the RadiusController
-    //             if (($customer_on_radius->getStatusCode() !== 200)) {
-
-    //                 return response()->json([
-    //                     'status' => false,
-    //                     'message' => 'Error getting customer connection. Customer not found in Radius.',
-    //                     'data' => [
-    //                         'radius' => $customer_on_radius
-    //                     ]
-    //                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
-
-    //             } else {
-    //                 $radius_response = $this->radiusController->getUser($request);
-    //             }
-                
-    //             // Check if ONU serial number is provided
-    //             if (!isset($data['onu_sn'])) {
-
-    //                     return response()->json([
-    //                     'status' => true,
-    //                     'message' => 'Error getting ONU status. ONU serial number not provided, but customer connection was found in Radius.',
-    //                     'data' => [
-    //                         'radius' => $radius_response->original
-    //                     ]
-    //                 ], Response::HTTP_PARTIAL_CONTENT);
-                
-    //             } else {
-    //                 // Call the getOnuStatus function from the SmartoltController
-    //                 $customer_on_smartolt = $this->smartoltController->getOnuStatus($request);
-    //                 $get_customer_smartolt = json_decode($customer_on_smartolt->getContent(), true);
-
-    //                 // Check if customer is not available in SmartOLT
-    //                 if ($get_customer_smartolt['code'] !== 200) {
-
-    //                     return response()->json([
-    //                         'status' => true,
-    //                         'message' => 'ONU not available in SmartOLT, but customer connection was found in Radius',
-    //                         'data' => [
-    //                             'radius' => $radius_response->original
-    //                         ]
-    //                     ], Response::HTTP_PARTIAL_CONTENT);
-
-    //                 }
-    //             }
-                
-    //             // If the radius response is 200 and the smartolt response is 200, return the response
-    //             return response()->json;
-        
-    //         }
-    //     }
-    
-    // }
-
-
     /**
      * Update the customer connection in Radius and reboot onu in SmartOLT
      *
      * @param Request $request
+     * @param string $name
+     * @param string $username
+     * @param string $bandwidth_plan
+     * @param string $node
+     * @param string $main_ip
+     * @param string $onu_sn
      * @return Illuminate\Http\Response
      */
 
-    /* public function updateCustomerConnection(Request $request)
+    public function updateCustomerConnection (Request $request)
     {
         try {
-            $data = $request->all();
+            // Gets the customer connection response from getCustomerConnection
+            $customer_connection = $this->getCustomerConnection($request);
 
-            // Verify customer is provided
-            if (!isset($data['username'])) {
-                
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Error updating customer connection. Username not provided.',
-                    'data' => [
-                        'radius' => $radius_response->original
-                    ]
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            // Checks if the customer connection response is 200, if so customer connection in Radius is updated and ONU is rebooted, 
+            // If the customer connection response is 206, the customer connection in Radius is updated but ONU is not rebooted
+            if (($customer_connection->getStatusCode() === 200)) {
 
-            } else {
-                $customer_on_radius = $this->radiusController->getUser($request);
-            }
-
-            // Call the updateUser function from the RadiusController
-            if (($customer_on_radius->getStatusCode() !== 200)) {
-
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Error updating customer connection. Customer not found in Radius.',
-                    'data' => [
-                        'radius' => $customer_on_radius
-                    ]
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-
-            } else {
                 $radius_response = $this->radiusController->updateUser($request);
-            }
-            
-            // Check if ONU serial number is provided
-            if (!isset($data['onu_sn'])) {
-
-                    return response()->json([
-                    'status' => true,
-                    'message' => 'Error rebooting ONU. ONU serial number not provided, but customer connection was updated in Radius.',
-                    'data' => [
-                        'radius' => $radius_response->original
-                    ]
-                ], Response::HTTP_PARTIAL_CONTENT);
-            
-            } else {
-                // Call the getOnuStatus function from the SmartoltController
-                $customer_on_smartolt = $this->smartoltController->getOnuStatus($request);
-                $get_customer_smartolt = json_decode($customer_on_smartolt->getContent(), true);
-
-                // Check if customer is not available in SmartOLT
-                if ($get_customer_smartolt['code'] !== 200) {
-
-                    return response()->json([
-                        'status' => true,
-                        'message' => 'ONU not available in SmartOLT, but customer connection was updated in Radius',
-                        'data' => [
-                            'radius' => $radius_response->original
-                        ]
-                    ], Response::HTTP_PARTIAL_CONTENT);
-
-                }
-            }
-            // Call the rebootOnu function from the SmartoltController
-            $smartolt_response = $this->smartoltController->rebootOnu($request);
-            $smartolt_reboot = json_decode($smartolt_response->getContent(), true);
-
-            // Check if customer is not available in SmartOLT
-            if ($smartolt_reboot['code'] !== 200) {
+                $smartolt_response = $this->smartoltController->rebootOnu($request);
 
                 return response()->json([
                     'status' => true,
-                    'message' => 'Error rebooting ONU, but customer connection was updated in Radius',
+                    'message' => 'Customer connection updated in Radius and ONU rebooted in SmartOLT.',
                     'data' => [
                         'radius' => $radius_response->original,
                         'smartolt' => $smartolt_response->original
                     ]
+                ], Response::HTTP_OK);
+
+            } elseif (($customer_connection->getStatusCode() === 206)) {
+
+                $radius_response = $this->radiusController->updateUser($request);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Customer connection updated in Radius, but ONU is not available in SmartOLT.',
+                    'data' => [
+                        'radius' => $radius_response->original
+                    ]
                 ], Response::HTTP_PARTIAL_CONTENT);
 
+            } else {
+
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Error updating customer connection.',
+                    'data' => [
+                        'radius' => $customer_connection->original
+                    ]
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
-            
-            // If the radius response is 200 and the smartolt response is 200, return the response
+
+        } catch (HttpException $e) {
+
             return response()->json([
-
-                'status' => true,
-                'message' => 'Customer connection updated successfully and ONU rebooted',
-                'data' => [
-                    'radius' => $radius_response->original,
-                    'smartolt' => $smartolt_response->original
-                ]
-            ], Response::HTTP_OK);
-
-        } catch (Exception $e) {
-            return response()->json([
-
                 'status' => false,
-                'message' => 'Error updating customer connection',
+                'message' => 'Error updating customer connection.',
                 'data' => [
-                    'radius' => $radius_response->original,
-                    'smartolt' => $smartolt_response->original
+                    'error' => $e->getMessage()
                 ]
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
-
         }
-    } */
+    }
 
 }
