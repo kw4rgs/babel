@@ -11,8 +11,10 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Controllers\SmartOltController;
 use App\Http\Controllers\RadiusController;
+use Knuckles\Scribe\Attributes\Group;
 
 
+#[Group("FTTH Controller", "API for managing FTTH connections")]
 
 class FTTHController extends Controller
 {

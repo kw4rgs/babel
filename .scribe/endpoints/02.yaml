@@ -1,0 +1,141 @@
+name: 'SmartOLT Controller'
+description: |-
+
+  API for managing SmartOLT
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: v1/smartolt/onu/status
+    metadata:
+      groupName: 'SmartOLT Controller'
+      groupDescription: |-
+
+        API for managing SmartOLT
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get ONU Status'
+      description: 'This endpoint allows you to get the status of an ONU.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer BEARER_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      onu_sn:
+        name: onu_sn
+        description: 'The ONU serial number.'
+        required: true
+        example: HWTCA7A1236A
+        type: string
+        custom: []
+    cleanBodyParameters:
+      onu_sn: HWTCA7A1236A
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"status": "success", "message": "ONU Status retrieved successfully.", "detail": {"status": true,"onu_status": "Online"}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: '{"status": "error", "message": "Invalid data.", "detail": {"onu_sn": ["The onu sn field is required."]}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"status": "error", "message": "ONU Status not found."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: '{"status": "error", "message": "An error occurred while retrieving ONU Status."}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer f6ZV8gPkbd1E3aav56ec4Dh'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: v1/smartolt/onu/reboot
+    metadata:
+      groupName: 'SmartOLT Controller'
+      groupDescription: |-
+
+        API for managing SmartOLT
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Reboot ONU'
+      description: 'This endpoint allows you to reboot an ONU by its serial number.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer BEARER_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      onu_sn:
+        name: onu_sn
+        description: 'The ONU serial number.'
+        required: true
+        example: HWTCA7A1236A
+        type: string
+        custom: []
+    cleanBodyParameters:
+      onu_sn: HWTCA7A1236A
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"status": "success", "message": "ONU rebooted successfully.", "detail": {"status": true,"response": "Device reboot command sent"}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: '{"status": "error", "message": "Invalid data.", "detail": {"onu_sn": ["The onu sn field is required."]}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"status": "error", "message": "ONU Status not found."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: '{"status": "error", "message": "An error occurred while retrieving ONU Status."}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer vhEZ4e586bcV3kfdD6aaP1g'
+    controller: null
+    method: null
+    route: null
+    custom: []

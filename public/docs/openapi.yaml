@@ -5,28 +5,40 @@ info:
   version: 1.0.0
 servers:
   -
-    url: 'http://localhost/v1'
+    url: 'http://localhost'
 paths:
+  /v1/ftth/customer:
+    get:
+      summary: ''
+      operationId: getV1FtthCustomer
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Unauthorized.
+      tags:
+        - 'FTTH Controller'
+      security: []
+    put:
+      summary: 'Update the customer connection in Radius and reboot onu in SmartOLT'
+      operationId: updateTheCustomerConnectionInRadiusAndRebootOnuInSmartOLT
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - 'FTTH Controller'
+      security: []
   /v1/test:
     get:
       summary: 'Test RouterOS'
       operationId: testRouterOS
       description: "This endpoint allows you to test the Mikrotik server connection with this API.\nIt's a really useful endpoint and a start point to know if there is any problem.\n<aside class=\"notice\">I recommend you to use first, to debug any futher inconvenience. 😁</aside>"
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/xml
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -53,7 +65,7 @@ paths:
                     type: string
                     example: "BABEL: Undefined array key 'ip'"
       tags:
-        - Endpoints
+        - 'Mikrotik Controller'
       requestBody:
         required: true
         content:
@@ -73,21 +85,7 @@ paths:
       summary: 'Get Contracts'
       operationId: getContracts
       description: "This endpoint allows you to get contracts information from a Mikrotik server.\n<aside class=\"notice\">This will be useful to get the clients that are in an specific router. </aside>"
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/xml
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -147,7 +145,7 @@ paths:
                     type: string
                     example: "BABEL: Undefined array key 'ip'"
       tags:
-        - Endpoints
+        - 'Mikrotik Controller'
       requestBody:
         required: true
         content:
@@ -166,21 +164,7 @@ paths:
       summary: 'Create Contracts'
       operationId: createContracts
       description: "This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to create \"contracts\" (queues with address-list). </aside>"
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/xml
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -207,7 +191,7 @@ paths:
                     type: string
                     example: "BABEL: Undefined array key 'ip'"
       tags:
-        - Endpoints
+        - 'Mikrotik Controller'
       requestBody:
         required: true
         content:
@@ -248,21 +232,7 @@ paths:
       summary: 'Update Contracts'
       operationId: updateContracts
       description: "This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.\n<aside class=\"notice\">With this you are able to update the \"contracts\" (queues with address-list). </aside>"
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/xml
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -289,7 +259,7 @@ paths:
                     type: string
                     example: "BABEL: Undefined array key 'ip'"
       tags:
-        - Endpoints
+        - 'Mikrotik Controller'
       requestBody:
         required: true
         content:
@@ -330,21 +300,7 @@ paths:
       summary: 'Delete Contracts'
       operationId: deleteContracts
       description: "This endpoint allows you to delete a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to delete the \"contracts\" (queues with address-list). BE CAREFUL 👀 . </aside>"
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/xml
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -371,7 +327,7 @@ paths:
                     type: string
                     example: "BABEL: Undefined array key 'ip'"
       tags:
-        - Endpoints
+        - 'Mikrotik Controller'
       requestBody:
         required: true
         content:
@@ -413,21 +369,7 @@ paths:
       summary: 'Create Contracts'
       operationId: createContracts
       description: "This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to create \"contracts\" (queues with address-list). </aside>"
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/xml
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -454,7 +396,7 @@ paths:
                     type: string
                     example: "BABEL: Undefined array key 'ip'"
       tags:
-        - Endpoints
+        - 'Mikrotik Controller'
       requestBody:
         required: true
         content:
@@ -495,21 +437,7 @@ paths:
       summary: 'Update Contracts'
       operationId: updateContracts
       description: "This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.\n<aside class=\"notice\">With this you are able to update the \"contracts\" (queues with address-list). </aside>"
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/xml
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -536,7 +464,7 @@ paths:
                     type: string
                     example: "BABEL: Undefined array key 'ip'"
       tags:
-        - Endpoints
+        - 'Mikrotik Controller'
       requestBody:
         required: true
         content:
@@ -578,21 +506,7 @@ paths:
       summary: 'Enable Connections'
       operationId: enableConnections
       description: "This endpoint gets the ip/s in the address-list \"clientes_cortados\", then it puts it/them back in \"clientes_activos\" address-list\n<aside class=\"notice\">With this you are able to allow the \"contracts\" to have a valid connection to the internet </aside>"
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/xml
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -623,7 +537,7 @@ paths:
                     type: string
                     example: "BABEL: Undefined array key 'ip'"
       tags:
-        - Endpoints
+        - 'Mikrotik Controller'
       requestBody:
         required: true
         content:
@@ -653,21 +567,7 @@ paths:
       summary: 'Disable Connections'
       operationId: disableConnections
       description: "This endpoint gets the ip/s in the address-list \"clientes_activos\", then it puts them in the \"clientes_cortados\" address-list\n<aside class=\"notice\">With this you are able to restrict the \"contracts\" to have a valid connection to the internet 😈</aside>"
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/xml
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -698,7 +598,7 @@ paths:
                     type: string
                     example: "BABEL: Undefined array key 'ip'"
       tags:
-        - Endpoints
+        - 'Mikrotik Controller'
       requestBody:
         required: true
         content:
@@ -723,26 +623,22 @@ paths:
                 - ip
                 - clientes
       security: []
+  /v1/connection/revertChanges:
+    patch:
+      summary: ''
+      operationId: patchV1ConnectionRevertChanges
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Mikrotik Controller'
+      security: []
   /v1/router/getDataMikrotik:
     get:
       summary: 'Get Data Mikrotik'
       operationId: getDataMikrotik
       description: "This endpoint gets info from the router (clients connected, active clients, clipped, etc)\n<aside class=\"notice\">VERY USEFUL endpoint</aside>"
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/xml
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -873,7 +769,7 @@ paths:
                     type: string
                     example: "BABEL: Undefined array key 'ip'"
       tags:
-        - Endpoints
+        - 'Mikrotik Controller'
       requestBody:
         required: true
         content:
@@ -898,10 +794,314 @@ paths:
                 - ip
                 - clientes
       security: []
+  /v1/radius/users_data:
+    get:
+      summary: 'Get all users from the radius database'
+      operationId: getAllUsersFromTheRadiusDatabase
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Unauthorized.
+      tags:
+        - 'Radius Controller'
+      security: []
+  /v1/radius/users:
+    post:
+      summary: 'Create a new user in the radius database'
+      operationId: createANewUserInTheRadiusDatabase
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Radius Controller'
+      security: []
+    get:
+      summary: 'Get a user from the radius database based on the username in the request'
+      operationId: getAUserFromTheRadiusDatabaseBasedOnTheUsernameInTheRequest
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Unauthorized.
+      tags:
+        - 'Radius Controller'
+      security: []
+    put:
+      summary: 'Update user paramas in the radius database'
+      operationId: updateUserParamasInTheRadiusDatabase
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Radius Controller'
+      security: []
+    delete:
+      summary: 'Delete a user from the radius database.'
+      operationId: deleteAUserFromTheRadiusDatabase
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Radius Controller'
+      security: []
+  /v1/smartolt/onu/status:
+    get:
+      summary: 'Get ONU Status'
+      operationId: getONUStatus
+      description: 'This endpoint allows you to get the status of an ONU.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer BEARER_TOKEN'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'ONU Status retrieved successfully.'
+                  detail:
+                    status: true
+                    onu_status: Online
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'ONU Status retrieved successfully.'
+                  detail:
+                    type: object
+                    properties:
+                      status:
+                        type: boolean
+                        example: true
+                      onu_status:
+                        type: string
+                        example: Online
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Invalid data.'
+                  detail:
+                    onu_sn:
+                      - 'The onu sn field is required.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Invalid data.'
+                  detail:
+                    type: object
+                    properties:
+                      onu_sn:
+                        type: array
+                        example:
+                          - 'The onu sn field is required.'
+                        items:
+                          type: string
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'ONU Status not found.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'ONU Status not found.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'An error occurred while retrieving ONU Status.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'An error occurred while retrieving ONU Status.'
+      tags:
+        - 'SmartOLT Controller'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                onu_sn:
+                  type: string
+                  description: 'The ONU serial number.'
+                  example: HWTCA7A1236A
+              required:
+                - onu_sn
+  /v1/smartolt/onu/reboot:
+    post:
+      summary: 'Reboot ONU'
+      operationId: rebootONU
+      description: 'This endpoint allows you to reboot an ONU by its serial number.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer BEARER_TOKEN'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'ONU rebooted successfully.'
+                  detail:
+                    status: true
+                    response: 'Device reboot command sent'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'ONU rebooted successfully.'
+                  detail:
+                    type: object
+                    properties:
+                      status:
+                        type: boolean
+                        example: true
+                      response:
+                        type: string
+                        example: 'Device reboot command sent'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Invalid data.'
+                  detail:
+                    onu_sn:
+                      - 'The onu sn field is required.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Invalid data.'
+                  detail:
+                    type: object
+                    properties:
+                      onu_sn:
+                        type: array
+                        example:
+                          - 'The onu sn field is required.'
+                        items:
+                          type: string
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'ONU Status not found.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'ONU Status not found.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'An error occurred while retrieving ONU Status.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'An error occurred while retrieving ONU Status.'
+      tags:
+        - 'SmartOLT Controller'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                onu_sn:
+                  type: string
+                  description: 'The ONU serial number.'
+                  example: HWTCA7A1236A
+              required:
+                - onu_sn
 tags:
   -
-    name: Endpoints
-    description: ''
+    name: 'FTTH Controller'
+    description: 'API for managing FTTH connections'
+  -
+    name: 'Mikrotik Controller'
+    description: 'API for managing Mikrotik'
+  -
+    name: 'Radius Controller'
+    description: 'API for managing RADIUS'
+  -
+    name: 'SmartOLT Controller'
+    description: "\nAPI for managing SmartOLT"
 components:
   securitySchemes:
     default:

@@ -1,0 +1,169 @@
+name: 'Radius Controller'
+description: 'API for managing RADIUS'
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: v1/radius/users_data
+    metadata:
+      groupName: 'Radius Controller'
+      groupDescription: 'API for managing RADIUS'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get all users from the radius database'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: Unauthorized.
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: v1/radius/users
+    metadata:
+      groupName: 'Radius Controller'
+      groupDescription: 'API for managing RADIUS'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new user in the radius database'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: v1/radius/users
+    metadata:
+      groupName: 'Radius Controller'
+      groupDescription: 'API for managing RADIUS'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a user from the radius database based on the username in the request'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: Unauthorized.
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: v1/radius/users
+    metadata:
+      groupName: 'Radius Controller'
+      groupDescription: 'API for managing RADIUS'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update user paramas in the radius database'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: v1/radius/users
+    metadata:
+      groupName: 'Radius Controller'
+      groupDescription: 'API for managing RADIUS'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a user from the radius database.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

@@ -1,15 +1,15 @@
-name: Endpoints
-description: ''
+name: 'Mikrotik Controller'
+description: 'API for managing Mikrotik'
 endpoints:
   -
     httpMethods:
       - GET
     uri: v1/test
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
       title: 'Test RouterOS'
       description: |-
         This endpoint allows you to test the Mikrotik server connection with this API.
@@ -65,10 +65,10 @@ endpoints:
       - GET
     uri: v1/contracts
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
       title: 'Get Contracts'
       description: |-
         This endpoint allows you to get contracts information from a Mikrotik server.
@@ -123,10 +123,10 @@ endpoints:
       - POST
     uri: v1/contracts
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
       title: 'Create Contracts'
       description: |-
         This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.
@@ -221,10 +221,10 @@ endpoints:
       - PUT
     uri: v1/contracts
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
       title: 'Update Contracts'
       description: |-
         This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.
@@ -319,10 +319,10 @@ endpoints:
       - DELETE
     uri: v1/contracts
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
       title: 'Delete Contracts'
       description: |-
         This endpoint allows you to delete a 'contract or contracts' in a Mikrotik server.
@@ -417,10 +417,10 @@ endpoints:
       - POST
     uri: v1.1/contracts
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
       title: 'Create Contracts'
       description: |-
         This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.
@@ -515,10 +515,10 @@ endpoints:
       - PUT
     uri: v1.1/contracts
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
       title: 'Update Contracts'
       description: |-
         This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.
@@ -613,10 +613,10 @@ endpoints:
       - PATCH
     uri: v1/connection/enableConnection
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
       title: 'Enable Connections'
       description: |-
         This endpoint gets the ip/s in the address-list "clientes_cortados", then it puts it/them back in "clientes_activos" address-list
@@ -687,10 +687,10 @@ endpoints:
       - PATCH
     uri: v1/connection/disableConnection
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
       title: 'Disable Connections'
       description: |-
         This endpoint gets the ip/s in the address-list "clientes_activos", then it puts them in the "clientes_cortados" address-list
@@ -758,13 +758,43 @@ endpoints:
     custom: []
   -
     httpMethods:
+      - PATCH
+    uri: v1/connection/revertChanges
+    metadata:
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
       - GET
     uri: v1/router/getDataMikrotik
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
+      groupName: 'Mikrotik Controller'
+      groupDescription: 'API for managing Mikrotik'
+      subgroup: Wireless
+      subgroupDescription: 'To manage queues connections'
       title: 'Get Data Mikrotik'
       description: |-
         This endpoint gets info from the router (clients connected, active clients, clipped, etc)

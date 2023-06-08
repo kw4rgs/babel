@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Knuckles\Scribe\Attributes\Group;
 
 
-#[Group("Radius Controller", "API for managing radius users")]
+#[Group("Radius Controller", "API for managing RADIUS")]
 
 class RadiusController extends Controller
 {

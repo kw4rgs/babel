@@ -242,7 +242,8 @@ return [
          * Placeholder your users will see for the auth parameter in the example requests.
          * Set this to null if you want Scribe to use a random value as placeholder instead.
          */
-        'placeholder' => env('ACCESS_TOKEN'),
+        'placeholder' => 'BEARER_TOKEN',
+        #'placeholder' => env('ACCESS_TOKEN'),
 
         /*
          * Any extra authentication-related info for your users. For instance, you can describe how to find or generate their auth credentials.

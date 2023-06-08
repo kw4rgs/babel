@@ -9,13 +9,12 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Knuckles\Scribe\Attributes\Group;
-use Knuckles\Scribe\Attributes\Header;
-use Knuckles\Scribe\Attributes\BodyParam;
 
-
-
-#[Group("SmartOLT Controller", "API for managing onus")]
+/**
+ * @group SmartOLT Controller
+ *
+ * API for managing SmartOLT
+ */
 
 class SmartOltController extends Controller
 {
@@ -54,17 +53,27 @@ class SmartOltController extends Controller
             return $response;
         }
 
+    /**
+     * Get ONU Status
+     * 
+     * This endpoint allows you to get the status of an ONU.
+     * 
+     * @authenticated
+     * 
+     * @bodyParam onu_sn string required The ONU serial number. Example: HWTCA7A1236A
+     * 
+     * @response 200 {"status": "success", "message": "ONU Status retrieved successfully.", "detail": {"status": true,"onu_status": "Online"}}
+     * @response 404 {"status": "error", "message": "ONU Status not found."}
+     * @response 400 {"status": "error", "message": "Invalid data.", "detail": {"onu_sn": ["The onu sn field is required."]}}
+     * @response 500 {"status": "error", "message": "An error occurred while retrieving ONU Status."}
+     */
+
     /* 
     *   Get ONU Status
-    *   @param Request $request
+    *   @param Request $request 
     *   @return Illuminate\Http\Response
     */
 
-    #[Authenticated]
-    #[BodyParam("user_id", "int", "The id of the user.", example: 9)]
-    #[BodyParam("room_id", "string", "The id of the room.", required: false)]
-    #[BodyParam("forever", "boolean", "Whether to ban the user forever.", required: false, example: false)]
-    #[BodyParam("another_one", "number", "This won't be added to the examples.", required: false, example: "No-example")]
     public function getOnuStatus(Request $request)
     {
         try {
@@ -131,13 +140,28 @@ class SmartOltController extends Controller
 
     }
 
+    /**
+     * Reboot ONU
+     * 
+     * This endpoint allows you to reboot an ONU by its serial number.
+     * 
+     * @authenticated
+     * 
+     * @bodyParam onu_sn string required The ONU serial number. Example: HWTCA7A1236A
+     * 
+     * @response 200 {"status": "success", "message": "ONU rebooted successfully.", "detail": {"status": true,"response": "Device reboot command sent"}}
+     * @response 404 {"status": "error", "message": "ONU Status not found."}
+     * @response 400 {"status": "error", "message": "Invalid data.", "detail": {"onu_sn": ["The onu sn field is required."]}}
+     * @response 500 {"status": "error", "message": "An error occurred while retrieving ONU Status."}
+     * 
+    */
+
     /* 
     *   Reboot ONU
     *   @param Request $request 
     *   @return Illuminate\Http\Response
     */
 
-    #[Authenticated]
     public function rebootOnu(Request $request)
     {
         try {
@@ -186,7 +210,7 @@ class SmartOltController extends Controller
 
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'ONU Status rebooted successfully',
+                    'message' => 'ONU rebooted successfully',
                     'detail' => json_decode($response, true)
                 ], Response::HTTP_OK);
             }

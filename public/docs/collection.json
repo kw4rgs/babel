@@ -5,484 +5,830 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "http:\/\/localhost\/v1\/"
+            "value": "http:\/\/localhost"
         }
     ],
     "info": {
         "name": "BABEL v1",
-        "_postman_id": "598ce090-aef2-4b1d-b454-ec405af09815",
+        "_postman_id": "d23cbb4e-fb22-4c1b-8770-86b9b8524238",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [
         {
-            "name": "Endpoints",
-            "description": "",
+            "name": "FTTH Controller",
+            "description": "API for managing FTTH connections",
             "item": [
                 {
-                    "name": "Test RouterOS",
+                    "name": "GET v1\/ftth\/customer",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "v1\/test",
+                            "path": "v1\/ftth\/customer",
                             "query": [],
-                            "raw": "{{baseUrl}}\/v1\/test"
+                            "raw": "{{baseUrl}}\/v1\/ftth\/customer"
                         },
                         "method": "GET",
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/xml"
+                                "value": "application\/json"
                             },
                             {
                                 "key": "Accept",
                                 "value": "application\/json"
                             }
                         ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"ip\":\"192.168.1.1\"}"
-                        },
-                        "description": "This endpoint allows you to test the Mikrotik server connection with this API.\nIt's a really useful endpoint and a start point to know if there is any problem.\n<aside class=\"notice\">I recommend you to use first, to debug any futher inconvenience. \ud83d\ude01<\/aside>",
+                        "body": null,
+                        "description": "",
                         "auth": {
                             "type": "noauth"
                         }
                     },
                     "response": [
                         {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\"name\" : \"Mikrotik-Cristian\"}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
-                            "name": "no route to host"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
-                            "name": "no payload or body params"
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "Unauthorized.",
+                            "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "Get Contracts",
+                    "name": "Update the customer connection in Radius and reboot onu in SmartOLT",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "v1\/contracts",
+                            "path": "v1\/ftth\/customer",
                             "query": [],
-                            "raw": "{{baseUrl}}\/v1\/contracts"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/xml"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"ip\":\"192.168.1.1\"}"
-                        },
-                        "description": "This endpoint allows you to get contracts information from a Mikrotik server.\n<aside class=\"notice\">This will be useful to get the clients that are in an specific router. <\/aside>",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\"ip_server\": \"192.168.2.184\", \"clientes_activos\": 1, \"clientes_details\": [{\"cliente_ip\": \"1.1.1.1\",\"download\": \"102400 Kbps\", \"upload\": \"3072 Kbps\", \"estado\": \"activo\"}]}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
-                            "name": "no route to host"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
-                            "name": "no payload or body params"
-                        }
-                    ]
-                },
-                {
-                    "name": "Create Contracts",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "v1\/contracts",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/v1\/contracts"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/xml"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\",\"download\":\"102400 Kbps\",\"upload\":\"3072 Kbps\",\"estado\":\"activo\"}}"
-                        },
-                        "description": "This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to create \"contracts\" (queues with address-list). <\/aside>",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\"message\": \"BABEL : \u00a1Cola\/s creada\/s con \u00e9xito!\"}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
-                            "name": "no route to host"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
-                            "name": "no payload or missing params"
-                        }
-                    ]
-                },
-                {
-                    "name": "Update Contracts",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "v1\/contracts",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/v1\/contracts"
+                            "raw": "{{baseUrl}}\/v1\/ftth\/customer"
                         },
                         "method": "PUT",
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/xml"
+                                "value": "application\/json"
                             },
                             {
                                 "key": "Accept",
                                 "value": "application\/json"
                             }
                         ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\",\"download\":\"102400 Kbps\",\"upload\":\"3072 Kbps\",\"estado\":\"activo\"}}"
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Mikrotik Controller",
+            "description": "API for managing Mikrotik",
+            "item": [
+                {
+                    "name": "Wireless",
+                    "description": "To manage queues connections",
+                    "item": [
+                        {
+                            "name": "Test RouterOS",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1\/test",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1\/test"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/xml"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"ip\":\"192.168.1.1\"}"
+                                },
+                                "description": "This endpoint allows you to test the Mikrotik server connection with this API.\nIt's a really useful endpoint and a start point to know if there is any problem.\n<aside class=\"notice\">I recommend you to use first, to debug any futher inconvenience. \ud83d\ude01<\/aside>",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"name\" : \"Mikrotik-Cristian\"}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
+                                    "name": "no route to host"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
+                                    "name": "no payload or body params"
+                                }
+                            ]
                         },
-                        "description": "This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.\n<aside class=\"notice\">With this you are able to update the \"contracts\" (queues with address-list). <\/aside>",
+                        {
+                            "name": "Get Contracts",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1\/contracts",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1\/contracts"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/xml"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"ip\":\"192.168.1.1\"}"
+                                },
+                                "description": "This endpoint allows you to get contracts information from a Mikrotik server.\n<aside class=\"notice\">This will be useful to get the clients that are in an specific router. <\/aside>",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"ip_server\": \"192.168.2.184\", \"clientes_activos\": 1, \"clientes_details\": [{\"cliente_ip\": \"1.1.1.1\",\"download\": \"102400 Kbps\", \"upload\": \"3072 Kbps\", \"estado\": \"activo\"}]}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
+                                    "name": "no route to host"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
+                                    "name": "no payload or body params"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Create Contracts",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1\/contracts",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1\/contracts"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/xml"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\",\"download\":\"102400 Kbps\",\"upload\":\"3072 Kbps\",\"estado\":\"activo\"}}"
+                                },
+                                "description": "This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to create \"contracts\" (queues with address-list). <\/aside>",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"message\": \"BABEL : \u00a1Cola\/s creada\/s con \u00e9xito!\"}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
+                                    "name": "no route to host"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
+                                    "name": "no payload or missing params"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Update Contracts",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1\/contracts",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1\/contracts"
+                                },
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/xml"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\",\"download\":\"102400 Kbps\",\"upload\":\"3072 Kbps\",\"estado\":\"activo\"}}"
+                                },
+                                "description": "This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.\n<aside class=\"notice\">With this you are able to update the \"contracts\" (queues with address-list). <\/aside>",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"message\": \"BABEL : \u00a1Cola\/s actualizada\/s con \u00e9xito!\"}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
+                                    "name": "no route to host"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
+                                    "name": "no payload or missing params"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Delete Contracts",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1\/contracts",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1\/contracts"
+                                },
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/xml"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\",\"download\":\"102400 Kbps\",\"upload\":\"3072 Kbps\",\"estado\":\"activo\"}}"
+                                },
+                                "description": "This endpoint allows you to delete a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to delete the \"contracts\" (queues with address-list). BE CAREFUL \ud83d\udc40 . <\/aside>",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"message\": \"BABEL : \u00a1Cola\/s eliminada\/s con \u00e9xito!\"}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
+                                    "name": "no route to host"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
+                                    "name": "no payload or missing params"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Create Contracts",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1.1\/contracts",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1.1\/contracts"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/xml"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\",\"download\":\"102400 Kbps\",\"upload\":\"3072 Kbps\",\"estado\":\"activo\"}}"
+                                },
+                                "description": "This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to create \"contracts\" (queues with address-list). <\/aside>",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"message\": \"BABEL : \u00a1Cola\/s creada\/s con \u00e9xito!\"}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
+                                    "name": "no route to host"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
+                                    "name": "no payload or missing params"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Update Contracts",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1.1\/contracts",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1.1\/contracts"
+                                },
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/xml"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\",\"download\":\"102400 Kbps\",\"upload\":\"3072 Kbps\",\"estado\":\"activo\"}}"
+                                },
+                                "description": "This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.\n<aside class=\"notice\">With this you are able to update the \"contracts\" (queues with address-list). <\/aside>",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"message\": \"BABEL : \u00a1Cola\/s actualizada\/s con \u00e9xito!\"}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
+                                    "name": "no route to host"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
+                                    "name": "no payload or missing params"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Enable Connections",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1\/connection\/enableConnection",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1\/connection\/enableConnection"
+                                },
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/xml"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\"}}"
+                                },
+                                "description": "This endpoint gets the ip\/s in the address-list \"clientes_cortados\", then it puts it\/them back in \"clientes_activos\" address-list\n<aside class=\"notice\">With this you are able to allow the \"contracts\" to have a valid connection to the internet <\/aside>",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{ \"status\": true, \"message\": \"BABEL: Operaci\u00f3n realizada con \u00e9xito. Cliente\/s habilitado\/s\"}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
+                                    "name": "no route to host"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
+                                    "name": "no payload or missing params"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Disable Connections",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1\/connection\/disableConnection",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1\/connection\/disableConnection"
+                                },
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/xml"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\"}}"
+                                },
+                                "description": "This endpoint gets the ip\/s in the address-list \"clientes_activos\", then it puts them in the \"clientes_cortados\" address-list\n<aside class=\"notice\">With this you are able to restrict the \"contracts\" to have a valid connection to the internet \ud83d\ude08<\/aside>",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{ \"status\": true, \"message\": \"BABEL: Operaci\u00f3n realizada con \u00e9xito. Cliente\/s deshabilitado\/s\"}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
+                                    "name": "no route to host"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
+                                    "name": "no payload or missing params"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "PATCH v1\/connection\/revertChanges",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1\/connection\/revertChanges",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1\/connection\/revertChanges"
+                                },
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": "",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Data Mikrotik",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "v1\/router\/getDataMikrotik",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/v1\/router\/getDataMikrotik"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/xml"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\"}}"
+                                },
+                                "description": "This endpoint gets info from the router (clients connected, active clients, clipped, etc)\n<aside class=\"notice\">VERY USEFUL endpoint<\/aside>",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n   \"name\": \"Mikrotik-Cristian\",\n   \"server_ip\": \"192.168.2.184\",\n   \"queues\": {\n       \"total_queues\": 1,\n       \"queues_details\": [\n       {\n           \"name\": \"1.1.1.1\",\n           \"target\": \"1.1.1.1\",\n           \"download\": \"102400 Kbps\",\n           \"upload\": \"3072 Kbps\"\n       }\n       ]\n   },\n   \"address_list\": {\n       \"total_address_list\": 1,\n       \"address_list_details\": [\n       {\n           \"client_ip\": \"1.1.1.1\",\n           \"address_list\": \"clientes_activos\"\n       }\n       ],\n       \"other_lists\": 0\n   },\n   \"firewall\": {\n       \"clientes_activos\": 1,\n       \"clientes_cortados\": 0\n   },\n   \"diferencias\": {\n       \"total_diferencias\": 0,\n       \"queues_sin_address\": 0,\n       \"addresses_sin_queue\": 0,\n       \"diferencias_detail\": 0\n   }}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
+                                    "name": "no route to host"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
+                                    "name": "no payload or missing params"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Radius Controller",
+            "description": "API for managing RADIUS",
+            "item": [
+                {
+                    "name": "Get all users from the radius database",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "v1\/radius\/users_data",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/v1\/radius\/users_data"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
                         "auth": {
                             "type": "noauth"
                         }
                     },
                     "response": [
                         {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\"message\": \"BABEL : \u00a1Cola\/s actualizada\/s con \u00e9xito!\"}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
-                            "name": "no route to host"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
-                            "name": "no payload or missing params"
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "Unauthorized.",
+                            "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "Delete Contracts",
+                    "name": "Create a new user in the radius database",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "v1\/contracts",
+                            "path": "v1\/radius\/users",
                             "query": [],
-                            "raw": "{{baseUrl}}\/v1\/contracts"
+                            "raw": "{{baseUrl}}\/v1\/radius\/users"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get a user from the radius database based on the username in the request",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "v1\/radius\/users",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/v1\/radius\/users"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "Unauthorized.",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update user paramas in the radius database",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "v1\/radius\/users",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/v1\/radius\/users"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete a user from the radius database.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "v1\/radius\/users",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/v1\/radius\/users"
                         },
                         "method": "DELETE",
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/xml"
+                                "value": "application\/json"
                             },
                             {
                                 "key": "Accept",
                                 "value": "application\/json"
                             }
                         ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\",\"download\":\"102400 Kbps\",\"upload\":\"3072 Kbps\",\"estado\":\"activo\"}}"
-                        },
-                        "description": "This endpoint allows you to delete a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to delete the \"contracts\" (queues with address-list). BE CAREFUL \ud83d\udc40 . <\/aside>",
+                        "body": null,
+                        "description": "",
                         "auth": {
                             "type": "noauth"
                         }
                     },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\"message\": \"BABEL : \u00a1Cola\/s eliminada\/s con \u00e9xito!\"}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
-                            "name": "no route to host"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
-                            "name": "no payload or missing params"
-                        }
-                    ]
-                },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "SmartOLT Controller",
+            "description": "\nAPI for managing SmartOLT",
+            "item": [
                 {
-                    "name": "Create Contracts",
+                    "name": "Get ONU Status",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "v1.1\/contracts",
+                            "path": "v1\/smartolt\/onu\/status",
                             "query": [],
-                            "raw": "{{baseUrl}}\/v1.1\/contracts"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/xml"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\",\"download\":\"102400 Kbps\",\"upload\":\"3072 Kbps\",\"estado\":\"activo\"}}"
-                        },
-                        "description": "This endpoint allows you to create a 'contract or contracts' in a Mikrotik server.\n<aside class=\"notice\">With this you are able to create \"contracts\" (queues with address-list). <\/aside>",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\"message\": \"BABEL : \u00a1Cola\/s creada\/s con \u00e9xito!\"}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
-                            "name": "no route to host"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
-                            "name": "no payload or missing params"
-                        }
-                    ]
-                },
-                {
-                    "name": "Update Contracts",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "v1.1\/contracts",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/v1.1\/contracts"
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/xml"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\",\"download\":\"102400 Kbps\",\"upload\":\"3072 Kbps\",\"estado\":\"activo\"}}"
-                        },
-                        "description": "This endpoint allows you to update the banwidth profile of a 'contract or contracts' or ip in a Mikrotik server.\n<aside class=\"notice\">With this you are able to update the \"contracts\" (queues with address-list). <\/aside>",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\"message\": \"BABEL : \u00a1Cola\/s actualizada\/s con \u00e9xito!\"}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
-                            "name": "no route to host"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
-                            "name": "no payload or missing params"
-                        }
-                    ]
-                },
-                {
-                    "name": "Enable Connections",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "v1\/connection\/enableConnection",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/v1\/connection\/enableConnection"
-                        },
-                        "method": "PATCH",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/xml"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\"}}"
-                        },
-                        "description": "This endpoint gets the ip\/s in the address-list \"clientes_cortados\", then it puts it\/them back in \"clientes_activos\" address-list\n<aside class=\"notice\">With this you are able to allow the \"contracts\" to have a valid connection to the internet <\/aside>",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{ \"status\": true, \"message\": \"BABEL: Operaci\u00f3n realizada con \u00e9xito. Cliente\/s habilitado\/s\"}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
-                            "name": "no route to host"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
-                            "name": "no payload or missing params"
-                        }
-                    ]
-                },
-                {
-                    "name": "Disable Connections",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "v1\/connection\/disableConnection",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/v1\/connection\/disableConnection"
-                        },
-                        "method": "PATCH",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/xml"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\"}}"
-                        },
-                        "description": "This endpoint gets the ip\/s in the address-list \"clientes_activos\", then it puts them in the \"clientes_cortados\" address-list\n<aside class=\"notice\">With this you are able to restrict the \"contracts\" to have a valid connection to the internet \ud83d\ude08<\/aside>",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{ \"status\": true, \"message\": \"BABEL: Operaci\u00f3n realizada con \u00e9xito. Cliente\/s deshabilitado\/s\"}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
-                            "name": "no route to host"
-                        },
-                        {
-                            "header": [],
-                            "code": 500,
-                            "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
-                            "name": "no payload or missing params"
-                        }
-                    ]
-                },
-                {
-                    "name": "Get Data Mikrotik",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "v1\/router\/getDataMikrotik",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/v1\/router\/getDataMikrotik"
+                            "raw": "{{baseUrl}}\/v1\/smartolt\/onu\/status"
                         },
                         "method": "GET",
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/xml"
+                                "value": "application\/json"
                             },
                             {
                                 "key": "Accept",
@@ -491,31 +837,87 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"ip\":\"192.168.1.1\",\"clientes\":{\"cliente_ip\":\"1.1.1.1\"}}"
+                            "raw": "{\"onu_sn\":\"HWTCA7A1236A\"}"
                         },
-                        "description": "This endpoint gets info from the router (clients connected, active clients, clipped, etc)\n<aside class=\"notice\">VERY USEFUL endpoint<\/aside>",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": "This endpoint allows you to get the status of an ONU."
                     },
                     "response": [
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n   \"name\": \"Mikrotik-Cristian\",\n   \"server_ip\": \"192.168.2.184\",\n   \"queues\": {\n       \"total_queues\": 1,\n       \"queues_details\": [\n       {\n           \"name\": \"1.1.1.1\",\n           \"target\": \"1.1.1.1\",\n           \"download\": \"102400 Kbps\",\n           \"upload\": \"3072 Kbps\"\n       }\n       ]\n   },\n   \"address_list\": {\n       \"total_address_list\": 1,\n       \"address_list_details\": [\n       {\n           \"client_ip\": \"1.1.1.1\",\n           \"address_list\": \"clientes_activos\"\n       }\n       ],\n       \"other_lists\": 0\n   },\n   \"firewall\": {\n       \"clientes_activos\": 1,\n       \"clientes_cortados\": 0\n   },\n   \"diferencias\": {\n       \"total_diferencias\": 0,\n       \"queues_sin_address\": 0,\n       \"addresses_sin_queue\": 0,\n       \"diferencias_detail\": 0\n   }}",
-                            "name": "success"
+                            "body": "{\"status\": \"success\", \"message\": \"ONU Status retrieved successfully.\", \"detail\": {\"status\": true,\"onu_status\": \"Online\"}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\"status\": \"error\", \"message\": \"Invalid data.\", \"detail\": {\"onu_sn\": [\"The onu sn field is required.\"]}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"status\": \"error\", \"message\": \"ONU Status not found.\"}",
+                            "name": ""
                         },
                         {
                             "header": [],
                             "code": 500,
-                            "body": "{\"message\": \"BABEL: Unable to establish socket session, No route to host\"}",
-                            "name": "no route to host"
+                            "body": "{\"status\": \"error\", \"message\": \"An error occurred while retrieving ONU Status.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Reboot ONU",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "v1\/smartolt\/onu\/reboot",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/v1\/smartolt\/onu\/reboot"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"onu_sn\":\"HWTCA7A1236A\"}"
+                        },
+                        "description": "This endpoint allows you to reboot an ONU by its serial number."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"status\": \"success\", \"message\": \"ONU rebooted successfully.\", \"detail\": {\"status\": true,\"response\": \"Device reboot command sent\"}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\"status\": \"error\", \"message\": \"Invalid data.\", \"detail\": {\"onu_sn\": [\"The onu sn field is required.\"]}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"status\": \"error\", \"message\": \"ONU Status not found.\"}",
+                            "name": ""
                         },
                         {
                             "header": [],
                             "code": 500,
-                            "body": "{\"message\": \"BABEL: Undefined array key 'ip'\"}",
-                            "name": "no payload or missing params"
+                            "body": "{\"status\": \"error\", \"message\": \"An error occurred while retrieving ONU Status.\"}",
+                            "name": ""
                         }
                     ]
                 }

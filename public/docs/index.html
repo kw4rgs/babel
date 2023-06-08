@@ -28,13 +28,13 @@
             </style>
 
     <script>
-        var baseUrl = "http://localhost/v1/";
+        var tryItOutBaseUrl = "http://localhost";
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
-    <script src="../docs/js/tryitout-4.11.0.js"></script>
+    <script src="../docs/js/tryitout-4.21.2.js"></script>
 
-    <script src="../docs/js/theme-default-4.11.0.js"></script>
+    <script src="../docs/js/theme-default-4.21.2.js"></script>
 
 </head>
 
@@ -71,40 +71,96 @@
                     <a href="#authenticating-requests">Authenticating requests</a>
                 </li>
                             </ul>
-                    <ul id="tocify-header-endpoints" class="tocify-header">
-                <li class="tocify-item level-1" data-unique="endpoints">
-                    <a href="#endpoints">Endpoints</a>
+                    <ul id="tocify-header-ftth-controller" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="ftth-controller">
+                    <a href="#ftth-controller">FTTH Controller</a>
                 </li>
-                                    <ul id="tocify-subheader-endpoints" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="endpoints-GETv1-test">
-                                <a href="#endpoints-GETv1-test">Test RouterOS</a>
+                                    <ul id="tocify-subheader-ftth-controller" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="ftth-controller-GETv1-ftth-customer">
+                                <a href="#ftth-controller-GETv1-ftth-customer">GET v1/ftth/customer</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETv1-contracts">
-                                <a href="#endpoints-GETv1-contracts">Get Contracts</a>
+                                                                                <li class="tocify-item level-2" data-unique="ftth-controller-PUTv1-ftth-customer">
+                                <a href="#ftth-controller-PUTv1-ftth-customer">Update the customer connection in Radius and reboot onu in SmartOLT</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTv1-contracts">
-                                <a href="#endpoints-POSTv1-contracts">Create Contracts</a>
+                                                                        </ul>
+                            </ul>
+                    <ul id="tocify-header-mikrotik-controller" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="mikrotik-controller">
+                    <a href="#mikrotik-controller">Mikrotik Controller</a>
+                </li>
+                                    <ul id="tocify-subheader-mikrotik-controller" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="mikrotik-controller-wireless">
+                                <a href="#mikrotik-controller-wireless">Wireless</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-PUTv1-contracts">
-                                <a href="#endpoints-PUTv1-contracts">Update Contracts</a>
+                                                            <ul id="tocify-subheader-mikrotik-controller-wireless" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-GETv1-test">
+                                            <a href="#mikrotik-controller-GETv1-test">Test RouterOS</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-GETv1-contracts">
+                                            <a href="#mikrotik-controller-GETv1-contracts">Get Contracts</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-POSTv1-contracts">
+                                            <a href="#mikrotik-controller-POSTv1-contracts">Create Contracts</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-PUTv1-contracts">
+                                            <a href="#mikrotik-controller-PUTv1-contracts">Update Contracts</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-DELETEv1-contracts">
+                                            <a href="#mikrotik-controller-DELETEv1-contracts">Delete Contracts</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-POSTv1.1-contracts">
+                                            <a href="#mikrotik-controller-POSTv1.1-contracts">Create Contracts</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-PUTv1.1-contracts">
+                                            <a href="#mikrotik-controller-PUTv1.1-contracts">Update Contracts</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-PATCHv1-connection-enableConnection">
+                                            <a href="#mikrotik-controller-PATCHv1-connection-enableConnection">Enable Connections</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-PATCHv1-connection-disableConnection">
+                                            <a href="#mikrotik-controller-PATCHv1-connection-disableConnection">Disable Connections</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-PATCHv1-connection-revertChanges">
+                                            <a href="#mikrotik-controller-PATCHv1-connection-revertChanges">PATCH v1/connection/revertChanges</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="mikrotik-controller-GETv1-router-getDataMikrotik">
+                                            <a href="#mikrotik-controller-GETv1-router-getDataMikrotik">Get Data Mikrotik</a>
+                                        </li>
+                                                                    </ul>
+                                                                        </ul>
+                            </ul>
+                    <ul id="tocify-header-radius-controller" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="radius-controller">
+                    <a href="#radius-controller">Radius Controller</a>
+                </li>
+                                    <ul id="tocify-subheader-radius-controller" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="radius-controller-GETv1-radius-users_data">
+                                <a href="#radius-controller-GETv1-radius-users_data">Get all users from the radius database</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-DELETEv1-contracts">
-                                <a href="#endpoints-DELETEv1-contracts">Delete Contracts</a>
+                                                                                <li class="tocify-item level-2" data-unique="radius-controller-POSTv1-radius-users">
+                                <a href="#radius-controller-POSTv1-radius-users">Create a new user in the radius database</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTv1.1-contracts">
-                                <a href="#endpoints-POSTv1.1-contracts">Create Contracts</a>
+                                                                                <li class="tocify-item level-2" data-unique="radius-controller-GETv1-radius-users">
+                                <a href="#radius-controller-GETv1-radius-users">Get a user from the radius database based on the username in the request</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-PUTv1.1-contracts">
-                                <a href="#endpoints-PUTv1.1-contracts">Update Contracts</a>
+                                                                                <li class="tocify-item level-2" data-unique="radius-controller-PUTv1-radius-users">
+                                <a href="#radius-controller-PUTv1-radius-users">Update user paramas in the radius database</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-PATCHv1-connection-enableConnection">
-                                <a href="#endpoints-PATCHv1-connection-enableConnection">Enable Connections</a>
+                                                                                <li class="tocify-item level-2" data-unique="radius-controller-DELETEv1-radius-users">
+                                <a href="#radius-controller-DELETEv1-radius-users">Delete a user from the radius database.</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-PATCHv1-connection-disableConnection">
-                                <a href="#endpoints-PATCHv1-connection-disableConnection">Disable Connections</a>
+                                                                        </ul>
+                            </ul>
+                    <ul id="tocify-header-smartolt-controller" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="smartolt-controller">
+                    <a href="#smartolt-controller">SmartOLT Controller</a>
+                </li>
+                                    <ul id="tocify-subheader-smartolt-controller" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="smartolt-controller-GETv1-smartolt-onu-status">
+                                <a href="#smartolt-controller-GETv1-smartolt-onu-status">Get ONU Status</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETv1-router-getDataMikrotik">
-                                <a href="#endpoints-GETv1-router-getDataMikrotik">Get Data Mikrotik</a>
+                                                                                <li class="tocify-item level-2" data-unique="smartolt-controller-POSTv1-smartolt-onu-reboot">
+                                <a href="#smartolt-controller-POSTv1-smartolt-onu-reboot">Reboot ONU</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -117,7 +173,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: February 13, 2023</li>
+        <li>Last updated: June 8, 2023</li>
     </ul>
 </div>
 
@@ -126,20 +182,315 @@
     <div class="content">
         <h1 id="introduction">Introduction</h1>
 <aside>
-    <strong>Base URL</strong>: <code>http://localhost/v1/</code>
+    <strong>Base URL</strong>: <code>http://localhost</code>
 </aside>
 <p>This documentation aims to provide all the information you need to work with Babel. </p>
 <aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile). You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile) to suit your programming needs.</aside>
 
         <h1 id="authenticating-requests">Authenticating requests</h1>
-<p>This API is authenticated by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer ed43530dcaa9ec5d061dd55e1e64c0e9"</code></strong>.</p>
+<p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer BEARER_TOKEN"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 
-        <h1 id="endpoints">Endpoints</h1>
+        <h1 id="ftth-controller">FTTH Controller</h1>
 
-    
+    <p>API for managing FTTH connections</p>
 
-                                <h2 id="endpoints-GETv1-test">Test RouterOS</h2>
+                                <h2 id="ftth-controller-GETv1-ftth-customer">GET v1/ftth/customer</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-GETv1-ftth-customer">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/v1/ftth/customer" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/ftth/customer"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'http://localhost/v1/ftth/customer',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/ftth/customer'
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETv1-ftth-customer">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">Unauthorized.</code>
+ </pre>
+    </span>
+<span id="execution-results-GETv1-ftth-customer" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETv1-ftth-customer"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETv1-ftth-customer"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETv1-ftth-customer" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETv1-ftth-customer">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETv1-ftth-customer" data-method="GET"
+      data-path="v1/ftth/customer"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETv1-ftth-customer', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETv1-ftth-customer"
+                    onclick="tryItOut('GETv1-ftth-customer');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETv1-ftth-customer"
+                    onclick="cancelTryOut('GETv1-ftth-customer');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETv1-ftth-customer"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>v1/ftth/customer</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETv1-ftth-customer"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETv1-ftth-customer"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="ftth-controller-PUTv1-ftth-customer">Update the customer connection in Radius and reboot onu in SmartOLT</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-PUTv1-ftth-customer">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://localhost/v1/ftth/customer" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/ftth/customer"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "PUT",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;put(
+    'http://localhost/v1/ftth/customer',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/ftth/customer'
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('PUT', url, headers=headers)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTv1-ftth-customer">
+</span>
+<span id="execution-results-PUTv1-ftth-customer" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTv1-ftth-customer"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTv1-ftth-customer"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTv1-ftth-customer" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTv1-ftth-customer">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PUTv1-ftth-customer" data-method="PUT"
+      data-path="v1/ftth/customer"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTv1-ftth-customer', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTv1-ftth-customer"
+                    onclick="tryItOut('PUTv1-ftth-customer');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTv1-ftth-customer"
+                    onclick="cancelTryOut('PUTv1-ftth-customer');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTv1-ftth-customer"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>v1/ftth/customer</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="PUTv1-ftth-customer"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="PUTv1-ftth-customer"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                <h1 id="mikrotik-controller">Mikrotik Controller</h1>
+
+    <p>API for managing Mikrotik</p>
+
+                        <h2 id="mikrotik-controller-wireless">Wireless</h2>
+                                        <p>
+                    <p>To manage queues connections</p>
+                </p>
+                                        <h2 id="mikrotik-controller-GETv1-test">Test RouterOS</h2>
 
 <p>
 </p>
@@ -154,7 +505,7 @@ It's a really useful endpoint and a start point to know if there is any problem.
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/v1/v1/test" \
+    --get "http://localhost/v1/test" \
     --header "Content-Type: application/xml" \
     --header "Accept: application/json" \
     --data "{
@@ -165,7 +516,7 @@ It's a really useful endpoint and a start point to know if there is any problem.
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/v1/v1/test"
+    "http://localhost/v1/test"
 );
 
 const headers = {
@@ -187,7 +538,7 @@ fetch(url, {
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;get(
-    'http://localhost/v1/v1/test',
+    'http://localhost/v1/test',
     [
         'headers' =&gt; [
             'Content-Type' =&gt; 'application/xml',
@@ -206,7 +557,7 @@ print_r(json_decode((string) $body));</code></pre></div>
     <pre><code class="language-python">import requests
 import json
 
-url = 'http://localhost/v1/v1/test'
+url = 'http://localhost/v1/test'
 payload = {
     "ip": "192.168.1.1"
 }
@@ -253,11 +604,16 @@ response.json()</code></pre></div>
     <blockquote>Received response<span
                 id="execution-response-status-GETv1-test"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETv1-test" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETv1-test"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETv1-test" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETv1-test"></code></pre>
+    <pre><code id="execution-error-message-GETv1-test">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETv1-test" data-method="GET"
       data-path="v1/test"
@@ -280,7 +636,10 @@ response.json()</code></pre></div>
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETv1-test" hidden>Send Request 💥
+                    id="btn-executetryout-GETv1-test"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -324,7 +683,7 @@ response.json()</code></pre></div>
         </div>
         </form>
 
-                    <h2 id="endpoints-GETv1-contracts">Get Contracts</h2>
+                    <h2 id="mikrotik-controller-GETv1-contracts">Get Contracts</h2>
 
 <p>
 </p>
@@ -338,7 +697,7 @@ response.json()</code></pre></div>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/v1/v1/contracts" \
+    --get "http://localhost/v1/contracts" \
     --header "Content-Type: application/xml" \
     --header "Accept: application/json" \
     --data "{
@@ -349,7 +708,7 @@ response.json()</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/v1/v1/contracts"
+    "http://localhost/v1/contracts"
 );
 
 const headers = {
@@ -371,7 +730,7 @@ fetch(url, {
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;get(
-    'http://localhost/v1/v1/contracts',
+    'http://localhost/v1/contracts',
     [
         'headers' =&gt; [
             'Content-Type' =&gt; 'application/xml',
@@ -390,7 +749,7 @@ print_r(json_decode((string) $body));</code></pre></div>
     <pre><code class="language-python">import requests
 import json
 
-url = 'http://localhost/v1/v1/contracts'
+url = 'http://localhost/v1/contracts'
 payload = {
     "ip": "192.168.1.1"
 }
@@ -446,11 +805,16 @@ response.json()</code></pre></div>
     <blockquote>Received response<span
                 id="execution-response-status-GETv1-contracts"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETv1-contracts" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETv1-contracts"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETv1-contracts" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETv1-contracts"></code></pre>
+    <pre><code id="execution-error-message-GETv1-contracts">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETv1-contracts" data-method="GET"
       data-path="v1/contracts"
@@ -473,7 +837,10 @@ response.json()</code></pre></div>
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETv1-contracts" hidden>Send Request 💥
+                    id="btn-executetryout-GETv1-contracts"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -517,7 +884,7 @@ response.json()</code></pre></div>
         </div>
         </form>
 
-                    <h2 id="endpoints-POSTv1-contracts">Create Contracts</h2>
+                    <h2 id="mikrotik-controller-POSTv1-contracts">Create Contracts</h2>
 
 <p>
 </p>
@@ -531,7 +898,7 @@ response.json()</code></pre></div>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/v1/v1/contracts" \
+    "http://localhost/v1/contracts" \
     --header "Content-Type: application/xml" \
     --header "Accept: application/json" \
     --data "{
@@ -548,7 +915,7 @@ response.json()</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/v1/v1/contracts"
+    "http://localhost/v1/contracts"
 );
 
 const headers = {
@@ -576,7 +943,7 @@ fetch(url, {
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;post(
-    'http://localhost/v1/v1/contracts',
+    'http://localhost/v1/contracts',
     [
         'headers' =&gt; [
             'Content-Type' =&gt; 'application/xml',
@@ -601,7 +968,7 @@ print_r(json_decode((string) $body));</code></pre></div>
     <pre><code class="language-python">import requests
 import json
 
-url = 'http://localhost/v1/v1/contracts'
+url = 'http://localhost/v1/contracts'
 payload = {
     "ip": "192.168.1.1",
     "clientes": {
@@ -654,11 +1021,16 @@ response.json()</code></pre></div>
     <blockquote>Received response<span
                 id="execution-response-status-POSTv1-contracts"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTv1-contracts" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTv1-contracts"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTv1-contracts" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTv1-contracts"></code></pre>
+    <pre><code id="execution-error-message-POSTv1-contracts">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTv1-contracts" data-method="POST"
       data-path="v1/contracts"
@@ -681,7 +1053,10 @@ response.json()</code></pre></div>
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTv1-contracts" hidden>Send Request 💥
+                    id="btn-executetryout-POSTv1-contracts"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -780,7 +1155,7 @@ response.json()</code></pre></div>
         </div>
         </form>
 
-                    <h2 id="endpoints-PUTv1-contracts">Update Contracts</h2>
+                    <h2 id="mikrotik-controller-PUTv1-contracts">Update Contracts</h2>
 
 <p>
 </p>
@@ -794,7 +1169,7 @@ response.json()</code></pre></div>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/v1/v1/contracts" \
+    "http://localhost/v1/contracts" \
     --header "Content-Type: application/xml" \
     --header "Accept: application/json" \
     --data "{
@@ -811,7 +1186,7 @@ response.json()</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/v1/v1/contracts"
+    "http://localhost/v1/contracts"
 );
 
 const headers = {
@@ -839,7 +1214,7 @@ fetch(url, {
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;put(
-    'http://localhost/v1/v1/contracts',
+    'http://localhost/v1/contracts',
     [
         'headers' =&gt; [
             'Content-Type' =&gt; 'application/xml',
@@ -864,7 +1239,7 @@ print_r(json_decode((string) $body));</code></pre></div>
     <pre><code class="language-python">import requests
 import json
 
-url = 'http://localhost/v1/v1/contracts'
+url = 'http://localhost/v1/contracts'
 payload = {
     "ip": "192.168.1.1",
     "clientes": {
@@ -917,11 +1292,16 @@ response.json()</code></pre></div>
     <blockquote>Received response<span
                 id="execution-response-status-PUTv1-contracts"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-PUTv1-contracts" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-PUTv1-contracts"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-PUTv1-contracts" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-PUTv1-contracts"></code></pre>
+    <pre><code id="execution-error-message-PUTv1-contracts">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-PUTv1-contracts" data-method="PUT"
       data-path="v1/contracts"
@@ -944,7 +1324,10 @@ response.json()</code></pre></div>
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-PUTv1-contracts" hidden>Send Request 💥
+                    id="btn-executetryout-PUTv1-contracts"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -1043,7 +1426,7 @@ response.json()</code></pre></div>
         </div>
         </form>
 
-                    <h2 id="endpoints-DELETEv1-contracts">Delete Contracts</h2>
+                    <h2 id="mikrotik-controller-DELETEv1-contracts">Delete Contracts</h2>
 
 <p>
 </p>
@@ -1057,7 +1440,7 @@ response.json()</code></pre></div>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/v1/v1/contracts" \
+    "http://localhost/v1/contracts" \
     --header "Content-Type: application/xml" \
     --header "Accept: application/json" \
     --data "{
@@ -1074,7 +1457,7 @@ response.json()</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/v1/v1/contracts"
+    "http://localhost/v1/contracts"
 );
 
 const headers = {
@@ -1102,7 +1485,7 @@ fetch(url, {
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;delete(
-    'http://localhost/v1/v1/contracts',
+    'http://localhost/v1/contracts',
     [
         'headers' =&gt; [
             'Content-Type' =&gt; 'application/xml',
@@ -1127,7 +1510,7 @@ print_r(json_decode((string) $body));</code></pre></div>
     <pre><code class="language-python">import requests
 import json
 
-url = 'http://localhost/v1/v1/contracts'
+url = 'http://localhost/v1/contracts'
 payload = {
     "ip": "192.168.1.1",
     "clientes": {
@@ -1180,11 +1563,16 @@ response.json()</code></pre></div>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEv1-contracts"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-DELETEv1-contracts" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-DELETEv1-contracts"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-DELETEv1-contracts" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-DELETEv1-contracts"></code></pre>
+    <pre><code id="execution-error-message-DELETEv1-contracts">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-DELETEv1-contracts" data-method="DELETE"
       data-path="v1/contracts"
@@ -1207,7 +1595,10 @@ response.json()</code></pre></div>
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-DELETEv1-contracts" hidden>Send Request 💥
+                    id="btn-executetryout-DELETEv1-contracts"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -1306,7 +1697,7 @@ response.json()</code></pre></div>
         </div>
         </form>
 
-                    <h2 id="endpoints-POSTv1.1-contracts">Create Contracts</h2>
+                    <h2 id="mikrotik-controller-POSTv1.1-contracts">Create Contracts</h2>
 
 <p>
 </p>
@@ -1320,7 +1711,7 @@ response.json()</code></pre></div>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/v1/v1.1/contracts" \
+    "http://localhost/v1.1/contracts" \
     --header "Content-Type: application/xml" \
     --header "Accept: application/json" \
     --data "{
@@ -1337,7 +1728,7 @@ response.json()</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/v1/v1.1/contracts"
+    "http://localhost/v1.1/contracts"
 );
 
 const headers = {
@@ -1365,7 +1756,7 @@ fetch(url, {
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;post(
-    'http://localhost/v1/v1.1/contracts',
+    'http://localhost/v1.1/contracts',
     [
         'headers' =&gt; [
             'Content-Type' =&gt; 'application/xml',
@@ -1390,7 +1781,7 @@ print_r(json_decode((string) $body));</code></pre></div>
     <pre><code class="language-python">import requests
 import json
 
-url = 'http://localhost/v1/v1.1/contracts'
+url = 'http://localhost/v1.1/contracts'
 payload = {
     "ip": "192.168.1.1",
     "clientes": {
@@ -1443,11 +1834,16 @@ response.json()</code></pre></div>
     <blockquote>Received response<span
                 id="execution-response-status-POSTv1.1-contracts"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTv1.1-contracts" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTv1.1-contracts"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTv1.1-contracts" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTv1.1-contracts"></code></pre>
+    <pre><code id="execution-error-message-POSTv1.1-contracts">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTv1.1-contracts" data-method="POST"
       data-path="v1.1/contracts"
@@ -1470,7 +1866,10 @@ response.json()</code></pre></div>
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTv1.1-contracts" hidden>Send Request 💥
+                    id="btn-executetryout-POSTv1.1-contracts"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -1569,7 +1968,7 @@ response.json()</code></pre></div>
         </div>
         </form>
 
-                    <h2 id="endpoints-PUTv1.1-contracts">Update Contracts</h2>
+                    <h2 id="mikrotik-controller-PUTv1.1-contracts">Update Contracts</h2>
 
 <p>
 </p>
@@ -1583,7 +1982,7 @@ response.json()</code></pre></div>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/v1/v1.1/contracts" \
+    "http://localhost/v1.1/contracts" \
     --header "Content-Type: application/xml" \
     --header "Accept: application/json" \
     --data "{
@@ -1600,7 +1999,7 @@ response.json()</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/v1/v1.1/contracts"
+    "http://localhost/v1.1/contracts"
 );
 
 const headers = {
@@ -1628,7 +2027,7 @@ fetch(url, {
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;put(
-    'http://localhost/v1/v1.1/contracts',
+    'http://localhost/v1.1/contracts',
     [
         'headers' =&gt; [
             'Content-Type' =&gt; 'application/xml',
@@ -1653,7 +2052,7 @@ print_r(json_decode((string) $body));</code></pre></div>
     <pre><code class="language-python">import requests
 import json
 
-url = 'http://localhost/v1/v1.1/contracts'
+url = 'http://localhost/v1.1/contracts'
 payload = {
     "ip": "192.168.1.1",
     "clientes": {
@@ -1706,11 +2105,16 @@ response.json()</code></pre></div>
     <blockquote>Received response<span
                 id="execution-response-status-PUTv1.1-contracts"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-PUTv1.1-contracts" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-PUTv1.1-contracts"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-PUTv1.1-contracts" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-PUTv1.1-contracts"></code></pre>
+    <pre><code id="execution-error-message-PUTv1.1-contracts">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-PUTv1.1-contracts" data-method="PUT"
       data-path="v1.1/contracts"
@@ -1733,7 +2137,10 @@ response.json()</code></pre></div>
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-PUTv1.1-contracts" hidden>Send Request 💥
+                    id="btn-executetryout-PUTv1.1-contracts"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -1832,7 +2239,7 @@ response.json()</code></pre></div>
         </div>
         </form>
 
-                    <h2 id="endpoints-PATCHv1-connection-enableConnection">Enable Connections</h2>
+                    <h2 id="mikrotik-controller-PATCHv1-connection-enableConnection">Enable Connections</h2>
 
 <p>
 </p>
@@ -1846,7 +2253,7 @@ response.json()</code></pre></div>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/v1/v1/connection/enableConnection" \
+    "http://localhost/v1/connection/enableConnection" \
     --header "Content-Type: application/xml" \
     --header "Accept: application/json" \
     --data "{
@@ -1860,7 +2267,7 @@ response.json()</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/v1/v1/connection/enableConnection"
+    "http://localhost/v1/connection/enableConnection"
 );
 
 const headers = {
@@ -1885,7 +2292,7 @@ fetch(url, {
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;patch(
-    'http://localhost/v1/v1/connection/enableConnection',
+    'http://localhost/v1/connection/enableConnection',
     [
         'headers' =&gt; [
             'Content-Type' =&gt; 'application/xml',
@@ -1907,7 +2314,7 @@ print_r(json_decode((string) $body));</code></pre></div>
     <pre><code class="language-python">import requests
 import json
 
-url = 'http://localhost/v1/v1/connection/enableConnection'
+url = 'http://localhost/v1/connection/enableConnection'
 payload = {
     "ip": "192.168.1.1",
     "clientes": {
@@ -1958,11 +2365,16 @@ response.json()</code></pre></div>
     <blockquote>Received response<span
                 id="execution-response-status-PATCHv1-connection-enableConnection"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-PATCHv1-connection-enableConnection" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-PATCHv1-connection-enableConnection"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-PATCHv1-connection-enableConnection" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-PATCHv1-connection-enableConnection"></code></pre>
+    <pre><code id="execution-error-message-PATCHv1-connection-enableConnection">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-PATCHv1-connection-enableConnection" data-method="PATCH"
       data-path="v1/connection/enableConnection"
@@ -1985,7 +2397,10 @@ response.json()</code></pre></div>
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-PATCHv1-connection-enableConnection" hidden>Send Request 💥
+                    id="btn-executetryout-PATCHv1-connection-enableConnection"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -2051,7 +2466,7 @@ response.json()</code></pre></div>
         </div>
         </form>
 
-                    <h2 id="endpoints-PATCHv1-connection-disableConnection">Disable Connections</h2>
+                    <h2 id="mikrotik-controller-PATCHv1-connection-disableConnection">Disable Connections</h2>
 
 <p>
 </p>
@@ -2065,7 +2480,7 @@ response.json()</code></pre></div>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/v1/v1/connection/disableConnection" \
+    "http://localhost/v1/connection/disableConnection" \
     --header "Content-Type: application/xml" \
     --header "Accept: application/json" \
     --data "{
@@ -2079,7 +2494,7 @@ response.json()</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/v1/v1/connection/disableConnection"
+    "http://localhost/v1/connection/disableConnection"
 );
 
 const headers = {
@@ -2104,7 +2519,7 @@ fetch(url, {
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;patch(
-    'http://localhost/v1/v1/connection/disableConnection',
+    'http://localhost/v1/connection/disableConnection',
     [
         'headers' =&gt; [
             'Content-Type' =&gt; 'application/xml',
@@ -2126,7 +2541,7 @@ print_r(json_decode((string) $body));</code></pre></div>
     <pre><code class="language-python">import requests
 import json
 
-url = 'http://localhost/v1/v1/connection/disableConnection'
+url = 'http://localhost/v1/connection/disableConnection'
 payload = {
     "ip": "192.168.1.1",
     "clientes": {
@@ -2177,11 +2592,16 @@ response.json()</code></pre></div>
     <blockquote>Received response<span
                 id="execution-response-status-PATCHv1-connection-disableConnection"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-PATCHv1-connection-disableConnection" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-PATCHv1-connection-disableConnection"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-PATCHv1-connection-disableConnection" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-PATCHv1-connection-disableConnection"></code></pre>
+    <pre><code id="execution-error-message-PATCHv1-connection-disableConnection">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-PATCHv1-connection-disableConnection" data-method="PATCH"
       data-path="v1/connection/disableConnection"
@@ -2204,7 +2624,10 @@ response.json()</code></pre></div>
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-PATCHv1-connection-disableConnection" hidden>Send Request 💥
+                    id="btn-executetryout-PATCHv1-connection-disableConnection"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -2270,7 +2693,144 @@ response.json()</code></pre></div>
         </div>
         </form>
 
-                    <h2 id="endpoints-GETv1-router-getDataMikrotik">Get Data Mikrotik</h2>
+                    <h2 id="mikrotik-controller-PATCHv1-connection-revertChanges">PATCH v1/connection/revertChanges</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-PATCHv1-connection-revertChanges">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PATCH \
+    "http://localhost/v1/connection/revertChanges" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/connection/revertChanges"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "PATCH",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;patch(
+    'http://localhost/v1/connection/revertChanges',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/connection/revertChanges'
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('PATCH', url, headers=headers)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-PATCHv1-connection-revertChanges">
+</span>
+<span id="execution-results-PATCHv1-connection-revertChanges" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PATCHv1-connection-revertChanges"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PATCHv1-connection-revertChanges"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PATCHv1-connection-revertChanges" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PATCHv1-connection-revertChanges">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PATCHv1-connection-revertChanges" data-method="PATCH"
+      data-path="v1/connection/revertChanges"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PATCHv1-connection-revertChanges', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PATCHv1-connection-revertChanges"
+                    onclick="tryItOut('PATCHv1-connection-revertChanges');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PATCHv1-connection-revertChanges"
+                    onclick="cancelTryOut('PATCHv1-connection-revertChanges');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PATCHv1-connection-revertChanges"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-purple">PATCH</small>
+            <b><code>v1/connection/revertChanges</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="PATCHv1-connection-revertChanges"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="PATCHv1-connection-revertChanges"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="mikrotik-controller-GETv1-router-getDataMikrotik">Get Data Mikrotik</h2>
 
 <p>
 </p>
@@ -2284,7 +2844,7 @@ response.json()</code></pre></div>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/v1/v1/router/getDataMikrotik" \
+    --get "http://localhost/v1/router/getDataMikrotik" \
     --header "Content-Type: application/xml" \
     --header "Accept: application/json" \
     --data "{
@@ -2298,7 +2858,7 @@ response.json()</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/v1/v1/router/getDataMikrotik"
+    "http://localhost/v1/router/getDataMikrotik"
 );
 
 const headers = {
@@ -2323,7 +2883,7 @@ fetch(url, {
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;get(
-    'http://localhost/v1/v1/router/getDataMikrotik',
+    'http://localhost/v1/router/getDataMikrotik',
     [
         'headers' =&gt; [
             'Content-Type' =&gt; 'application/xml',
@@ -2345,7 +2905,7 @@ print_r(json_decode((string) $body));</code></pre></div>
     <pre><code class="language-python">import requests
 import json
 
-url = 'http://localhost/v1/v1/router/getDataMikrotik'
+url = 'http://localhost/v1/router/getDataMikrotik'
 payload = {
     "ip": "192.168.1.1",
     "clientes": {
@@ -2427,11 +2987,16 @@ response.json()</code></pre></div>
     <blockquote>Received response<span
                 id="execution-response-status-GETv1-router-getDataMikrotik"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETv1-router-getDataMikrotik" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETv1-router-getDataMikrotik"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETv1-router-getDataMikrotik" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETv1-router-getDataMikrotik"></code></pre>
+    <pre><code id="execution-error-message-GETv1-router-getDataMikrotik">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETv1-router-getDataMikrotik" data-method="GET"
       data-path="v1/router/getDataMikrotik"
@@ -2454,7 +3019,10 @@ response.json()</code></pre></div>
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETv1-router-getDataMikrotik" hidden>Send Request 💥
+                    id="btn-executetryout-GETv1-router-getDataMikrotik"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -2517,6 +3085,1183 @@ response.json()</code></pre></div>
 <p>Client IP. Example: <code>1.1.1.1</code></p>
                     </div>
                                     </details>
+        </div>
+        </form>
+
+                <h1 id="radius-controller">Radius Controller</h1>
+
+    <p>API for managing RADIUS</p>
+
+                                <h2 id="radius-controller-GETv1-radius-users_data">Get all users from the radius database</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-GETv1-radius-users_data">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/v1/radius/users_data" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/radius/users_data"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'http://localhost/v1/radius/users_data',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/radius/users_data'
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETv1-radius-users_data">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">Unauthorized.</code>
+ </pre>
+    </span>
+<span id="execution-results-GETv1-radius-users_data" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETv1-radius-users_data"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETv1-radius-users_data"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETv1-radius-users_data" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETv1-radius-users_data">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETv1-radius-users_data" data-method="GET"
+      data-path="v1/radius/users_data"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETv1-radius-users_data', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETv1-radius-users_data"
+                    onclick="tryItOut('GETv1-radius-users_data');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETv1-radius-users_data"
+                    onclick="cancelTryOut('GETv1-radius-users_data');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETv1-radius-users_data"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>v1/radius/users_data</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETv1-radius-users_data"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETv1-radius-users_data"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="radius-controller-POSTv1-radius-users">Create a new user in the radius database</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTv1-radius-users">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/v1/radius/users" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/radius/users"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;post(
+    'http://localhost/v1/radius/users',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/radius/users'
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('POST', url, headers=headers)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTv1-radius-users">
+</span>
+<span id="execution-results-POSTv1-radius-users" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTv1-radius-users"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTv1-radius-users"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTv1-radius-users" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTv1-radius-users">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTv1-radius-users" data-method="POST"
+      data-path="v1/radius/users"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTv1-radius-users', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTv1-radius-users"
+                    onclick="tryItOut('POSTv1-radius-users');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTv1-radius-users"
+                    onclick="cancelTryOut('POSTv1-radius-users');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTv1-radius-users"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>v1/radius/users</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTv1-radius-users"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTv1-radius-users"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="radius-controller-GETv1-radius-users">Get a user from the radius database based on the username in the request</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-GETv1-radius-users">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/v1/radius/users" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/radius/users"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'http://localhost/v1/radius/users',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/radius/users'
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETv1-radius-users">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">Unauthorized.</code>
+ </pre>
+    </span>
+<span id="execution-results-GETv1-radius-users" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETv1-radius-users"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETv1-radius-users"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETv1-radius-users" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETv1-radius-users">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETv1-radius-users" data-method="GET"
+      data-path="v1/radius/users"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETv1-radius-users', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETv1-radius-users"
+                    onclick="tryItOut('GETv1-radius-users');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETv1-radius-users"
+                    onclick="cancelTryOut('GETv1-radius-users');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETv1-radius-users"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>v1/radius/users</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETv1-radius-users"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETv1-radius-users"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="radius-controller-PUTv1-radius-users">Update user paramas in the radius database</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-PUTv1-radius-users">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://localhost/v1/radius/users" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/radius/users"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "PUT",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;put(
+    'http://localhost/v1/radius/users',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/radius/users'
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('PUT', url, headers=headers)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTv1-radius-users">
+</span>
+<span id="execution-results-PUTv1-radius-users" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTv1-radius-users"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTv1-radius-users"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTv1-radius-users" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTv1-radius-users">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PUTv1-radius-users" data-method="PUT"
+      data-path="v1/radius/users"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTv1-radius-users', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTv1-radius-users"
+                    onclick="tryItOut('PUTv1-radius-users');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTv1-radius-users"
+                    onclick="cancelTryOut('PUTv1-radius-users');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTv1-radius-users"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>v1/radius/users</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="PUTv1-radius-users"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="PUTv1-radius-users"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="radius-controller-DELETEv1-radius-users">Delete a user from the radius database.</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-DELETEv1-radius-users">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request DELETE \
+    "http://localhost/v1/radius/users" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/radius/users"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;delete(
+    'http://localhost/v1/radius/users',
+    [
+        'headers' =&gt; [
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/radius/users'
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('DELETE', url, headers=headers)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-DELETEv1-radius-users">
+</span>
+<span id="execution-results-DELETEv1-radius-users" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEv1-radius-users"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEv1-radius-users"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-DELETEv1-radius-users" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEv1-radius-users">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-DELETEv1-radius-users" data-method="DELETE"
+      data-path="v1/radius/users"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEv1-radius-users', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEv1-radius-users"
+                    onclick="tryItOut('DELETEv1-radius-users');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEv1-radius-users"
+                    onclick="cancelTryOut('DELETEv1-radius-users');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEv1-radius-users"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>v1/radius/users</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="DELETEv1-radius-users"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="DELETEv1-radius-users"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                <h1 id="smartolt-controller">SmartOLT Controller</h1>
+
+    <p>API for managing SmartOLT</p>
+
+                                <h2 id="smartolt-controller-GETv1-smartolt-onu-status">Get ONU Status</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>This endpoint allows you to get the status of an ONU.</p>
+
+<span id="example-requests-GETv1-smartolt-onu-status">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/v1/smartolt/onu/status" \
+    --header "Authorization: Bearer BEARER_TOKEN" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"onu_sn\": \"HWTCA7A1236A\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/smartolt/onu/status"
+);
+
+const headers = {
+    "Authorization": "Bearer BEARER_TOKEN",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "onu_sn": "HWTCA7A1236A"
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'http://localhost/v1/smartolt/onu/status',
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer BEARER_TOKEN',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'onu_sn' =&gt; 'HWTCA7A1236A',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/smartolt/onu/status'
+payload = {
+    "onu_sn": "HWTCA7A1236A"
+}
+headers = {
+  'Authorization': 'Bearer BEARER_TOKEN',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers, json=payload)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETv1-smartolt-onu-status">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;ONU Status retrieved successfully.&quot;,
+    &quot;detail&quot;: {
+        &quot;status&quot;: true,
+        &quot;onu_status&quot;: &quot;Online&quot;
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Invalid data.&quot;,
+    &quot;detail&quot;: {
+        &quot;onu_sn&quot;: [
+            &quot;The onu sn field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;ONU Status not found.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;An error occurred while retrieving ONU Status.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETv1-smartolt-onu-status" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETv1-smartolt-onu-status"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETv1-smartolt-onu-status"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETv1-smartolt-onu-status" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETv1-smartolt-onu-status">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETv1-smartolt-onu-status" data-method="GET"
+      data-path="v1/smartolt/onu/status"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETv1-smartolt-onu-status', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETv1-smartolt-onu-status"
+                    onclick="tryItOut('GETv1-smartolt-onu-status');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETv1-smartolt-onu-status"
+                    onclick="cancelTryOut('GETv1-smartolt-onu-status');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETv1-smartolt-onu-status"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>v1/smartolt/onu/status</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETv1-smartolt-onu-status"
+               value="Bearer BEARER_TOKEN"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer BEARER_TOKEN</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETv1-smartolt-onu-status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETv1-smartolt-onu-status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>onu_sn</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="onu_sn"                data-endpoint="GETv1-smartolt-onu-status"
+               value="HWTCA7A1236A"
+               data-component="body">
+    <br>
+<p>The ONU serial number. Example: <code>HWTCA7A1236A</code></p>
+        </div>
+        </form>
+
+                    <h2 id="smartolt-controller-POSTv1-smartolt-onu-reboot">Reboot ONU</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>This endpoint allows you to reboot an ONU by its serial number.</p>
+
+<span id="example-requests-POSTv1-smartolt-onu-reboot">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/v1/smartolt/onu/reboot" \
+    --header "Authorization: Bearer BEARER_TOKEN" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"onu_sn\": \"HWTCA7A1236A\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/v1/smartolt/onu/reboot"
+);
+
+const headers = {
+    "Authorization": "Bearer BEARER_TOKEN",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "onu_sn": "HWTCA7A1236A"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;post(
+    'http://localhost/v1/smartolt/onu/reboot',
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer BEARER_TOKEN',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'onu_sn' =&gt; 'HWTCA7A1236A',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="python-example">
+    <pre><code class="language-python">import requests
+import json
+
+url = 'http://localhost/v1/smartolt/onu/reboot'
+payload = {
+    "onu_sn": "HWTCA7A1236A"
+}
+headers = {
+  'Authorization': 'Bearer BEARER_TOKEN',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('POST', url, headers=headers, json=payload)
+response.json()</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTv1-smartolt-onu-reboot">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;ONU rebooted successfully.&quot;,
+    &quot;detail&quot;: {
+        &quot;status&quot;: true,
+        &quot;response&quot;: &quot;Device reboot command sent&quot;
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Invalid data.&quot;,
+    &quot;detail&quot;: {
+        &quot;onu_sn&quot;: [
+            &quot;The onu sn field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;ONU Status not found.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;An error occurred while retrieving ONU Status.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTv1-smartolt-onu-reboot" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTv1-smartolt-onu-reboot"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTv1-smartolt-onu-reboot"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTv1-smartolt-onu-reboot" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTv1-smartolt-onu-reboot">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTv1-smartolt-onu-reboot" data-method="POST"
+      data-path="v1/smartolt/onu/reboot"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTv1-smartolt-onu-reboot', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTv1-smartolt-onu-reboot"
+                    onclick="tryItOut('POSTv1-smartolt-onu-reboot');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTv1-smartolt-onu-reboot"
+                    onclick="cancelTryOut('POSTv1-smartolt-onu-reboot');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTv1-smartolt-onu-reboot"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>v1/smartolt/onu/reboot</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTv1-smartolt-onu-reboot"
+               value="Bearer BEARER_TOKEN"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer BEARER_TOKEN</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTv1-smartolt-onu-reboot"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTv1-smartolt-onu-reboot"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>onu_sn</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="onu_sn"                data-endpoint="POSTv1-smartolt-onu-reboot"
+               value="HWTCA7A1236A"
+               data-component="body">
+    <br>
+<p>The ONU serial number. Example: <code>HWTCA7A1236A</code></p>
         </div>
         </form>
 

@@ -10,7 +10,12 @@ use \RouterOS\Client;
 use \RouterOS\Query;
 use Exception;
 use function PHPUnit\Framework\isEmpty;
+use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\Subgroup;
 
+
+#[Group("Mikrotik Controller", "API for managing Mikrotik")]
+#[Subgroup("Wireless", "To manage queues connections")]
 class MikrotikAPIController extends Controller
 {
 
