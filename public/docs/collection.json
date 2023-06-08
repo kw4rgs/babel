@@ -10,17 +10,17 @@
     ],
     "info": {
         "name": "BABEL v1",
-        "_postman_id": "d23cbb4e-fb22-4c1b-8770-86b9b8524238",
+        "_postman_id": "e96970c6-aa8b-4fee-b8af-d32465bd8a39",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [
         {
-            "name": "FTTH Controller",
-            "description": "API for managing FTTH connections",
+            "name": "FTTH Management",
+            "description": "\nAPI for managing FTTH connections.",
             "item": [
                 {
-                    "name": "GET v1\/ftth\/customer",
+                    "name": "Get Customer Connection",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -39,32 +39,47 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"username\":\"10.132.139.232\",\"onu_sn\":\"HWTC31E0CJSD\"}"
+                        },
+                        "description": "This endpoint allows you to get the customer connection params from Radius and status from SmartOLT."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
-                            "code": 401,
-                            "body": "Unauthorized.",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"status\":true,\"message\":\"Customer connection found in Radius and ONU is available in SmartOLT.\",\"data\":{\"radius\":{\"status\":\"success\",\"message\":\"User found\",\"detail\":{\"id\":29881,\"name\":\"Gustavo   Ivan   Escalon CastroESCALON CASTRO\",\"username\":\"10.112.239.132\",\"password\":\"password\",\"bandwith_plan\":\"61440k\/61440k\",\"main_ip\":\"10.192.310.114\",\"node\":\"CASTROL FTTH\",\"created_at\":\"0000-00-00\",\"updated_at\":\"2023-06-08\"}},\"smartolt\":{\"status\":\"success\",\"message\":\"ONU Status retrieved successfully\",\"detail\":{\"status\":true,\"onu_status\":\"Online\"}}}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 206,
+                            "body": "{\"status\":\"success\",\"message\":\"Error getting ONU status, but customer connection was found in Radius.\",\"data\":{\"radius\":{\"status\":\"success\",\"message\":\"User found\",\"detail\":{\"id\":29881,\"name\":\"Gustavo   Ivan   Escalon CastroESCALON CASTRO\",\"username\":\"10.112.239.232\",\"password\":\"b3afs82\",\"bandwith_plan\":\"61440k\/61440k\",\"main_ip\":\"10.192.510.114\",\"node\":\"CASTROL FTTH\",\"created_at\":\"0000-00-00\",\"updated_at\":\"2023-06-08\"}}}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\"status\":\"error\",\"message\":\"Invalid data.\",\"detail\":{\"username\":[\"The username field is required.\"],\"onu_sn\":[\"The onu sn field is required.\"]}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"status\":\"error\",\"message\":\"Error getting customer connection. Customer not found in Radius.\",\"data\":{\"radius\":{\"status\":\"error\",\"message\":\"User does not exist.\"}}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\"status\": \"error\", \"message\": \"Error getting customer connection.\"}",
                             "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "Update the customer connection in Radius and reboot onu in SmartOLT",
+                    "name": "Update Customer Connection",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -83,13 +98,38 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"Kwargs\",\"username\":\"1.1.1.1\",\"bandwith_plan\":\"61440k\\\/61440k\",\"node\":\"CASTROL FTTH\",\"main_ip\":\"10.192.310.11\",\"onu_sn\":\"HWTC31E0CJSF\"}"
+                        },
+                        "description": "This endpoint allows you to update the customer connection params in Radius and reboot the ONU via SmartOLT."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"status\": true, \"message\": \"Customer connection updated in Radius and ONU rebooted in SmartOLT.\", \"data\": {\"radius\": {\"status\": \"success\", \"message\": \"Bandwidth updated successfully\", \"detail\": {\"status\": \"success\", \"message\": \"User found\", \"detail\": {\"id\": 29881, \"name\": \"Kwargs\", \"username\": \"10.112.239.232\", \"password\": \"b3a7fw82\", \"bandwith_plan\": \"61440k\/61440k\", \"main_ip\": \"10.192.210.114\", \"node\": \"CASTROL FTTH\", \"created_at\": \"0000-00-00\", \"updated_at\": \"2023-06-08\"}}}, \"smartolt\": {\"status\": \"success\", \"message\": \"ONU Status rebooted successfully\", \"detail\": {\"status\": true, \"response\": \"Device reboot command sent\"}}}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 206,
+                            "body": "{\"status\": \"success\", \"message\": \"Customer connection updated in Radius, but ONU is not available in SmartOLT.\", \"data\": {\"radius\": {\"status\": \"success\", \"message\": \"User found\", \"detail\": {\"id\": 29881, \"name\": \"Kwargs\", \"username\": \"10.112.239.232\", \"password\": \"b3afswe82\", \"bandwith_plan\": \"61440k\/61440k\", \"main_ip\": \"10.192.510.114\", \"node\": \"CASTROL FTTH\", \"created_at\": \"0000-00-00\", \"updated_at\": \"2023-06-08\"}}}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"status\": \"error\", \"message\": \"Error updating customer connection.\", \"data\": {\"radius\": {\"status\": \"error\", \"message\": \"User does not exist.\"}}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\"status\": \"error\", \"message\": \"Error getting customer connection.\"}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -635,7 +675,7 @@
         },
         {
             "name": "Radius Controller",
-            "description": "API for managing RADIUS",
+            "description": "\nAPI for managing Radius Server",
             "item": [
                 {
                     "name": "Get all users from the radius database",

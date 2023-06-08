@@ -1,5 +1,7 @@
 name: 'Radius Controller'
-description: 'API for managing RADIUS'
+description: |-
+
+  API for managing Radius Server
 endpoints:
   -
     httpMethods:
@@ -7,7 +9,9 @@ endpoints:
     uri: v1/radius/users_data
     metadata:
       groupName: 'Radius Controller'
-      groupDescription: 'API for managing RADIUS'
+      groupDescription: |-
+
+        API for managing Radius Server
       subgroup: ''
       subgroupDescription: ''
       title: 'Get all users from the radius database'
@@ -45,7 +49,9 @@ endpoints:
     uri: v1/radius/users
     metadata:
       groupName: 'Radius Controller'
-      groupDescription: 'API for managing RADIUS'
+      groupDescription: |-
+
+        API for managing Radius Server
       subgroup: ''
       subgroupDescription: ''
       title: 'Create a new user in the radius database'
@@ -75,7 +81,9 @@ endpoints:
     uri: v1/radius/users
     metadata:
       groupName: 'Radius Controller'
-      groupDescription: 'API for managing RADIUS'
+      groupDescription: |-
+
+        API for managing Radius Server
       subgroup: ''
       subgroupDescription: ''
       title: 'Get a user from the radius database based on the username in the request'
@@ -113,7 +121,9 @@ endpoints:
     uri: v1/radius/users
     metadata:
       groupName: 'Radius Controller'
-      groupDescription: 'API for managing RADIUS'
+      groupDescription: |-
+
+        API for managing Radius Server
       subgroup: ''
       subgroupDescription: ''
       title: 'Update user paramas in the radius database'
@@ -143,7 +153,9 @@ endpoints:
     uri: v1/radius/users
     metadata:
       groupName: 'Radius Controller'
-      groupDescription: 'API for managing RADIUS'
+      groupDescription: |-
+
+        API for managing Radius Server
       subgroup: ''
       subgroupDescription: ''
       title: 'Delete a user from the radius database.'

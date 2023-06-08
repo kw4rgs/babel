@@ -9,30 +9,571 @@ servers:
 paths:
   /v1/ftth/customer:
     get:
-      summary: ''
-      operationId: getV1FtthCustomer
-      description: ''
-      parameters: []
+      summary: 'Get Customer Connection'
+      operationId: getCustomerConnection
+      description: 'This endpoint allows you to get the customer connection params from Radius and status from SmartOLT.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer BEARER_TOKEN'
+          schema:
+            type: string
       responses:
-        401:
+        200:
           description: ''
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: Unauthorized.
+                type: object
+                example:
+                  status: true
+                  message: 'Customer connection found in Radius and ONU is available in SmartOLT.'
+                  data:
+                    radius:
+                      status: success
+                      message: 'User found'
+                      detail:
+                        id: 29881
+                        name: 'Gustavo   Ivan   Escalon CastroESCALON CASTRO'
+                        username: 10.112.239.132
+                        password: password
+                        bandwith_plan: 61440k/61440k
+                        main_ip: 10.192.310.114
+                        node: 'CASTROL FTTH'
+                        created_at: '0000-00-00'
+                        updated_at: '2023-06-08'
+                    smartolt:
+                      status: success
+                      message: 'ONU Status retrieved successfully'
+                      detail:
+                        status: true
+                        onu_status: Online
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Customer connection found in Radius and ONU is available in SmartOLT.'
+                  data:
+                    type: object
+                    properties:
+                      radius:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: success
+                          message:
+                            type: string
+                            example: 'User found'
+                          detail:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 29881
+                              name:
+                                type: string
+                                example: 'Gustavo   Ivan   Escalon CastroESCALON CASTRO'
+                              username:
+                                type: string
+                                example: 10.112.239.132
+                              password:
+                                type: string
+                                example: password
+                              bandwith_plan:
+                                type: string
+                                example: 61440k/61440k
+                              main_ip:
+                                type: string
+                                example: 10.192.310.114
+                              node:
+                                type: string
+                                example: 'CASTROL FTTH'
+                              created_at:
+                                type: string
+                                example: '0000-00-00'
+                              updated_at:
+                                type: string
+                                example: '2023-06-08'
+                      smartolt:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: success
+                          message:
+                            type: string
+                            example: 'ONU Status retrieved successfully'
+                          detail:
+                            type: object
+                            properties:
+                              status:
+                                type: boolean
+                                example: true
+                              onu_status:
+                                type: string
+                                example: Online
+        206:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'Error getting ONU status, but customer connection was found in Radius.'
+                  data:
+                    radius:
+                      status: success
+                      message: 'User found'
+                      detail:
+                        id: 29881
+                        name: 'Gustavo   Ivan   Escalon CastroESCALON CASTRO'
+                        username: 10.112.239.232
+                        password: b3afs82
+                        bandwith_plan: 61440k/61440k
+                        main_ip: 10.192.510.114
+                        node: 'CASTROL FTTH'
+                        created_at: '0000-00-00'
+                        updated_at: '2023-06-08'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'Error getting ONU status, but customer connection was found in Radius.'
+                  data:
+                    type: object
+                    properties:
+                      radius:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: success
+                          message:
+                            type: string
+                            example: 'User found'
+                          detail:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 29881
+                              name:
+                                type: string
+                                example: 'Gustavo   Ivan   Escalon CastroESCALON CASTRO'
+                              username:
+                                type: string
+                                example: 10.112.239.232
+                              password:
+                                type: string
+                                example: b3afs82
+                              bandwith_plan:
+                                type: string
+                                example: 61440k/61440k
+                              main_ip:
+                                type: string
+                                example: 10.192.510.114
+                              node:
+                                type: string
+                                example: 'CASTROL FTTH'
+                              created_at:
+                                type: string
+                                example: '0000-00-00'
+                              updated_at:
+                                type: string
+                                example: '2023-06-08'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Invalid data.'
+                  detail:
+                    username:
+                      - 'The username field is required.'
+                    onu_sn:
+                      - 'The onu sn field is required.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Invalid data.'
+                  detail:
+                    type: object
+                    properties:
+                      username:
+                        type: array
+                        example:
+                          - 'The username field is required.'
+                        items:
+                          type: string
+                      onu_sn:
+                        type: array
+                        example:
+                          - 'The onu sn field is required.'
+                        items:
+                          type: string
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error getting customer connection. Customer not found in Radius.'
+                  data:
+                    radius:
+                      status: error
+                      message: 'User does not exist.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error getting customer connection. Customer not found in Radius.'
+                  data:
+                    type: object
+                    properties:
+                      radius:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: error
+                          message:
+                            type: string
+                            example: 'User does not exist.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error getting customer connection.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error getting customer connection.'
       tags:
-        - 'FTTH Controller'
-      security: []
+        - 'FTTH Management'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: 'The username in radius'
+                  example: 10.132.139.232
+                onu_sn:
+                  type: string
+                  description: 'The ONU serial number'
+                  example: HWTC31E0CJSD
+              required:
+                - username
+                - onu_sn
     put:
-      summary: 'Update the customer connection in Radius and reboot onu in SmartOLT'
-      operationId: updateTheCustomerConnectionInRadiusAndRebootOnuInSmartOLT
-      description: ''
-      parameters: []
-      responses: {  }
+      summary: 'Update Customer Connection'
+      operationId: updateCustomerConnection
+      description: 'This endpoint allows you to update the customer connection params in Radius and reboot the ONU via SmartOLT.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer BEARER_TOKEN'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Customer connection updated in Radius and ONU rebooted in SmartOLT.'
+                  data:
+                    radius:
+                      status: success
+                      message: 'Bandwidth updated successfully'
+                      detail:
+                        status: success
+                        message: 'User found'
+                        detail:
+                          id: 29881
+                          name: Kwargs
+                          username: 10.112.239.232
+                          password: b3a7fw82
+                          bandwith_plan: 61440k/61440k
+                          main_ip: 10.192.210.114
+                          node: 'CASTROL FTTH'
+                          created_at: '0000-00-00'
+                          updated_at: '2023-06-08'
+                    smartolt:
+                      status: success
+                      message: 'ONU Status rebooted successfully'
+                      detail:
+                        status: true
+                        response: 'Device reboot command sent'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Customer connection updated in Radius and ONU rebooted in SmartOLT.'
+                  data:
+                    type: object
+                    properties:
+                      radius:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: success
+                          message:
+                            type: string
+                            example: 'Bandwidth updated successfully'
+                          detail:
+                            type: object
+                            properties:
+                              status:
+                                type: string
+                                example: success
+                              message:
+                                type: string
+                                example: 'User found'
+                              detail:
+                                type: object
+                                properties:
+                                  id:
+                                    type: integer
+                                    example: 29881
+                                  name:
+                                    type: string
+                                    example: Kwargs
+                                  username:
+                                    type: string
+                                    example: 10.112.239.232
+                                  password:
+                                    type: string
+                                    example: b3a7fw82
+                                  bandwith_plan:
+                                    type: string
+                                    example: 61440k/61440k
+                                  main_ip:
+                                    type: string
+                                    example: 10.192.210.114
+                                  node:
+                                    type: string
+                                    example: 'CASTROL FTTH'
+                                  created_at:
+                                    type: string
+                                    example: '0000-00-00'
+                                  updated_at:
+                                    type: string
+                                    example: '2023-06-08'
+                      smartolt:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: success
+                          message:
+                            type: string
+                            example: 'ONU Status rebooted successfully'
+                          detail:
+                            type: object
+                            properties:
+                              status:
+                                type: boolean
+                                example: true
+                              response:
+                                type: string
+                                example: 'Device reboot command sent'
+        206:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'Customer connection updated in Radius, but ONU is not available in SmartOLT.'
+                  data:
+                    radius:
+                      status: success
+                      message: 'User found'
+                      detail:
+                        id: 29881
+                        name: Kwargs
+                        username: 10.112.239.232
+                        password: b3afswe82
+                        bandwith_plan: 61440k/61440k
+                        main_ip: 10.192.510.114
+                        node: 'CASTROL FTTH'
+                        created_at: '0000-00-00'
+                        updated_at: '2023-06-08'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'Customer connection updated in Radius, but ONU is not available in SmartOLT.'
+                  data:
+                    type: object
+                    properties:
+                      radius:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: success
+                          message:
+                            type: string
+                            example: 'User found'
+                          detail:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 29881
+                              name:
+                                type: string
+                                example: Kwargs
+                              username:
+                                type: string
+                                example: 10.112.239.232
+                              password:
+                                type: string
+                                example: b3afswe82
+                              bandwith_plan:
+                                type: string
+                                example: 61440k/61440k
+                              main_ip:
+                                type: string
+                                example: 10.192.510.114
+                              node:
+                                type: string
+                                example: 'CASTROL FTTH'
+                              created_at:
+                                type: string
+                                example: '0000-00-00'
+                              updated_at:
+                                type: string
+                                example: '2023-06-08'
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error updating customer connection.'
+                  data:
+                    radius:
+                      status: error
+                      message: 'User does not exist.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error updating customer connection.'
+                  data:
+                    type: object
+                    properties:
+                      radius:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: error
+                          message:
+                            type: string
+                            example: 'User does not exist.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error getting customer connection.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error getting customer connection.'
       tags:
-        - 'FTTH Controller'
-      security: []
+        - 'FTTH Management'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'The customer name.'
+                  example: Kwargs
+                username:
+                  type: string
+                  description: 'The username in radius.'
+                  example: 1.1.1.1
+                bandwith_plan:
+                  type: string
+                  description: 'The bandwidth plan.'
+                  example: 61440k/61440k
+                node:
+                  type: string
+                  description: 'The node.'
+                  example: 'CASTROL FTTH'
+                main_ip:
+                  type: string
+                  description: 'The main IP.'
+                  example: 10.192.310.11
+                onu_sn:
+                  type: string
+                  description: 'The ONU serial number.'
+                  example: HWTC31E0CJSF
+              required:
+                - name
+                - username
+                - bandwith_plan
+                - node
+                - main_ip
+                - onu_sn
   /v1/test:
     get:
       summary: 'Test RouterOS'
@@ -1091,14 +1632,14 @@ paths:
                 - onu_sn
 tags:
   -
-    name: 'FTTH Controller'
-    description: 'API for managing FTTH connections'
+    name: 'FTTH Management'
+    description: "\nAPI for managing FTTH connections."
   -
     name: 'Mikrotik Controller'
     description: 'API for managing Mikrotik'
   -
     name: 'Radius Controller'
-    description: 'API for managing RADIUS'
+    description: "\nAPI for managing Radius Server"
   -
     name: 'SmartOLT Controller'
     description: "\nAPI for managing SmartOLT"

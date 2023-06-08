@@ -1,40 +1,86 @@
-name: 'FTTH Controller'
-description: 'API for managing FTTH connections'
+name: 'FTTH Management'
+description: |-
+
+  API for managing FTTH connections.
 endpoints:
   -
     httpMethods:
       - GET
     uri: v1/ftth/customer
     metadata:
-      groupName: 'FTTH Controller'
-      groupDescription: 'API for managing FTTH connections'
+      groupName: 'FTTH Management'
+      groupDescription: |-
+
+        API for managing FTTH connections.
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: 'Get Customer Connection'
+      description: 'This endpoint allows you to get the customer connection params from Radius and status from SmartOLT.'
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer BEARER_TOKEN'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      username:
+        name: username
+        description: 'The username in radius'
+        required: true
+        example: 10.132.139.232
+        type: string
+        custom: []
+      onu_sn:
+        name: onu_sn
+        description: 'The ONU serial number'
+        required: true
+        example: HWTC31E0CJSD
+        type: string
+        custom: []
+    cleanBodyParameters:
+      username: 10.132.139.232
+      onu_sn: HWTC31E0CJSD
     fileParameters: []
     responses:
       -
-        status: 401
-        content: Unauthorized.
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-        description: null
+        status: 200
+        content: '{"status":true,"message":"Customer connection found in Radius and ONU is available in SmartOLT.","data":{"radius":{"status":"success","message":"User found","detail":{"id":29881,"name":"Gustavo   Ivan   Escalon CastroESCALON CASTRO","username":"10.112.239.132","password":"password","bandwith_plan":"61440k/61440k","main_ip":"10.192.310.114","node":"CASTROL FTTH","created_at":"0000-00-00","updated_at":"2023-06-08"}},"smartolt":{"status":"success","message":"ONU Status retrieved successfully","detail":{"status":true,"onu_status":"Online"}}}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 206
+        content: '{"status":"success","message":"Error getting ONU status, but customer connection was found in Radius.","data":{"radius":{"status":"success","message":"User found","detail":{"id":29881,"name":"Gustavo   Ivan   Escalon CastroESCALON CASTRO","username":"10.112.239.232","password":"b3afs82","bandwith_plan":"61440k/61440k","main_ip":"10.192.510.114","node":"CASTROL FTTH","created_at":"0000-00-00","updated_at":"2023-06-08"}}}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: '{"status":"error","message":"Invalid data.","detail":{"username":["The username field is required."],"onu_sn":["The onu sn field is required."]}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"status":"error","message":"Error getting customer connection. Customer not found in Radius.","data":{"radius":{"status":"error","message":"User does not exist."}}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: '{"status": "error", "message": "Error getting customer connection."}'
+        headers: []
+        description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer gcDkZvP65hdV1Eea364baf8'
     controller: null
     method: null
     route: null
@@ -44,27 +90,105 @@ endpoints:
       - PUT
     uri: v1/ftth/customer
     metadata:
-      groupName: 'FTTH Controller'
-      groupDescription: 'API for managing FTTH connections'
+      groupName: 'FTTH Management'
+      groupDescription: |-
+
+        API for managing FTTH connections.
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update the customer connection in Radius and reboot onu in SmartOLT'
-      description: ''
-      authenticated: false
+      title: 'Update Customer Connection'
+      description: 'This endpoint allows you to update the customer connection params in Radius and reboot the ONU via SmartOLT.'
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer BEARER_TOKEN'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'The customer name.'
+        required: true
+        example: Kwargs
+        type: string
+        custom: []
+      username:
+        name: username
+        description: 'The username in radius.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+      bandwith_plan:
+        name: bandwith_plan
+        description: 'The bandwidth plan.'
+        required: true
+        example: 61440k/61440k
+        type: string
+        custom: []
+      node:
+        name: node
+        description: 'The node.'
+        required: true
+        example: 'CASTROL FTTH'
+        type: string
+        custom: []
+      main_ip:
+        name: main_ip
+        description: 'The main IP.'
+        required: true
+        example: 10.192.310.11
+        type: string
+        custom: []
+      onu_sn:
+        name: onu_sn
+        description: 'The ONU serial number.'
+        required: true
+        example: HWTC31E0CJSF
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: Kwargs
+      username: 1.1.1.1
+      bandwith_plan: 61440k/61440k
+      node: 'CASTROL FTTH'
+      main_ip: 10.192.310.11
+      onu_sn: HWTC31E0CJSF
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: '{"status": true, "message": "Customer connection updated in Radius and ONU rebooted in SmartOLT.", "data": {"radius": {"status": "success", "message": "Bandwidth updated successfully", "detail": {"status": "success", "message": "User found", "detail": {"id": 29881, "name": "Kwargs", "username": "10.112.239.232", "password": "b3a7fw82", "bandwith_plan": "61440k/61440k", "main_ip": "10.192.210.114", "node": "CASTROL FTTH", "created_at": "0000-00-00", "updated_at": "2023-06-08"}}}, "smartolt": {"status": "success", "message": "ONU Status rebooted successfully", "detail": {"status": true, "response": "Device reboot command sent"}}}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 206
+        content: '{"status": "success", "message": "Customer connection updated in Radius, but ONU is not available in SmartOLT.", "data": {"radius": {"status": "success", "message": "User found", "detail": {"id": 29881, "name": "Kwargs", "username": "10.112.239.232", "password": "b3afswe82", "bandwith_plan": "61440k/61440k", "main_ip": "10.192.510.114", "node": "CASTROL FTTH", "created_at": "0000-00-00", "updated_at": "2023-06-08"}}}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: '{"status": "error", "message": "Error updating customer connection.", "data": {"radius": {"status": "error", "message": "User does not exist."}}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: '{"status": "error", "message": "Error getting customer connection."}'
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Dk1Ec5bfd638aPgv6V4Zhea'
     controller: null
     method: null
     route: null

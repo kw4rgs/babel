@@ -9,13 +9,33 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\Validator;
-use Knuckles\Scribe\Attributes\Group;
 
 
-#[Group("Radius Controller", "API for managing RADIUS")]
+
+/**
+ * @group Radius Controller
+ *
+ * API for managing Radius Server
+ */
 
 class RadiusController extends Controller
 {
+
+    /**
+     * Reboot ONU
+     * 
+     * This endpoint allows you to reboot an ONU by its serial number.
+     * 
+     * @authenticated
+     * 
+     * @bodyParam onu_sn string required The ONU serial number. Example: HWTCA7A1236A
+     * 
+     * @response 200 {"status": "success", "message": "ONU rebooted successfully.", "detail": {"status": true,"response": "Device reboot command sent"}}
+     * @response 404 {"status": "error", "message": "ONU Status not found."}
+     * @response 400 {"status": "error", "message": "Invalid data.", "detail": {"onu_sn": ["The onu sn field is required."]}}
+     * @response 500 {"status": "error", "message": "An error occurred while retrieving ONU Status."}
+     * 
+    */
 
     /**
      * Get all users from the radius database

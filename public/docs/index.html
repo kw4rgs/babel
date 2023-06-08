@@ -71,16 +71,16 @@
                     <a href="#authenticating-requests">Authenticating requests</a>
                 </li>
                             </ul>
-                    <ul id="tocify-header-ftth-controller" class="tocify-header">
-                <li class="tocify-item level-1" data-unique="ftth-controller">
-                    <a href="#ftth-controller">FTTH Controller</a>
+                    <ul id="tocify-header-ftth-management" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="ftth-management">
+                    <a href="#ftth-management">FTTH Management</a>
                 </li>
-                                    <ul id="tocify-subheader-ftth-controller" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="ftth-controller-GETv1-ftth-customer">
-                                <a href="#ftth-controller-GETv1-ftth-customer">GET v1/ftth/customer</a>
+                                    <ul id="tocify-subheader-ftth-management" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="ftth-management-GETv1-ftth-customer">
+                                <a href="#ftth-management-GETv1-ftth-customer">Get Customer Connection</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="ftth-controller-PUTv1-ftth-customer">
-                                <a href="#ftth-controller-PUTv1-ftth-customer">Update the customer connection in Radius and reboot onu in SmartOLT</a>
+                                                                                <li class="tocify-item level-2" data-unique="ftth-management-PUTv1-ftth-customer">
+                                <a href="#ftth-management-PUTv1-ftth-customer">Update Customer Connection</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -191,16 +191,17 @@
 <p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer BEARER_TOKEN"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 
-        <h1 id="ftth-controller">FTTH Controller</h1>
+        <h1 id="ftth-management">FTTH Management</h1>
 
-    <p>API for managing FTTH connections</p>
+    <p>API for managing FTTH connections.</p>
 
-                                <h2 id="ftth-controller-GETv1-ftth-customer">GET v1/ftth/customer</h2>
+                                <h2 id="ftth-management-GETv1-ftth-customer">Get Customer Connection</h2>
 
 <p>
+<small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>This endpoint allows you to get the customer connection params from Radius and status from SmartOLT.</p>
 
 <span id="example-requests-GETv1-ftth-customer">
 <blockquote>Example request:</blockquote>
@@ -209,8 +210,14 @@
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
     --get "http://localhost/v1/ftth/customer" \
+    --header "Authorization: Bearer BEARER_TOKEN" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"username\": \"10.132.139.232\",
+    \"onu_sn\": \"HWTC31E0CJSD\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -219,13 +226,20 @@
 );
 
 const headers = {
+    "Authorization": "Bearer BEARER_TOKEN",
     "Content-Type": "application/json",
     "Accept": "application/json",
+};
+
+let body = {
+    "username": "10.132.139.232",
+    "onu_sn": "HWTC31E0CJSD"
 };
 
 fetch(url, {
     method: "GET",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 
@@ -235,8 +249,13 @@ $response = $client-&gt;get(
     'http://localhost/v1/ftth/customer',
     [
         'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer BEARER_TOKEN',
             'Content-Type' =&gt; 'application/json',
             'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'username' =&gt; '10.132.139.232',
+            'onu_sn' =&gt; 'HWTC31E0CJSD',
         ],
     ]
 );
@@ -249,29 +268,127 @@ print_r(json_decode((string) $body));</code></pre></div>
 import json
 
 url = 'http://localhost/v1/ftth/customer'
+payload = {
+    "username": "10.132.139.232",
+    "onu_sn": "HWTC31E0CJSD"
+}
 headers = {
+  'Authorization': 'Bearer BEARER_TOKEN',
   'Content-Type': 'application/json',
   'Accept': 'application/json'
 }
 
-response = requests.request('GET', url, headers=headers)
+response = requests.request('GET', url, headers=headers, json=payload)
 response.json()</code></pre></div>
 
 </span>
 
 <span id="example-responses-GETv1-ftth-customer">
             <blockquote>
-            <p>Example response (401):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
- </code></pre></details>         <pre>
+                <pre>
 
-<code class="language-json" style="max-height: 300px;">Unauthorized.</code>
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: true,
+    &quot;message&quot;: &quot;Customer connection found in Radius and ONU is available in SmartOLT.&quot;,
+    &quot;data&quot;: {
+        &quot;radius&quot;: {
+            &quot;status&quot;: &quot;success&quot;,
+            &quot;message&quot;: &quot;User found&quot;,
+            &quot;detail&quot;: {
+                &quot;id&quot;: 29881,
+                &quot;name&quot;: &quot;Gustavo   Ivan   Escalon CastroESCALON CASTRO&quot;,
+                &quot;username&quot;: &quot;10.112.239.132&quot;,
+                &quot;password&quot;: &quot;password&quot;,
+                &quot;bandwith_plan&quot;: &quot;61440k/61440k&quot;,
+                &quot;main_ip&quot;: &quot;10.192.310.114&quot;,
+                &quot;node&quot;: &quot;CASTROL FTTH&quot;,
+                &quot;created_at&quot;: &quot;0000-00-00&quot;,
+                &quot;updated_at&quot;: &quot;2023-06-08&quot;
+            }
+        },
+        &quot;smartolt&quot;: {
+            &quot;status&quot;: &quot;success&quot;,
+            &quot;message&quot;: &quot;ONU Status retrieved successfully&quot;,
+            &quot;detail&quot;: {
+                &quot;status&quot;: true,
+                &quot;onu_status&quot;: &quot;Online&quot;
+            }
+        }
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (206):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;Error getting ONU status, but customer connection was found in Radius.&quot;,
+    &quot;data&quot;: {
+        &quot;radius&quot;: {
+            &quot;status&quot;: &quot;success&quot;,
+            &quot;message&quot;: &quot;User found&quot;,
+            &quot;detail&quot;: {
+                &quot;id&quot;: 29881,
+                &quot;name&quot;: &quot;Gustavo   Ivan   Escalon CastroESCALON CASTRO&quot;,
+                &quot;username&quot;: &quot;10.112.239.232&quot;,
+                &quot;password&quot;: &quot;b3afs82&quot;,
+                &quot;bandwith_plan&quot;: &quot;61440k/61440k&quot;,
+                &quot;main_ip&quot;: &quot;10.192.510.114&quot;,
+                &quot;node&quot;: &quot;CASTROL FTTH&quot;,
+                &quot;created_at&quot;: &quot;0000-00-00&quot;,
+                &quot;updated_at&quot;: &quot;2023-06-08&quot;
+            }
+        }
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Invalid data.&quot;,
+    &quot;detail&quot;: {
+        &quot;username&quot;: [
+            &quot;The username field is required.&quot;
+        ],
+        &quot;onu_sn&quot;: [
+            &quot;The onu sn field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error getting customer connection. Customer not found in Radius.&quot;,
+    &quot;data&quot;: {
+        &quot;radius&quot;: {
+            &quot;status&quot;: &quot;error&quot;,
+            &quot;message&quot;: &quot;User does not exist.&quot;
+        }
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error getting customer connection.&quot;
+}</code>
  </pre>
     </span>
 <span id="execution-results-GETv1-ftth-customer" hidden>
@@ -291,7 +408,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETv1-ftth-customer" data-method="GET"
       data-path="v1/ftth/customer"
-      data-authed="0"
+      data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
@@ -322,6 +439,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETv1-ftth-customer"
+               value="Bearer BEARER_TOKEN"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer BEARER_TOKEN</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
@@ -343,14 +471,38 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>username</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="username"                data-endpoint="GETv1-ftth-customer"
+               value="10.132.139.232"
+               data-component="body">
+    <br>
+<p>The username in radius Example: <code>10.132.139.232</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>onu_sn</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="onu_sn"                data-endpoint="GETv1-ftth-customer"
+               value="HWTC31E0CJSD"
+               data-component="body">
+    <br>
+<p>The ONU serial number Example: <code>HWTC31E0CJSD</code></p>
+        </div>
+        </form>
 
-                    <h2 id="ftth-controller-PUTv1-ftth-customer">Update the customer connection in Radius and reboot onu in SmartOLT</h2>
+                    <h2 id="ftth-management-PUTv1-ftth-customer">Update Customer Connection</h2>
 
 <p>
+<small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>This endpoint allows you to update the customer connection params in Radius and reboot the ONU via SmartOLT.</p>
 
 <span id="example-requests-PUTv1-ftth-customer">
 <blockquote>Example request:</blockquote>
@@ -359,8 +511,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
     "http://localhost/v1/ftth/customer" \
+    --header "Authorization: Bearer BEARER_TOKEN" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"name\": \"Kwargs\",
+    \"username\": \"1.1.1.1\",
+    \"bandwith_plan\": \"61440k\\/61440k\",
+    \"node\": \"CASTROL FTTH\",
+    \"main_ip\": \"10.192.310.11\",
+    \"onu_sn\": \"HWTC31E0CJSF\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -369,13 +531,24 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "Authorization": "Bearer BEARER_TOKEN",
     "Content-Type": "application/json",
     "Accept": "application/json",
+};
+
+let body = {
+    "name": "Kwargs",
+    "username": "1.1.1.1",
+    "bandwith_plan": "61440k\/61440k",
+    "node": "CASTROL FTTH",
+    "main_ip": "10.192.310.11",
+    "onu_sn": "HWTC31E0CJSF"
 };
 
 fetch(url, {
     method: "PUT",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 
@@ -385,8 +558,17 @@ $response = $client-&gt;put(
     'http://localhost/v1/ftth/customer',
     [
         'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer BEARER_TOKEN',
             'Content-Type' =&gt; 'application/json',
             'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'name' =&gt; 'Kwargs',
+            'username' =&gt; '1.1.1.1',
+            'bandwith_plan' =&gt; '61440k/61440k',
+            'node' =&gt; 'CASTROL FTTH',
+            'main_ip' =&gt; '10.192.310.11',
+            'onu_sn' =&gt; 'HWTC31E0CJSF',
         ],
     ]
 );
@@ -399,18 +581,119 @@ print_r(json_decode((string) $body));</code></pre></div>
 import json
 
 url = 'http://localhost/v1/ftth/customer'
+payload = {
+    "name": "Kwargs",
+    "username": "1.1.1.1",
+    "bandwith_plan": "61440k\/61440k",
+    "node": "CASTROL FTTH",
+    "main_ip": "10.192.310.11",
+    "onu_sn": "HWTC31E0CJSF"
+}
 headers = {
+  'Authorization': 'Bearer BEARER_TOKEN',
   'Content-Type': 'application/json',
   'Accept': 'application/json'
 }
 
-response = requests.request('PUT', url, headers=headers)
+response = requests.request('PUT', url, headers=headers, json=payload)
 response.json()</code></pre></div>
 
 </span>
 
 <span id="example-responses-PUTv1-ftth-customer">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: true,
+    &quot;message&quot;: &quot;Customer connection updated in Radius and ONU rebooted in SmartOLT.&quot;,
+    &quot;data&quot;: {
+        &quot;radius&quot;: {
+            &quot;status&quot;: &quot;success&quot;,
+            &quot;message&quot;: &quot;Bandwidth updated successfully&quot;,
+            &quot;detail&quot;: {
+                &quot;status&quot;: &quot;success&quot;,
+                &quot;message&quot;: &quot;User found&quot;,
+                &quot;detail&quot;: {
+                    &quot;id&quot;: 29881,
+                    &quot;name&quot;: &quot;Kwargs&quot;,
+                    &quot;username&quot;: &quot;10.112.239.232&quot;,
+                    &quot;password&quot;: &quot;b3a7fw82&quot;,
+                    &quot;bandwith_plan&quot;: &quot;61440k/61440k&quot;,
+                    &quot;main_ip&quot;: &quot;10.192.210.114&quot;,
+                    &quot;node&quot;: &quot;CASTROL FTTH&quot;,
+                    &quot;created_at&quot;: &quot;0000-00-00&quot;,
+                    &quot;updated_at&quot;: &quot;2023-06-08&quot;
+                }
+            }
+        },
+        &quot;smartolt&quot;: {
+            &quot;status&quot;: &quot;success&quot;,
+            &quot;message&quot;: &quot;ONU Status rebooted successfully&quot;,
+            &quot;detail&quot;: {
+                &quot;status&quot;: true,
+                &quot;response&quot;: &quot;Device reboot command sent&quot;
+            }
+        }
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (206):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;Customer connection updated in Radius, but ONU is not available in SmartOLT.&quot;,
+    &quot;data&quot;: {
+        &quot;radius&quot;: {
+            &quot;status&quot;: &quot;success&quot;,
+            &quot;message&quot;: &quot;User found&quot;,
+            &quot;detail&quot;: {
+                &quot;id&quot;: 29881,
+                &quot;name&quot;: &quot;Kwargs&quot;,
+                &quot;username&quot;: &quot;10.112.239.232&quot;,
+                &quot;password&quot;: &quot;b3afswe82&quot;,
+                &quot;bandwith_plan&quot;: &quot;61440k/61440k&quot;,
+                &quot;main_ip&quot;: &quot;10.192.510.114&quot;,
+                &quot;node&quot;: &quot;CASTROL FTTH&quot;,
+                &quot;created_at&quot;: &quot;0000-00-00&quot;,
+                &quot;updated_at&quot;: &quot;2023-06-08&quot;
+            }
+        }
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error updating customer connection.&quot;,
+    &quot;data&quot;: {
+        &quot;radius&quot;: {
+            &quot;status&quot;: &quot;error&quot;,
+            &quot;message&quot;: &quot;User does not exist.&quot;
+        }
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error getting customer connection.&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTv1-ftth-customer" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTv1-ftth-customer"></span>:
@@ -428,7 +711,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-PUTv1-ftth-customer" data-method="PUT"
       data-path="v1/ftth/customer"
-      data-authed="0"
+      data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
@@ -459,6 +742,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="PUTv1-ftth-customer"
+               value="Bearer BEARER_TOKEN"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer BEARER_TOKEN</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
@@ -480,7 +774,74 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="name"                data-endpoint="PUTv1-ftth-customer"
+               value="Kwargs"
+               data-component="body">
+    <br>
+<p>The customer name. Example: <code>Kwargs</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>username</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="username"                data-endpoint="PUTv1-ftth-customer"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>The username in radius. Example: <code>1.1.1.1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>bandwith_plan</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="bandwith_plan"                data-endpoint="PUTv1-ftth-customer"
+               value="61440k/61440k"
+               data-component="body">
+    <br>
+<p>The bandwidth plan. Example: <code>61440k/61440k</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>node</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="node"                data-endpoint="PUTv1-ftth-customer"
+               value="CASTROL FTTH"
+               data-component="body">
+    <br>
+<p>The node. Example: <code>CASTROL FTTH</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>main_ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="main_ip"                data-endpoint="PUTv1-ftth-customer"
+               value="10.192.310.11"
+               data-component="body">
+    <br>
+<p>The main IP. Example: <code>10.192.310.11</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>onu_sn</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="onu_sn"                data-endpoint="PUTv1-ftth-customer"
+               value="HWTC31E0CJSF"
+               data-component="body">
+    <br>
+<p>The ONU serial number. Example: <code>HWTC31E0CJSF</code></p>
+        </div>
+        </form>
 
                 <h1 id="mikrotik-controller">Mikrotik Controller</h1>
 
@@ -3090,7 +3451,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="radius-controller">Radius Controller</h1>
 
-    <p>API for managing RADIUS</p>
+    <p>API for managing Radius Server</p>
 
                                 <h2 id="radius-controller-GETv1-radius-users_data">Get all users from the radius database</h2>
 

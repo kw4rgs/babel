@@ -11,10 +11,13 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Controllers\SmartOltController;
 use App\Http\Controllers\RadiusController;
-use Knuckles\Scribe\Attributes\Group;
 
 
-#[Group("FTTH Controller", "API for managing FTTH connections")]
+/**
+ * @group FTTH Management
+ *
+ * API for managing FTTH connections.
+ */
 
 class FTTHController extends Controller
 {
@@ -64,6 +67,25 @@ class FTTHController extends Controller
             return $response;
         }
 
+
+    /**
+     * Get Customer Connection
+     * 
+     * This endpoint allows you to get the customer connection params from Radius and status from SmartOLT.
+     * 
+     * @authenticated
+     * 
+     * @bodyParam username string required The username in radius Example: 10.132.139.232
+     * @bodyParam onu_sn string required The ONU serial number Example: HWTC31E0CJSD
+     * 
+     * @response 200 {"status":true,"message":"Customer connection found in Radius and ONU is available in SmartOLT.","data":{"radius":{"status":"success","message":"User found","detail":{"id":29881,"name":"Gustavo   Ivan   Escalon CastroESCALON CASTRO","username":"10.112.239.132","password":"password","bandwith_plan":"61440k/61440k","main_ip":"10.192.310.114","node":"CASTROL FTTH","created_at":"0000-00-00","updated_at":"2023-06-08"}},"smartolt":{"status":"success","message":"ONU Status retrieved successfully","detail":{"status":true,"onu_status":"Online"}}}}
+     * @response 206 {"status":"success","message":"Error getting ONU status, but customer connection was found in Radius.","data":{"radius":{"status":"success","message":"User found","detail":{"id":29881,"name":"Gustavo   Ivan   Escalon CastroESCALON CASTRO","username":"10.112.239.232","password":"b3afs82","bandwith_plan":"61440k/61440k","main_ip":"10.192.510.114","node":"CASTROL FTTH","created_at":"0000-00-00","updated_at":"2023-06-08"}}}}
+     * @response 400 {"status":"error","message":"Invalid data.","detail":{"username":["The username field is required."],"onu_sn":["The onu sn field is required."]}}
+     * @response 404 {"status":"error","message":"Error getting customer connection. Customer not found in Radius.","data":{"radius":{"status":"error","message":"User does not exist."}}}
+     * @response 500 {"status": "error", "message": "Error getting customer connection."}
+     * 
+    */
+
     /*
     *   Gets the customer connection params from Radius and status from SmartOLT
     *   @param Request $request
@@ -94,12 +116,12 @@ class FTTHController extends Controller
                 if (($customer_in_radius->getStatusCode() !== 200)) {
 
                     return response()->json([
-                        'status' => false,
+                        'status' => 'error',
                         'message' => 'Error getting customer connection. Customer not found in Radius.',
                         'data' => [
-                            'radius' => $customer_in_radius
+                            'radius' => $customer_in_radius->original
                         ]
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                    ], Response::HTTP_NOT_FOUND);
 
                 } else {
                     // Check if ONU is available in SmartOLT 
@@ -108,7 +130,7 @@ class FTTHController extends Controller
                     if (($customer_in_smartolt->getStatusCode() !== 200)) {
 
                         return response()->json([
-                            'status' => true,
+                            'status' => 'success',
                             'message' => 'Error getting ONU status, but customer connection was found in Radius.',
                             'data' => [
                                 'radius' => $customer_in_radius->original
@@ -118,7 +140,7 @@ class FTTHController extends Controller
                     } else {
                         // If the radius response is 200 and the smartolt response is 200, return the response
                         return response()->json([
-                            'status' => true,
+                            'status' => 'success',
                             'message' => 'Customer connection found in Radius and ONU is available in SmartOLT.',
                             'data' => [
                                 'radius' => $customer_in_radius->original,
@@ -131,7 +153,7 @@ class FTTHController extends Controller
         } catch (HttpException $e) {
 
             return response()->json([
-                'status' => false,
+                'status' => 'error',
                 'message' => 'Error getting customer connection.',
                 'data' => [
                     'error' => $e->getMessage()
@@ -142,8 +164,28 @@ class FTTHController extends Controller
 
 
     /**
-     * Update the customer connection in Radius and reboot onu in SmartOLT
+     * Update Customer Connection
      *
+     * This endpoint allows you to update the customer connection params in Radius and reboot the ONU via SmartOLT.
+     *
+     * @authenticated
+     *
+     * @bodyParam name string required The customer name. Example: Kwargs
+     * @bodyParam username string required The username in radius. Example: 1.1.1.1
+     * @bodyParam bandwith_plan string required The bandwidth plan. Example: 61440k/61440k
+     * @bodyParam node string required The node. Example: CASTROL FTTH
+     * @bodyParam main_ip string required The main IP. Example: 10.192.310.11
+     * @bodyParam onu_sn string required The ONU serial number. Example: HWTC31E0CJSF
+     *
+     * @response 200 {"status": true, "message": "Customer connection updated in Radius and ONU rebooted in SmartOLT.", "data": {"radius": {"status": "success", "message": "Bandwidth updated successfully", "detail": {"status": "success", "message": "User found", "detail": {"id": 29881, "name": "Kwargs", "username": "10.112.239.232", "password": "b3a7fw82", "bandwith_plan": "61440k/61440k", "main_ip": "10.192.210.114", "node": "CASTROL FTTH", "created_at": "0000-00-00", "updated_at": "2023-06-08"}}}, "smartolt": {"status": "success", "message": "ONU Status rebooted successfully", "detail": {"status": true, "response": "Device reboot command sent"}}}}
+     * @response 206 {"status": "success", "message": "Customer connection updated in Radius, but ONU is not available in SmartOLT.", "data": {"radius": {"status": "success", "message": "User found", "detail": {"id": 29881, "name": "Kwargs", "username": "10.112.239.232", "password": "b3afswe82", "bandwith_plan": "61440k/61440k", "main_ip": "10.192.510.114", "node": "CASTROL FTTH", "created_at": "0000-00-00", "updated_at": "2023-06-08"}}}}
+     * @response 422 {"status": "error", "message": "Error updating customer connection.", "data": {"radius": {"status": "error", "message": "User does not exist."}}}
+     * @response 500 {"status": "error", "message": "Error getting customer connection."}
+     *
+     */
+
+    /*
+     * Update the customer connection in Radius and reboot ONU in SmartOLT.
      * @param Request $request
      * @param string $name
      * @param string $username
@@ -168,7 +210,7 @@ class FTTHController extends Controller
                 $smartolt_response = $this->smartoltController->rebootOnu($request);
 
                 return response()->json([
-                    'status' => true,
+                    'status' => 'success',
                     'message' => 'Customer connection updated in Radius and ONU rebooted in SmartOLT.',
                     'data' => [
                         'radius' => $radius_response->original,
@@ -181,7 +223,7 @@ class FTTHController extends Controller
                 $radius_response = $this->radiusController->updateUser($request);
 
                 return response()->json([
-                    'status' => true,
+                    'status' => 'success',
                     'message' => 'Customer connection updated in Radius, but ONU is not available in SmartOLT.',
                     'data' => [
                         'radius' => $radius_response->original
@@ -191,7 +233,7 @@ class FTTHController extends Controller
             } else {
 
                 return response()->json([
-                    'status' => false,
+                    'status' => 'error',
                     'message' => 'Error updating customer connection.',
                     'data' => [
                         'radius' => $customer_connection->original
@@ -202,7 +244,7 @@ class FTTHController extends Controller
         } catch (HttpException $e) {
 
             return response()->json([
-                'status' => false,
+                'status' => 'error',
                 'message' => 'Error updating customer connection.',
                 'data' => [
                     'error' => $e->getMessage()
