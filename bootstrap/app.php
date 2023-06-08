@@ -79,11 +79,8 @@ $app->configure('database');
 |
 */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
-
 $app->routeMiddleware([
+    'bearer-token' => App\Http\Middleware\BearerTokenMiddleware::class,
     'auth' => App\Http\Middleware\Authenticate::class,
 ]);
 

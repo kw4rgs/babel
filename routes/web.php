@@ -57,39 +57,52 @@ $router->get('/v1/router/getDataMikrotik', 'MikrotikAPIController@getDataMikroti
 #$router->get('/v1.1/queues', 'MikrotikAPIController@findQueue');
 
 
-/* RUTAS PARA RADIUS CONTROLLER */
 
-/* Trae todos los usuarios del radius */
-$router->get('/v1/radius/users_data', 'RadiusController@getAllUsers');
+$router->group(['middleware' => 'bearer-token'], function ($router) {
+    /* RUTAS PARA RADIUS CONTROLLER */
 
-/* RADIUS CRUD */
+    /* Trae todos los usuarios del radius */
+    $router->get('/v1/radius/users_data', ['uses' => 'RadiusController@getAllUsers']);
 
-/* Crear un usuario en el radius */
-$router->post('/v1/radius/users', 'RadiusController@createUser');
+    /* RADIUS CRUD */
 
-/* Trae un usuario del radius */
-$router->get('/v1/radius/users', 'RadiusController@getUser');
+    /* Crear un usuario en el radius */
+    $router->post('/v1/radius/users', ['uses' => 'RadiusController@createUser']);
 
-/* Actualiza un usuario del radius */
-$router->put('/v1/radius/users', 'RadiusController@updateUser');
+    /* Trae un usuario del radius */
+    $router->get('/v1/radius/users', ['uses' => 'RadiusController@getUser']);
 
-/* Elimina un usuario del radius */ 
-$router->delete('/v1/radius/users', 'RadiusController@deleteUser');
+    /* Actualiza un usuario del radius */
+    $router->put('/v1/radius/users', ['uses' => 'RadiusController@updateUser']);
+
+    /* Elimina un usuario del radius */ 
+    $router->delete('/v1/radius/users', ['uses' => 'RadiusController@deleteUser']);
+
+    /* RUTAS SMARTOLT CONTROLLER */
+
+    /* Trae el estado de una ONU */
+    $router->get('/v1/smartolt/onu/status', ['uses' => 'SmartOltController@getOnuStatus']);
+
+    /* Reinicia una ONU */
+    $router->post('/v1/smartolt/onu/reboot', ['uses' => 'SmartOltController@rebootOnu']);
 
 
-/* RUTAS SMARTOLT CONTROLLER */
+    /* RUTAS FTTH CONTROLLER */
 
-/* Trae el estado de una ONU */
-$router->get('/v1/smartolt/onu/status', 'SmartOltController@getOnuStatus');
+    /* Trae el estado de un customer */
+    $router->get('/v1/ftth/customer', ['uses' => 'FTTHController@getCustomerConnection']);
 
-/* Reinicia una ONU */
-$router->post('/v1/smartolt/onu/reboot', 'SmartOltController@rebootOnu');
+    /* Actualiza un customer y reinicia la ONU */
+    $router->put('/v1/ftth/customer', ['uses' => 'FTTHController@updateCustomerConnection']);
 
 
-/* RUTAS FTTH CONTROLLER */
+});
 
-/* Trae el estado de un customer */
-$router->get('/v1/ftth/customer', 'FTTHController@getCustomerConnection');
 
-/* Actualiza un customer y reinicia la ONU */
-$router->put('/v1/ftth/customer', 'FTTHController@updateCustomerConnection');
+
+
+
+
+
+
+
