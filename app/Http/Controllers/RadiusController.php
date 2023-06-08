@@ -22,24 +22,21 @@ class RadiusController extends Controller
 {
 
     /**
-     * Reboot ONU
+     * Get All Users
      * 
-     * This endpoint allows you to reboot an ONU by its serial number.
+     * This endpoint allows you to get all users from the radius database
      * 
      * @authenticated
      * 
-     * @bodyParam onu_sn string required The ONU serial number. Example: HWTCA7A1236A
-     * 
-     * @response 200 {"status": "success", "message": "ONU rebooted successfully.", "detail": {"status": true,"response": "Device reboot command sent"}}
-     * @response 404 {"status": "error", "message": "ONU Status not found."}
-     * @response 400 {"status": "error", "message": "Invalid data.", "detail": {"onu_sn": ["The onu sn field is required."]}}
-     * @response 500 {"status": "error", "message": "An error occurred while retrieving ONU Status."}
+     * @response 200 {"status":"success","message":"Users found","detail":{"id":138421,"name":"Kwargs","username":"1.1.1.1","password":"e08fsa13","bandwith_plan":"11440k/11440k","main_ip":"1.1.1.1","node":"ROSEDAL","created_at":"2023-06-07","updated_at":"2023-06-08"}}
+     * @response 500 {"status": "error", "message": "Error retrieving users", "detail": "SQLSTATE[HY000] [2002] No such file or directory"}
      * 
     */
 
-    /**
+    /*
      * Get all users from the radius database
      *
+     * @param Request $request
      * @return Illuminate\Http\Response
      */
 
@@ -131,6 +128,29 @@ class RadiusController extends Controller
     }
 
     /**
+     * Get User
+     * 
+     * This endpoint allows you to get a user from the radius database based on the username in the request
+     * 
+     * @authenticated
+     * 
+     * @bodyParam username string required The username of the user. Example: 1.1.1.1
+     * 
+     * @response 200 {"status":"success","message":"User found","detail":{"id":138421,"name":"Kwargs","username":"1.1.1.1","password":"e08fsa13","bandwith_plan":"11440k/11440k","main_ip":"1.1.1.1","node":"ROSEDAL","created_at":"2023-06-07","updated_at":"2023-06-08"}}
+     * @response 400 {"status":"error","message":"Error getting user","detail":{"username":["The username field is required."]}}
+     * @response 404 {"status":"error","message":"User does not exist."}
+     * @response 500 {"status": "error", "message": "Error retrieving users", "detail": "SQLSTATE[HY000] [2002] No such file or directory"}
+     * 
+    */
+
+    /*
+     * Get all users from the radius database
+     *
+     * @param Request $request
+     * @return Illuminate\Http\Response
+     */
+
+    /*
      * Get a user from the radius database based on the username in the request
      *
      * @param Request $request 
@@ -304,6 +324,40 @@ class RadiusController extends Controller
         }
 
     /**
+     * Create User
+     * 
+     * This endpoint allows you to create a user in the radius database.
+     * 
+     * @authenticated
+     * 
+     * @bodyParam name string required The name of the user. Example: Kwargs
+     * @bodyParam username string required The username of the user. Example: 1.1.1.1
+     * @bodyParam bandwith_plan string required The bandwith plan of the user. Example: 11440k/11440k
+     * @bodyParam node string required The node of the user. Example: ROSEDAL
+     * @bodyParam main_ip string required The main ip of the user. Example: 1.1.1.1 
+     * 
+     * @response 201 {"status":"success","message":"User created successfully."}
+     * @response 400 {"status":"error","message":"Error creating user","detail":{"main_ip":["The main ip must be a valid IP address."]}}
+     * @response 409 {"status":"error","message":"User already exists."}
+     * @response 500 {"status": "error", "message": "An error occurred while creating the user."}
+     * 
+    */
+
+    /*
+     * Get all users from the radius database
+     *
+     * @param Request $request
+     * @return Illuminate\Http\Response
+     */
+
+    /*
+     * Get a user from the radius database based on the username in the request
+     *
+     * @param Request $request 
+     * @return Illuminate\Http\Response
+     */
+
+    /*
      * Create a new user in the radius database
      *
      * @param Request $request
@@ -485,8 +539,28 @@ class RadiusController extends Controller
             return $response;
         }
 
+
     /**
-     * Update user paramas in the radius database
+     * Update User
+     * 
+     * This endpoint allows you to update a user in the radius database.
+     * 
+     * @authenticated
+     * 
+     * @bodyParam name string required The name of the user. Example: Kwargs
+     * @bodyParam username string required The username of the user. Example: 1.1.1.1
+     * @bodyParam bandwith_plan string required The bandwith plan of the user. Example: 11440k/11440k
+     * @bodyParam node string required The node of the user. Example: ROSEDAL
+     * @bodyParam main_ip string required The main ip of the user. Example: 1.1.1.1 
+     * 
+     * @response 200 {"status":"success","message":"Bandwidth updated successfully","detail":{"status":"success","message":"User found","detail":{"id":138463,"name":"Kwargs","username":"1.1.1.1","password":"e086aa13","bandwith_plan":"11440k/11440k","main_ip":"1.1.1.1","node":"ROSEDAL","created_at":"2023-06-08","updated_at":"2023-06-08"}}}
+     * @response 400 {"status":"error","message":"Error updating user","detail":{"main_ip":["The main ip must be a valid IP address."]}}
+     * @response 500 {"status": "error", "message": "An error occurred while updating the user."}
+     * 
+    */
+
+    /*
+     * Update user params in the radius database
      *
      * @param Request $request
      *  @param string $username
@@ -582,6 +656,22 @@ class RadiusController extends Controller
     }
 
     /**
+     * Delete User
+     * 
+     * This endpoint allows you to delete a user in the radius database.
+     * 
+     * @authenticated
+     * 
+     * @bodyParam username string required The username of the user. Example: 1.1.1.1
+     * 
+     * @response 200 {"status":"success","message":"User deleted successfully"}
+     * @response 400 {"status":"error","message":"Error deleting user","detail":{"username":["The username field is required."]}}
+     * @response 404 {"status":"error","message":"User does not exist."}
+     * @response 500 {"status": "error", "message": "Error deleting user", "detail": "SQLSTATE[HY000] [2002] No such file or directory"}
+     * 
+    */
+
+    /*
      * Delete a user from the radius database.
      *
      * @param Request $request

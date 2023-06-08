@@ -14,7 +14,7 @@ use App\Http\Controllers\RadiusController;
 
 
 /**
- * @group FTTH Management
+ * @group FTTH Controller
  *
  * API for managing FTTH connections.
  */

@@ -274,7 +274,7 @@ paths:
                     type: string
                     example: 'Error getting customer connection.'
       tags:
-        - 'FTTH Management'
+        - 'FTTH Controller'
       requestBody:
         required: true
         content:
@@ -535,7 +535,7 @@ paths:
                     type: string
                     example: 'Error getting customer connection.'
       tags:
-        - 'FTTH Management'
+        - 'FTTH Controller'
       requestBody:
         required: true
         content:
@@ -1337,65 +1337,637 @@ paths:
       security: []
   /v1/radius/users_data:
     get:
-      summary: 'Get all users from the radius database'
-      operationId: getAllUsersFromTheRadiusDatabase
-      description: ''
-      parameters: []
+      summary: 'Get All Users'
+      operationId: getAllUsers
+      description: 'This endpoint allows you to get all users from the radius database'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer BEARER_TOKEN'
+          schema:
+            type: string
       responses:
-        401:
+        200:
           description: ''
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: Unauthorized.
+                type: object
+                example:
+                  status: success
+                  message: 'Users found'
+                  detail:
+                    id: 138421
+                    name: Kwargs
+                    username: 1.1.1.1
+                    password: e08fsa13
+                    bandwith_plan: 11440k/11440k
+                    main_ip: 1.1.1.1
+                    node: ROSEDAL
+                    created_at: '2023-06-07'
+                    updated_at: '2023-06-08'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'Users found'
+                  detail:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 138421
+                      name:
+                        type: string
+                        example: Kwargs
+                      username:
+                        type: string
+                        example: 1.1.1.1
+                      password:
+                        type: string
+                        example: e08fsa13
+                      bandwith_plan:
+                        type: string
+                        example: 11440k/11440k
+                      main_ip:
+                        type: string
+                        example: 1.1.1.1
+                      node:
+                        type: string
+                        example: ROSEDAL
+                      created_at:
+                        type: string
+                        example: '2023-06-07'
+                      updated_at:
+                        type: string
+                        example: '2023-06-08'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error retrieving users'
+                  detail: 'SQLSTATE[HY000] [2002] No such file or directory'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error retrieving users'
+                  detail:
+                    type: string
+                    example: 'SQLSTATE[HY000] [2002] No such file or directory'
       tags:
         - 'Radius Controller'
-      security: []
   /v1/radius/users:
     post:
-      summary: 'Create a new user in the radius database'
-      operationId: createANewUserInTheRadiusDatabase
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - 'Radius Controller'
-      security: []
-    get:
-      summary: 'Get a user from the radius database based on the username in the request'
-      operationId: getAUserFromTheRadiusDatabaseBasedOnTheUsernameInTheRequest
-      description: ''
-      parameters: []
+      summary: 'Create User'
+      operationId: createUser
+      description: 'This endpoint allows you to create a user in the radius database.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer BEARER_TOKEN'
+          schema:
+            type: string
       responses:
-        401:
+        201:
           description: ''
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: Unauthorized.
+                type: object
+                example:
+                  status: success
+                  message: 'User created successfully.'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'User created successfully.'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error creating user'
+                  detail:
+                    main_ip:
+                      - 'The main ip must be a valid IP address.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error creating user'
+                  detail:
+                    type: object
+                    properties:
+                      main_ip:
+                        type: array
+                        example:
+                          - 'The main ip must be a valid IP address.'
+                        items:
+                          type: string
+        409:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'User already exists.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'User already exists.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'An error occurred while creating the user.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'An error occurred while creating the user.'
       tags:
         - 'Radius Controller'
-      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'The name of the user.'
+                  example: Kwargs
+                username:
+                  type: string
+                  description: 'The username of the user.'
+                  example: 1.1.1.1
+                bandwith_plan:
+                  type: string
+                  description: 'The bandwith plan of the user.'
+                  example: 11440k/11440k
+                node:
+                  type: string
+                  description: 'The node of the user.'
+                  example: ROSEDAL
+                main_ip:
+                  type: string
+                  description: 'The main ip of the user.'
+                  example: 1.1.1.1
+              required:
+                - name
+                - username
+                - bandwith_plan
+                - node
+                - main_ip
+    get:
+      summary: 'Get User'
+      operationId: getUser
+      description: 'This endpoint allows you to get a user from the radius database based on the username in the request'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer BEARER_TOKEN'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'User found'
+                  detail:
+                    id: 138421
+                    name: Kwargs
+                    username: 1.1.1.1
+                    password: e08fsa13
+                    bandwith_plan: 11440k/11440k
+                    main_ip: 1.1.1.1
+                    node: ROSEDAL
+                    created_at: '2023-06-07'
+                    updated_at: '2023-06-08'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'User found'
+                  detail:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 138421
+                      name:
+                        type: string
+                        example: Kwargs
+                      username:
+                        type: string
+                        example: 1.1.1.1
+                      password:
+                        type: string
+                        example: e08fsa13
+                      bandwith_plan:
+                        type: string
+                        example: 11440k/11440k
+                      main_ip:
+                        type: string
+                        example: 1.1.1.1
+                      node:
+                        type: string
+                        example: ROSEDAL
+                      created_at:
+                        type: string
+                        example: '2023-06-07'
+                      updated_at:
+                        type: string
+                        example: '2023-06-08'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error getting user'
+                  detail:
+                    username:
+                      - 'The username field is required.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error getting user'
+                  detail:
+                    type: object
+                    properties:
+                      username:
+                        type: array
+                        example:
+                          - 'The username field is required.'
+                        items:
+                          type: string
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'User does not exist.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'User does not exist.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error retrieving users'
+                  detail: 'SQLSTATE[HY000] [2002] No such file or directory'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error retrieving users'
+                  detail:
+                    type: string
+                    example: 'SQLSTATE[HY000] [2002] No such file or directory'
+      tags:
+        - 'Radius Controller'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: 'The username of the user.'
+                  example: 1.1.1.1
+              required:
+                - username
     put:
-      summary: 'Update user paramas in the radius database'
-      operationId: updateUserParamasInTheRadiusDatabase
-      description: ''
-      parameters: []
-      responses: {  }
+      summary: 'Update User'
+      operationId: updateUser
+      description: 'This endpoint allows you to update a user in the radius database.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer BEARER_TOKEN'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'Bandwidth updated successfully'
+                  detail:
+                    status: success
+                    message: 'User found'
+                    detail:
+                      id: 138463
+                      name: Kwargs
+                      username: 1.1.1.1
+                      password: e086aa13
+                      bandwith_plan: 11440k/11440k
+                      main_ip: 1.1.1.1
+                      node: ROSEDAL
+                      created_at: '2023-06-08'
+                      updated_at: '2023-06-08'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'Bandwidth updated successfully'
+                  detail:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: success
+                      message:
+                        type: string
+                        example: 'User found'
+                      detail:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 138463
+                          name:
+                            type: string
+                            example: Kwargs
+                          username:
+                            type: string
+                            example: 1.1.1.1
+                          password:
+                            type: string
+                            example: e086aa13
+                          bandwith_plan:
+                            type: string
+                            example: 11440k/11440k
+                          main_ip:
+                            type: string
+                            example: 1.1.1.1
+                          node:
+                            type: string
+                            example: ROSEDAL
+                          created_at:
+                            type: string
+                            example: '2023-06-08'
+                          updated_at:
+                            type: string
+                            example: '2023-06-08'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error updating user'
+                  detail:
+                    main_ip:
+                      - 'The main ip must be a valid IP address.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error updating user'
+                  detail:
+                    type: object
+                    properties:
+                      main_ip:
+                        type: array
+                        example:
+                          - 'The main ip must be a valid IP address.'
+                        items:
+                          type: string
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'An error occurred while updating the user.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'An error occurred while updating the user.'
       tags:
         - 'Radius Controller'
-      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'The name of the user.'
+                  example: Kwargs
+                username:
+                  type: string
+                  description: 'The username of the user.'
+                  example: 1.1.1.1
+                bandwith_plan:
+                  type: string
+                  description: 'The bandwith plan of the user.'
+                  example: 11440k/11440k
+                node:
+                  type: string
+                  description: 'The node of the user.'
+                  example: ROSEDAL
+                main_ip:
+                  type: string
+                  description: 'The main ip of the user.'
+                  example: 1.1.1.1
+              required:
+                - name
+                - username
+                - bandwith_plan
+                - node
+                - main_ip
     delete:
-      summary: 'Delete a user from the radius database.'
-      operationId: deleteAUserFromTheRadiusDatabase
-      description: ''
-      parameters: []
-      responses: {  }
+      summary: 'Delete User'
+      operationId: deleteUser
+      description: 'This endpoint allows you to delete a user in the radius database.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer BEARER_TOKEN'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'User deleted successfully'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'User deleted successfully'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error deleting user'
+                  detail:
+                    username:
+                      - 'The username field is required.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error deleting user'
+                  detail:
+                    type: object
+                    properties:
+                      username:
+                        type: array
+                        example:
+                          - 'The username field is required.'
+                        items:
+                          type: string
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'User does not exist.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'User does not exist.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Error deleting user'
+                  detail: 'SQLSTATE[HY000] [2002] No such file or directory'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Error deleting user'
+                  detail:
+                    type: string
+                    example: 'SQLSTATE[HY000] [2002] No such file or directory'
       tags:
         - 'Radius Controller'
-      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: 'The username of the user.'
+                  example: 1.1.1.1
+              required:
+                - username
   /v1/smartolt/onu/status:
     get:
       summary: 'Get ONU Status'
@@ -1632,7 +2204,7 @@ paths:
                 - onu_sn
 tags:
   -
-    name: 'FTTH Management'
+    name: 'FTTH Controller'
     description: "\nAPI for managing FTTH connections."
   -
     name: 'Mikrotik Controller'

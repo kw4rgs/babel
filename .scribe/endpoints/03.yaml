@@ -1,4 +1,4 @@
-name: 'FTTH Management'
+name: 'FTTH Controller'
 description: |-
 
   API for managing FTTH connections.
@@ -8,7 +8,7 @@ endpoints:
       - GET
     uri: v1/ftth/customer
     metadata:
-      groupName: 'FTTH Management'
+      groupName: 'FTTH Controller'
       groupDescription: |-
 
         API for managing FTTH connections.
@@ -80,7 +80,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gcDkZvP65hdV1Eea364baf8'
+      - 'Bearer P66Dfevb8a5hVgcEdZ1ak34'
     controller: null
     method: null
     route: null
@@ -90,7 +90,7 @@ endpoints:
       - PUT
     uri: v1/ftth/customer
     metadata:
-      groupName: 'FTTH Management'
+      groupName: 'FTTH Controller'
       groupDescription: |-
 
         API for managing FTTH connections.
@@ -188,7 +188,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dk1Ec5bfd638aPgv6V4Zhea'
+      - 'Bearer gvkDac466a5ZedEPb1V83fh'
     controller: null
     method: null
     route: null

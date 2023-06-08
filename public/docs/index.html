@@ -71,16 +71,16 @@
                     <a href="#authenticating-requests">Authenticating requests</a>
                 </li>
                             </ul>
-                    <ul id="tocify-header-ftth-management" class="tocify-header">
-                <li class="tocify-item level-1" data-unique="ftth-management">
-                    <a href="#ftth-management">FTTH Management</a>
+                    <ul id="tocify-header-ftth-controller" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="ftth-controller">
+                    <a href="#ftth-controller">FTTH Controller</a>
                 </li>
-                                    <ul id="tocify-subheader-ftth-management" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="ftth-management-GETv1-ftth-customer">
-                                <a href="#ftth-management-GETv1-ftth-customer">Get Customer Connection</a>
+                                    <ul id="tocify-subheader-ftth-controller" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="ftth-controller-GETv1-ftth-customer">
+                                <a href="#ftth-controller-GETv1-ftth-customer">Get Customer Connection</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="ftth-management-PUTv1-ftth-customer">
-                                <a href="#ftth-management-PUTv1-ftth-customer">Update Customer Connection</a>
+                                                                                <li class="tocify-item level-2" data-unique="ftth-controller-PUTv1-ftth-customer">
+                                <a href="#ftth-controller-PUTv1-ftth-customer">Update Customer Connection</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -135,19 +135,19 @@
                 </li>
                                     <ul id="tocify-subheader-radius-controller" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="radius-controller-GETv1-radius-users_data">
-                                <a href="#radius-controller-GETv1-radius-users_data">Get all users from the radius database</a>
+                                <a href="#radius-controller-GETv1-radius-users_data">Get All Users</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="radius-controller-POSTv1-radius-users">
-                                <a href="#radius-controller-POSTv1-radius-users">Create a new user in the radius database</a>
+                                <a href="#radius-controller-POSTv1-radius-users">Create User</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="radius-controller-GETv1-radius-users">
-                                <a href="#radius-controller-GETv1-radius-users">Get a user from the radius database based on the username in the request</a>
+                                <a href="#radius-controller-GETv1-radius-users">Get User</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="radius-controller-PUTv1-radius-users">
-                                <a href="#radius-controller-PUTv1-radius-users">Update user paramas in the radius database</a>
+                                <a href="#radius-controller-PUTv1-radius-users">Update User</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="radius-controller-DELETEv1-radius-users">
-                                <a href="#radius-controller-DELETEv1-radius-users">Delete a user from the radius database.</a>
+                                <a href="#radius-controller-DELETEv1-radius-users">Delete User</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -191,11 +191,11 @@
 <p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer BEARER_TOKEN"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 
-        <h1 id="ftth-management">FTTH Management</h1>
+        <h1 id="ftth-controller">FTTH Controller</h1>
 
     <p>API for managing FTTH connections.</p>
 
-                                <h2 id="ftth-management-GETv1-ftth-customer">Get Customer Connection</h2>
+                                <h2 id="ftth-controller-GETv1-ftth-customer">Get Customer Connection</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -496,7 +496,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
-                    <h2 id="ftth-management-PUTv1-ftth-customer">Update Customer Connection</h2>
+                    <h2 id="ftth-controller-PUTv1-ftth-customer">Update Customer Connection</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -3453,12 +3453,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
     <p>API for managing Radius Server</p>
 
-                                <h2 id="radius-controller-GETv1-radius-users_data">Get all users from the radius database</h2>
+                                <h2 id="radius-controller-GETv1-radius-users_data">Get All Users</h2>
 
 <p>
+<small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>This endpoint allows you to get all users from the radius database</p>
 
 <span id="example-requests-GETv1-radius-users_data">
 <blockquote>Example request:</blockquote>
@@ -3467,6 +3468,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
     --get "http://localhost/v1/radius/users_data" \
+    --header "Authorization: Bearer BEARER_TOKEN" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
@@ -3477,6 +3479,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "Authorization": "Bearer BEARER_TOKEN",
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
@@ -3493,6 +3496,7 @@ $response = $client-&gt;get(
     'http://localhost/v1/radius/users_data',
     [
         'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer BEARER_TOKEN',
             'Content-Type' =&gt; 'application/json',
             'Accept' =&gt; 'application/json',
         ],
@@ -3508,6 +3512,7 @@ import json
 
 url = 'http://localhost/v1/radius/users_data'
 headers = {
+  'Authorization': 'Bearer BEARER_TOKEN',
   'Content-Type': 'application/json',
   'Accept': 'application/json'
 }
@@ -3519,17 +3524,36 @@ response.json()</code></pre></div>
 
 <span id="example-responses-GETv1-radius-users_data">
             <blockquote>
-            <p>Example response (401):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
- </code></pre></details>         <pre>
+                <pre>
 
-<code class="language-json" style="max-height: 300px;">Unauthorized.</code>
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;Users found&quot;,
+    &quot;detail&quot;: {
+        &quot;id&quot;: 138421,
+        &quot;name&quot;: &quot;Kwargs&quot;,
+        &quot;username&quot;: &quot;1.1.1.1&quot;,
+        &quot;password&quot;: &quot;e08fsa13&quot;,
+        &quot;bandwith_plan&quot;: &quot;11440k/11440k&quot;,
+        &quot;main_ip&quot;: &quot;1.1.1.1&quot;,
+        &quot;node&quot;: &quot;ROSEDAL&quot;,
+        &quot;created_at&quot;: &quot;2023-06-07&quot;,
+        &quot;updated_at&quot;: &quot;2023-06-08&quot;
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error retrieving users&quot;,
+    &quot;detail&quot;: &quot;SQLSTATE[HY000] [2002] No such file or directory&quot;
+}</code>
  </pre>
     </span>
 <span id="execution-results-GETv1-radius-users_data" hidden>
@@ -3549,7 +3573,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETv1-radius-users_data" data-method="GET"
       data-path="v1/radius/users_data"
-      data-authed="0"
+      data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
@@ -3580,6 +3604,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETv1-radius-users_data"
+               value="Bearer BEARER_TOKEN"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer BEARER_TOKEN</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
@@ -3603,12 +3638,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
-                    <h2 id="radius-controller-POSTv1-radius-users">Create a new user in the radius database</h2>
+                    <h2 id="radius-controller-POSTv1-radius-users">Create User</h2>
 
 <p>
+<small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>This endpoint allows you to create a user in the radius database.</p>
 
 <span id="example-requests-POSTv1-radius-users">
 <blockquote>Example request:</blockquote>
@@ -3617,8 +3653,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
     "http://localhost/v1/radius/users" \
+    --header "Authorization: Bearer BEARER_TOKEN" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"name\": \"Kwargs\",
+    \"username\": \"1.1.1.1\",
+    \"bandwith_plan\": \"11440k\\/11440k\",
+    \"node\": \"ROSEDAL\",
+    \"main_ip\": \"1.1.1.1\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -3627,13 +3672,23 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "Authorization": "Bearer BEARER_TOKEN",
     "Content-Type": "application/json",
     "Accept": "application/json",
+};
+
+let body = {
+    "name": "Kwargs",
+    "username": "1.1.1.1",
+    "bandwith_plan": "11440k\/11440k",
+    "node": "ROSEDAL",
+    "main_ip": "1.1.1.1"
 };
 
 fetch(url, {
     method: "POST",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 
@@ -3643,8 +3698,16 @@ $response = $client-&gt;post(
     'http://localhost/v1/radius/users',
     [
         'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer BEARER_TOKEN',
             'Content-Type' =&gt; 'application/json',
             'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'name' =&gt; 'Kwargs',
+            'username' =&gt; '1.1.1.1',
+            'bandwith_plan' =&gt; '11440k/11440k',
+            'node' =&gt; 'ROSEDAL',
+            'main_ip' =&gt; '1.1.1.1',
         ],
     ]
 );
@@ -3657,18 +3720,71 @@ print_r(json_decode((string) $body));</code></pre></div>
 import json
 
 url = 'http://localhost/v1/radius/users'
+payload = {
+    "name": "Kwargs",
+    "username": "1.1.1.1",
+    "bandwith_plan": "11440k\/11440k",
+    "node": "ROSEDAL",
+    "main_ip": "1.1.1.1"
+}
 headers = {
+  'Authorization': 'Bearer BEARER_TOKEN',
   'Content-Type': 'application/json',
   'Accept': 'application/json'
 }
 
-response = requests.request('POST', url, headers=headers)
+response = requests.request('POST', url, headers=headers, json=payload)
 response.json()</code></pre></div>
 
 </span>
 
 <span id="example-responses-POSTv1-radius-users">
-</span>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;User created successfully.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error creating user&quot;,
+    &quot;detail&quot;: {
+        &quot;main_ip&quot;: [
+            &quot;The main ip must be a valid IP address.&quot;
+        ]
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (409):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;User already exists.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;An error occurred while creating the user.&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTv1-radius-users" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTv1-radius-users"></span>:
@@ -3686,7 +3802,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTv1-radius-users" data-method="POST"
       data-path="v1/radius/users"
-      data-authed="0"
+      data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
@@ -3717,6 +3833,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTv1-radius-users"
+               value="Bearer BEARER_TOKEN"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer BEARER_TOKEN</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
@@ -3738,14 +3865,71 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="name"                data-endpoint="POSTv1-radius-users"
+               value="Kwargs"
+               data-component="body">
+    <br>
+<p>The name of the user. Example: <code>Kwargs</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>username</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="username"                data-endpoint="POSTv1-radius-users"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>The username of the user. Example: <code>1.1.1.1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>bandwith_plan</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="bandwith_plan"                data-endpoint="POSTv1-radius-users"
+               value="11440k/11440k"
+               data-component="body">
+    <br>
+<p>The bandwith plan of the user. Example: <code>11440k/11440k</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>node</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="node"                data-endpoint="POSTv1-radius-users"
+               value="ROSEDAL"
+               data-component="body">
+    <br>
+<p>The node of the user. Example: <code>ROSEDAL</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>main_ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="main_ip"                data-endpoint="POSTv1-radius-users"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>The main ip of the user. Example: <code>1.1.1.1</code></p>
+        </div>
+        </form>
 
-                    <h2 id="radius-controller-GETv1-radius-users">Get a user from the radius database based on the username in the request</h2>
+                    <h2 id="radius-controller-GETv1-radius-users">Get User</h2>
 
 <p>
+<small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>This endpoint allows you to get a user from the radius database based on the username in the request</p>
 
 <span id="example-requests-GETv1-radius-users">
 <blockquote>Example request:</blockquote>
@@ -3754,8 +3938,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
     --get "http://localhost/v1/radius/users" \
+    --header "Authorization: Bearer BEARER_TOKEN" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"username\": \"1.1.1.1\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -3764,13 +3953,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "Authorization": "Bearer BEARER_TOKEN",
     "Content-Type": "application/json",
     "Accept": "application/json",
+};
+
+let body = {
+    "username": "1.1.1.1"
 };
 
 fetch(url, {
     method: "GET",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 
@@ -3780,8 +3975,12 @@ $response = $client-&gt;get(
     'http://localhost/v1/radius/users',
     [
         'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer BEARER_TOKEN',
             'Content-Type' =&gt; 'application/json',
             'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'username' =&gt; '1.1.1.1',
         ],
     ]
 );
@@ -3794,29 +3993,77 @@ print_r(json_decode((string) $body));</code></pre></div>
 import json
 
 url = 'http://localhost/v1/radius/users'
+payload = {
+    "username": "1.1.1.1"
+}
 headers = {
+  'Authorization': 'Bearer BEARER_TOKEN',
   'Content-Type': 'application/json',
   'Accept': 'application/json'
 }
 
-response = requests.request('GET', url, headers=headers)
+response = requests.request('GET', url, headers=headers, json=payload)
 response.json()</code></pre></div>
 
 </span>
 
 <span id="example-responses-GETv1-radius-users">
             <blockquote>
-            <p>Example response (401):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
- </code></pre></details>         <pre>
+                <pre>
 
-<code class="language-json" style="max-height: 300px;">Unauthorized.</code>
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;User found&quot;,
+    &quot;detail&quot;: {
+        &quot;id&quot;: 138421,
+        &quot;name&quot;: &quot;Kwargs&quot;,
+        &quot;username&quot;: &quot;1.1.1.1&quot;,
+        &quot;password&quot;: &quot;e08fsa13&quot;,
+        &quot;bandwith_plan&quot;: &quot;11440k/11440k&quot;,
+        &quot;main_ip&quot;: &quot;1.1.1.1&quot;,
+        &quot;node&quot;: &quot;ROSEDAL&quot;,
+        &quot;created_at&quot;: &quot;2023-06-07&quot;,
+        &quot;updated_at&quot;: &quot;2023-06-08&quot;
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error getting user&quot;,
+    &quot;detail&quot;: {
+        &quot;username&quot;: [
+            &quot;The username field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;User does not exist.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error retrieving users&quot;,
+    &quot;detail&quot;: &quot;SQLSTATE[HY000] [2002] No such file or directory&quot;
+}</code>
  </pre>
     </span>
 <span id="execution-results-GETv1-radius-users" hidden>
@@ -3836,7 +4083,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETv1-radius-users" data-method="GET"
       data-path="v1/radius/users"
-      data-authed="0"
+      data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
@@ -3867,6 +4114,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETv1-radius-users"
+               value="Bearer BEARER_TOKEN"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer BEARER_TOKEN</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
@@ -3888,14 +4146,27 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>username</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="username"                data-endpoint="GETv1-radius-users"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>The username of the user. Example: <code>1.1.1.1</code></p>
+        </div>
+        </form>
 
-                    <h2 id="radius-controller-PUTv1-radius-users">Update user paramas in the radius database</h2>
+                    <h2 id="radius-controller-PUTv1-radius-users">Update User</h2>
 
 <p>
+<small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>This endpoint allows you to update a user in the radius database.</p>
 
 <span id="example-requests-PUTv1-radius-users">
 <blockquote>Example request:</blockquote>
@@ -3904,8 +4175,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
     "http://localhost/v1/radius/users" \
+    --header "Authorization: Bearer BEARER_TOKEN" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"name\": \"Kwargs\",
+    \"username\": \"1.1.1.1\",
+    \"bandwith_plan\": \"11440k\\/11440k\",
+    \"node\": \"ROSEDAL\",
+    \"main_ip\": \"1.1.1.1\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -3914,13 +4194,23 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "Authorization": "Bearer BEARER_TOKEN",
     "Content-Type": "application/json",
     "Accept": "application/json",
+};
+
+let body = {
+    "name": "Kwargs",
+    "username": "1.1.1.1",
+    "bandwith_plan": "11440k\/11440k",
+    "node": "ROSEDAL",
+    "main_ip": "1.1.1.1"
 };
 
 fetch(url, {
     method: "PUT",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 
@@ -3930,8 +4220,16 @@ $response = $client-&gt;put(
     'http://localhost/v1/radius/users',
     [
         'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer BEARER_TOKEN',
             'Content-Type' =&gt; 'application/json',
             'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'name' =&gt; 'Kwargs',
+            'username' =&gt; '1.1.1.1',
+            'bandwith_plan' =&gt; '11440k/11440k',
+            'node' =&gt; 'ROSEDAL',
+            'main_ip' =&gt; '1.1.1.1',
         ],
     ]
 );
@@ -3944,18 +4242,76 @@ print_r(json_decode((string) $body));</code></pre></div>
 import json
 
 url = 'http://localhost/v1/radius/users'
+payload = {
+    "name": "Kwargs",
+    "username": "1.1.1.1",
+    "bandwith_plan": "11440k\/11440k",
+    "node": "ROSEDAL",
+    "main_ip": "1.1.1.1"
+}
 headers = {
+  'Authorization': 'Bearer BEARER_TOKEN',
   'Content-Type': 'application/json',
   'Accept': 'application/json'
 }
 
-response = requests.request('PUT', url, headers=headers)
+response = requests.request('PUT', url, headers=headers, json=payload)
 response.json()</code></pre></div>
 
 </span>
 
 <span id="example-responses-PUTv1-radius-users">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;Bandwidth updated successfully&quot;,
+    &quot;detail&quot;: {
+        &quot;status&quot;: &quot;success&quot;,
+        &quot;message&quot;: &quot;User found&quot;,
+        &quot;detail&quot;: {
+            &quot;id&quot;: 138463,
+            &quot;name&quot;: &quot;Kwargs&quot;,
+            &quot;username&quot;: &quot;1.1.1.1&quot;,
+            &quot;password&quot;: &quot;e086aa13&quot;,
+            &quot;bandwith_plan&quot;: &quot;11440k/11440k&quot;,
+            &quot;main_ip&quot;: &quot;1.1.1.1&quot;,
+            &quot;node&quot;: &quot;ROSEDAL&quot;,
+            &quot;created_at&quot;: &quot;2023-06-08&quot;,
+            &quot;updated_at&quot;: &quot;2023-06-08&quot;
+        }
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error updating user&quot;,
+    &quot;detail&quot;: {
+        &quot;main_ip&quot;: [
+            &quot;The main ip must be a valid IP address.&quot;
+        ]
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;An error occurred while updating the user.&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTv1-radius-users" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTv1-radius-users"></span>:
@@ -3973,7 +4329,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-PUTv1-radius-users" data-method="PUT"
       data-path="v1/radius/users"
-      data-authed="0"
+      data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
@@ -4004,6 +4360,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="PUTv1-radius-users"
+               value="Bearer BEARER_TOKEN"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer BEARER_TOKEN</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
@@ -4025,14 +4392,71 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="name"                data-endpoint="PUTv1-radius-users"
+               value="Kwargs"
+               data-component="body">
+    <br>
+<p>The name of the user. Example: <code>Kwargs</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>username</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="username"                data-endpoint="PUTv1-radius-users"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>The username of the user. Example: <code>1.1.1.1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>bandwith_plan</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="bandwith_plan"                data-endpoint="PUTv1-radius-users"
+               value="11440k/11440k"
+               data-component="body">
+    <br>
+<p>The bandwith plan of the user. Example: <code>11440k/11440k</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>node</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="node"                data-endpoint="PUTv1-radius-users"
+               value="ROSEDAL"
+               data-component="body">
+    <br>
+<p>The node of the user. Example: <code>ROSEDAL</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>main_ip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="main_ip"                data-endpoint="PUTv1-radius-users"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>The main ip of the user. Example: <code>1.1.1.1</code></p>
+        </div>
+        </form>
 
-                    <h2 id="radius-controller-DELETEv1-radius-users">Delete a user from the radius database.</h2>
+                    <h2 id="radius-controller-DELETEv1-radius-users">Delete User</h2>
 
 <p>
+<small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>This endpoint allows you to delete a user in the radius database.</p>
 
 <span id="example-requests-DELETEv1-radius-users">
 <blockquote>Example request:</blockquote>
@@ -4041,8 +4465,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
     "http://localhost/v1/radius/users" \
+    --header "Authorization: Bearer BEARER_TOKEN" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"username\": \"1.1.1.1\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -4051,13 +4480,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "Authorization": "Bearer BEARER_TOKEN",
     "Content-Type": "application/json",
     "Accept": "application/json",
+};
+
+let body = {
+    "username": "1.1.1.1"
 };
 
 fetch(url, {
     method: "DELETE",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 
@@ -4067,8 +4502,12 @@ $response = $client-&gt;delete(
     'http://localhost/v1/radius/users',
     [
         'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer BEARER_TOKEN',
             'Content-Type' =&gt; 'application/json',
             'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'username' =&gt; '1.1.1.1',
         ],
     ]
 );
@@ -4081,18 +4520,68 @@ print_r(json_decode((string) $body));</code></pre></div>
 import json
 
 url = 'http://localhost/v1/radius/users'
+payload = {
+    "username": "1.1.1.1"
+}
 headers = {
+  'Authorization': 'Bearer BEARER_TOKEN',
   'Content-Type': 'application/json',
   'Accept': 'application/json'
 }
 
-response = requests.request('DELETE', url, headers=headers)
+response = requests.request('DELETE', url, headers=headers, json=payload)
 response.json()</code></pre></div>
 
 </span>
 
 <span id="example-responses-DELETEv1-radius-users">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;User deleted successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error deleting user&quot;,
+    &quot;detail&quot;: {
+        &quot;username&quot;: [
+            &quot;The username field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;User does not exist.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error deleting user&quot;,
+    &quot;detail&quot;: &quot;SQLSTATE[HY000] [2002] No such file or directory&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-DELETEv1-radius-users" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEv1-radius-users"></span>:
@@ -4110,7 +4599,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-DELETEv1-radius-users" data-method="DELETE"
       data-path="v1/radius/users"
-      data-authed="0"
+      data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
@@ -4141,6 +4630,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="DELETEv1-radius-users"
+               value="Bearer BEARER_TOKEN"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer BEARER_TOKEN</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
@@ -4162,7 +4662,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>username</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="username"                data-endpoint="DELETEv1-radius-users"
+               value="1.1.1.1"
+               data-component="body">
+    <br>
+<p>The username of the user. Example: <code>1.1.1.1</code></p>
+        </div>
+        </form>
 
                 <h1 id="smartolt-controller">SmartOLT Controller</h1>
 

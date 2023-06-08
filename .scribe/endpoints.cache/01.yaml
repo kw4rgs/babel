@@ -16,11 +16,12 @@ endpoints:
         API for managing Radius Server
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get all users from the radius database'
-      description: ''
-      authenticated: false
+      title: 'Get All Users'
+      description: 'This endpoint allows you to get all users from the radius database'
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer BEARER_TOKEN'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -32,15 +33,22 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 401
-        content: Unauthorized.
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-        description: null
+        status: 200
+        content: '{"status":"success","message":"Users found","detail":{"id":138421,"name":"Kwargs","username":"1.1.1.1","password":"e08fsa13","bandwith_plan":"11440k/11440k","main_ip":"1.1.1.1","node":"ROSEDAL","created_at":"2023-06-07","updated_at":"2023-06-08"}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: '{"status": "error", "message": "Error retrieving users", "detail": "SQLSTATE[HY000] [2002] No such file or directory"}'
+        headers: []
+        description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hkcE46dZ8V61g5fbP3eavaD'
     controller: null
     method: null
     route: null
@@ -56,23 +64,91 @@ endpoints:
         API for managing Radius Server
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create a new user in the radius database'
-      description: ''
-      authenticated: false
+      title: 'Create User'
+      description: 'This endpoint allows you to create a user in the radius database.'
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer BEARER_TOKEN'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'The name of the user.'
+        required: true
+        example: Kwargs
+        type: string
+        custom: []
+      username:
+        name: username
+        description: 'The username of the user.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+      bandwith_plan:
+        name: bandwith_plan
+        description: 'The bandwith plan of the user.'
+        required: true
+        example: 11440k/11440k
+        type: string
+        custom: []
+      node:
+        name: node
+        description: 'The node of the user.'
+        required: true
+        example: ROSEDAL
+        type: string
+        custom: []
+      main_ip:
+        name: main_ip
+        description: 'The main ip of the user.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: Kwargs
+      username: 1.1.1.1
+      bandwith_plan: 11440k/11440k
+      node: ROSEDAL
+      main_ip: 1.1.1.1
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 201
+        content: '{"status":"success","message":"User created successfully."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: '{"status":"error","message":"Error creating user","detail":{"main_ip":["The main ip must be a valid IP address."]}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 409
+        content: '{"status":"error","message":"User already exists."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: '{"status": "error", "message": "An error occurred while creating the user."}'
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Ek8Pd5Dv1ecaZ6Vha643gbf'
     controller: null
     method: null
     route: null
@@ -88,31 +164,59 @@ endpoints:
         API for managing Radius Server
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get a user from the radius database based on the username in the request'
-      description: ''
-      authenticated: false
+      title: 'Get User'
+      description: 'This endpoint allows you to get a user from the radius database based on the username in the request'
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer BEARER_TOKEN'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      username:
+        name: username
+        description: 'The username of the user.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+    cleanBodyParameters:
+      username: 1.1.1.1
     fileParameters: []
     responses:
       -
-        status: 401
-        content: Unauthorized.
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-        description: null
+        status: 200
+        content: '{"status":"success","message":"User found","detail":{"id":138421,"name":"Kwargs","username":"1.1.1.1","password":"e08fsa13","bandwith_plan":"11440k/11440k","main_ip":"1.1.1.1","node":"ROSEDAL","created_at":"2023-06-07","updated_at":"2023-06-08"}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: '{"status":"error","message":"Error getting user","detail":{"username":["The username field is required."]}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"status":"error","message":"User does not exist."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: '{"status": "error", "message": "Error retrieving users", "detail": "SQLSTATE[HY000] [2002] No such file or directory"}'
+        headers: []
+        description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer avE1eVa8DPg4fbd35Z6ch6k'
     controller: null
     method: null
     route: null
@@ -128,23 +232,85 @@ endpoints:
         API for managing Radius Server
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update user paramas in the radius database'
-      description: ''
-      authenticated: false
+      title: 'Update User'
+      description: 'This endpoint allows you to update a user in the radius database.'
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer BEARER_TOKEN'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'The name of the user.'
+        required: true
+        example: Kwargs
+        type: string
+        custom: []
+      username:
+        name: username
+        description: 'The username of the user.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+      bandwith_plan:
+        name: bandwith_plan
+        description: 'The bandwith plan of the user.'
+        required: true
+        example: 11440k/11440k
+        type: string
+        custom: []
+      node:
+        name: node
+        description: 'The node of the user.'
+        required: true
+        example: ROSEDAL
+        type: string
+        custom: []
+      main_ip:
+        name: main_ip
+        description: 'The main ip of the user.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: Kwargs
+      username: 1.1.1.1
+      bandwith_plan: 11440k/11440k
+      node: ROSEDAL
+      main_ip: 1.1.1.1
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: '{"status":"success","message":"Bandwidth updated successfully","detail":{"status":"success","message":"User found","detail":{"id":138463,"name":"Kwargs","username":"1.1.1.1","password":"e086aa13","bandwith_plan":"11440k/11440k","main_ip":"1.1.1.1","node":"ROSEDAL","created_at":"2023-06-08","updated_at":"2023-06-08"}}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: '{"status":"error","message":"Error updating user","detail":{"main_ip":["The main ip must be a valid IP address."]}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: '{"status": "error", "message": "An error occurred while updating the user."}'
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5dDcZabvE68V1hgf63akPe4'
     controller: null
     method: null
     route: null
@@ -160,23 +326,59 @@ endpoints:
         API for managing Radius Server
       subgroup: ''
       subgroupDescription: ''
-      title: 'Delete a user from the radius database.'
-      description: ''
-      authenticated: false
+      title: 'Delete User'
+      description: 'This endpoint allows you to delete a user in the radius database.'
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer BEARER_TOKEN'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      username:
+        name: username
+        description: 'The username of the user.'
+        required: true
+        example: 1.1.1.1
+        type: string
+        custom: []
+    cleanBodyParameters:
+      username: 1.1.1.1
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: '{"status":"success","message":"User deleted successfully"}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: '{"status":"error","message":"Error deleting user","detail":{"username":["The username field is required."]}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"status":"error","message":"User does not exist."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: '{"status": "error", "message": "Error deleting user", "detail": "SQLSTATE[HY000] [2002] No such file or directory"}'
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer b6ve3a6Z48afkcEP1VDdgh5'
     controller: null
     method: null
     route: null

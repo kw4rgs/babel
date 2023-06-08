@@ -10,13 +10,13 @@
     ],
     "info": {
         "name": "BABEL v1",
-        "_postman_id": "e96970c6-aa8b-4fee-b8af-d32465bd8a39",
+        "_postman_id": "06003027-7fb6-49aa-a397-a287b59178fe",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [
         {
-            "name": "FTTH Management",
+            "name": "FTTH Controller",
             "description": "\nAPI for managing FTTH connections.",
             "item": [
                 {
@@ -678,7 +678,7 @@
             "description": "\nAPI for managing Radius Server",
             "item": [
                 {
-                    "name": "Get all users from the radius database",
+                    "name": "Get All Users",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -698,31 +698,25 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": "This endpoint allows you to get all users from the radius database"
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
-                            "code": 401,
-                            "body": "Unauthorized.",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"status\":\"success\",\"message\":\"Users found\",\"detail\":{\"id\":138421,\"name\":\"Kwargs\",\"username\":\"1.1.1.1\",\"password\":\"e08fsa13\",\"bandwith_plan\":\"11440k\/11440k\",\"main_ip\":\"1.1.1.1\",\"node\":\"ROSEDAL\",\"created_at\":\"2023-06-07\",\"updated_at\":\"2023-06-08\"}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\"status\": \"error\", \"message\": \"Error retrieving users\", \"detail\": \"SQLSTATE[HY000] [2002] No such file or directory\"}",
                             "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "Create a new user in the radius database",
+                    "name": "Create User",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -741,16 +735,41 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"Kwargs\",\"username\":\"1.1.1.1\",\"bandwith_plan\":\"11440k\\\/11440k\",\"node\":\"ROSEDAL\",\"main_ip\":\"1.1.1.1\"}"
+                        },
+                        "description": "This endpoint allows you to create a user in the radius database."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"status\":\"success\",\"message\":\"User created successfully.\"}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\"status\":\"error\",\"message\":\"Error creating user\",\"detail\":{\"main_ip\":[\"The main ip must be a valid IP address.\"]}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 409,
+                            "body": "{\"status\":\"error\",\"message\":\"User already exists.\"}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\"status\": \"error\", \"message\": \"An error occurred while creating the user.\"}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "Get a user from the radius database based on the username in the request",
+                    "name": "Get User",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -769,32 +788,41 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"username\":\"1.1.1.1\"}"
+                        },
+                        "description": "This endpoint allows you to get a user from the radius database based on the username in the request"
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
-                            "code": 401,
-                            "body": "Unauthorized.",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"status\":\"success\",\"message\":\"User found\",\"detail\":{\"id\":138421,\"name\":\"Kwargs\",\"username\":\"1.1.1.1\",\"password\":\"e08fsa13\",\"bandwith_plan\":\"11440k\/11440k\",\"main_ip\":\"1.1.1.1\",\"node\":\"ROSEDAL\",\"created_at\":\"2023-06-07\",\"updated_at\":\"2023-06-08\"}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\"status\":\"error\",\"message\":\"Error getting user\",\"detail\":{\"username\":[\"The username field is required.\"]}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"status\":\"error\",\"message\":\"User does not exist.\"}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\"status\": \"error\", \"message\": \"Error retrieving users\", \"detail\": \"SQLSTATE[HY000] [2002] No such file or directory\"}",
                             "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "Update user paramas in the radius database",
+                    "name": "Update User",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -813,16 +841,35 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"Kwargs\",\"username\":\"1.1.1.1\",\"bandwith_plan\":\"11440k\\\/11440k\",\"node\":\"ROSEDAL\",\"main_ip\":\"1.1.1.1\"}"
+                        },
+                        "description": "This endpoint allows you to update a user in the radius database."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"status\":\"success\",\"message\":\"Bandwidth updated successfully\",\"detail\":{\"status\":\"success\",\"message\":\"User found\",\"detail\":{\"id\":138463,\"name\":\"Kwargs\",\"username\":\"1.1.1.1\",\"password\":\"e086aa13\",\"bandwith_plan\":\"11440k\/11440k\",\"main_ip\":\"1.1.1.1\",\"node\":\"ROSEDAL\",\"created_at\":\"2023-06-08\",\"updated_at\":\"2023-06-08\"}}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\"status\":\"error\",\"message\":\"Error updating user\",\"detail\":{\"main_ip\":[\"The main ip must be a valid IP address.\"]}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\"status\": \"error\", \"message\": \"An error occurred while updating the user.\"}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "Delete a user from the radius database.",
+                    "name": "Delete User",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -841,13 +888,38 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"username\":\"1.1.1.1\"}"
+                        },
+                        "description": "This endpoint allows you to delete a user in the radius database."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"status\":\"success\",\"message\":\"User deleted successfully\"}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\"status\":\"error\",\"message\":\"Error deleting user\",\"detail\":{\"username\":[\"The username field is required.\"]}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"status\":\"error\",\"message\":\"User does not exist.\"}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\"status\": \"error\", \"message\": \"Error deleting user\", \"detail\": \"SQLSTATE[HY000] [2002] No such file or directory\"}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
