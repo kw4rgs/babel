@@ -9,7 +9,13 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\Header;
+use Knuckles\Scribe\Attributes\BodyParam;
 
+
+
+#[Group("SmartOLT Controller", "API for managing onus")]
 
 class SmartOltController extends Controller
 {
@@ -54,6 +60,11 @@ class SmartOltController extends Controller
     *   @return Illuminate\Http\Response
     */
 
+    #[Authenticated]
+    #[BodyParam("user_id", "int", "The id of the user.", example: 9)]
+    #[BodyParam("room_id", "string", "The id of the room.", required: false)]
+    #[BodyParam("forever", "boolean", "Whether to ban the user forever.", required: false, example: false)]
+    #[BodyParam("another_one", "number", "This won't be added to the examples.", required: false, example: "No-example")]
     public function getOnuStatus(Request $request)
     {
         try {
@@ -126,6 +137,7 @@ class SmartOltController extends Controller
     *   @return Illuminate\Http\Response
     */
 
+    #[Authenticated]
     public function rebootOnu(Request $request)
     {
         try {

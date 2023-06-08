@@ -9,6 +9,10 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\Validator;
+use Knuckles\Scribe\Attributes\Group;
+
+
+#[Group("Radius Controller", "API for managing radius users")]
 
 class RadiusController extends Controller
 {
