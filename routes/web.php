@@ -80,16 +80,16 @@ $router->delete('/v1/radius/users', 'RadiusController@deleteUser');
 /* RUTAS SMARTOLT CONTROLLER */
 
 /* Trae el estado de una ONU */
-$router->get('/v1/smartolt/onu/status', 'SmartoltController@getOnuStatus');
+$router->get('/v1/smartolt/onu/status', 'SmartOltController@getOnuStatus');
 
 /* Reinicia una ONU */
-$router->post('/v1/smartolt/onu/reboot', 'SmartoltController@rebootOnu');
+$router->post('/v1/smartolt/onu/reboot', 'SmartOltController@rebootOnu');
 
 
 /* RUTAS FTTH CONTROLLER */
 
 /* Trae el estado de un customer */
-$router->get('/v1/ftth/customer', 'FtthController@getCustomerStatus');
+$router->get('/v1/ftth/customer', 'FTTHController@getCustomerConnection');
 
 /* Actualiza un customer y reinicia la ONU */
-$router->put('/v1/ftth/customer', 'FtthController@updateCustomerConnection');
+$router->put('/v1/ftth/customer', 'FTTHController@updateCustomerConnection');

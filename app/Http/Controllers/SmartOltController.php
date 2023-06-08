@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-class SmartoltController extends Controller
+class SmartOltController extends Controller
 {
     
         /*
