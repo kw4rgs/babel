@@ -6,7 +6,7 @@ require_once __DIR__.'/../vendor/autoload.php';
     dirname(__DIR__)
 ))->bootstrap();
 
-date_default_timezone_set(env('APP_TIMEZONE', 'GMT-3'));
+date_default_timezone_set('America/Sao_Paulo');
 
 /*
 |--------------------------------------------------------------------------
