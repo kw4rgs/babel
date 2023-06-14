@@ -78,6 +78,9 @@ $router->group(['middleware' => 'bearer-token'], function ($router) {
     /* Elimina un usuario del radius */ 
     $router->delete('/v1/radius/users', ['uses' => 'RadiusController@deleteUser']);
 
+    /* Encuentra un usuario del radius */
+    $router->get('/v1/radius/users/find', ['uses' => 'RadiusController@findUser']);
+
     /* RUTAS SMARTOLT CONTROLLER */
 
     /* Trae el estado de una ONU */

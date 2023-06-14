@@ -113,93 +113,7 @@ class RadiusController extends Controller
         return $merged_data;
     }
 
-    // public function getAllUsers()
-    // {
-    //     try {
-    //         $radreply_data = DB::connection('radius')
-    //             ->table('radreply')
-    //             ->select('id', 'username', 'attribute', 'value')
-    //             ->orderBy('id', 'asc')
-    //             ->get();
     
-    //         $radcheck_data = DB::connection('radius')
-    //             ->table('radcheck')
-    //             ->select('username', 'value')
-    //             ->orderBy('id', 'asc')
-    //             ->get();
-    
-    //         $userinfo_data = DB::connection('radius')
-    //             ->table('userinfo')
-    //             ->select('username', 'firstname', 'lastname', 'nodo', 'creationdate', 'updatedate')
-    //             ->orderBy('id', 'asc')
-    //             ->get();
-    
-    //         $merged_data = [];
-    
-    //         foreach ($radreply_data as $user) {
-    //             $username = $user->username;
-    
-    //             if (!isset($merged_data[$username])) {
-    //                 $merged_data[$username] = [
-    //                     'Id' => $user->id,
-    //                     'Username' => $username,
-    //                     'Password' => '',
-    //                 ];
-    //             }
-    
-    //             $attributes = explode(',', $user->attribute);
-    //             $values = explode(',', $user->value);
-    
-    //             foreach ($attributes as $index => $attribute) {
-    //                 $attribute = trim($attribute);
-    //                 $value = trim($values[$index]);
-    
-    //                 $merged_data[$username][$attribute] = $value;
-    //             }
-    //         }
-    
-    //         foreach ($radcheck_data as $user) {
-    //             $username = $user->username;
-    
-    //             if (isset($merged_data[$username])) {
-    //                 $merged_data[$username]['Password'] = $user->value;
-    //             }
-    //         }
-    
-    //         foreach ($userinfo_data as $user) {
-    //             $username = $user->username;
-    //             $created_at = explode(' ', $user->creationdate);
-    //             $updated_at = explode(' ', $user->updatedate);
-    
-    //             if (isset($merged_data[$username])) {
-    //                 $merged_data[$username]['Name'] = $user->firstname . $user->lastname;
-    //                 $merged_data[$username]['Node'] = $user->nodo;
-    //                 $merged_data[$username]['Creation Date'] = $created_at[0];
-    //                 $merged_data[$username]['Update Date'] = $updated_at[0];
-    //             }
-    //         }
-    
-    //         $data_radius = array_values($merged_data);
-    
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'message' => 'Users found',
-    //             'detail' => [
-    //                 'radius_users_quantity' => count($data_radius),
-    //                 'radius_users_data' => $data_radius
-    //             ]
-    //         ], Response::HTTP_OK);
-    //     } catch (\Exception $e) {
-    //         $errorMessage = 'Error retrieving users';
-    
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => $errorMessage,
-    //             'detail' => $e->getMessage()
-    //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
-    // }
-
     /**
      * Get User
      * 
@@ -819,5 +733,124 @@ class RadiusController extends Controller
  
         }
     }
+
+    /**
+     * 
+     * Find User
+     * 
+     * This endpoint allows you to find a username in the radius database based on the framed ip address.
+     * 
+     * @authenticated
+     * 
+     * @bodyParam framed_ip_address string required The framed ip address of the user. Example:
+     * 
+     * @response 200 {"status":"success","message":"User found successfully","detail":{"username":"
+     * @response 400 {"status":"error","message":"Error finding user","detail":{"framed_ip_address":["The framed ip address field is required."]}}
+     * @response 404 {"status":"error","message":"User does not exist."}
+     * @response 500 {"status": "error", "message": "Error finding user", "detail": "SQLSTATE[HY000] [2002] No such file or directory"}
+     * 
+     */
+
+    /*  
+     * Find a user in the radius database based on the framed ip address.
+     *
+     * @param Request $request
+     * @param string $framed_ip_address
+     * @return Illuminate\Http\Response
+     */
+        
+    public function findUser(Request $request)
+    {
+        try {
+            $validate = $this->validateIP($request);
+            
+            if ($validate['code'] != 200) {
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Error finding user',
+                    'detail' => $validate['detail'],
+                ], Response::HTTP_BAD_REQUEST);
+
+            } else {
+
+                $data = $request->input();
+                $framed_ip_address = $data['framed_ip'];
+                
+                // Check if the user exists
+                $userExists = DB::connection('radius')
+                    ->table('radreply')
+                    ->where('value', $framed_ip_address)
+                    ->exists();
+
+                if (!$userExists) {
+
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'User does not exist.',
+                    ], Response::HTTP_NOT_FOUND);
+
+                } else {
+                    // Find user from radreply table
+                    $user = DB::connection('radius')
+                        ->table('radreply')
+                        ->where('value', $framed_ip_address)
+                        ->first();
+
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'User found successfully',
+                        'detail' => $user,
+                    ], Response::HTTP_OK);
+                }
+            }
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error finding user',
+                'detail' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+ 
+        }
+
+
+    }
+
+    /**
+         * Validate the IP
+         * 
+         * @param Request $request
+         * @return array $response
+         */
+
+         private function validateIP (Request $request)
+         {
+             $data = $request->input();
+ 
+             $validator = Validator::make($request->all(), [
+                 'framed_ip' => 'required|string',
+             ]);
+         
+             if ($validator->fails()) {
+ 
+                 $response = [
+                     'status' => 'error',
+                     'code' => 400,
+                     'message' => 'Invalid data.',
+                     'detail' => $validator->errors(),
+                 ];
+ 
+             } else {
+                 $response = [
+                     'status' => 'success',
+                     'code' => 200,
+                     'message' => 'Data is valid.',
+                 ];
+             }
+ 
+             return $response;
+         }   
 
 }
