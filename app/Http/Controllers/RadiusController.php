@@ -750,6 +750,71 @@ class RadiusController extends Controller
 
     }
 
+
+    public function updateUserBandwidth (Request $request)
+    {
+        try {
+            $data = $request->only(['ip', 'bandwidth_plan']);
+    
+            // Validate the request data
+            $validator = Validator::make($data, [
+                'ip' => 'required|ip',
+                'bandwidth_plan' => 'required|string',
+            ]);
+    
+            if ($validator->fails()) {
+                // Return a JSON response with validation errors
+                return response()->json([
+                    'status' => 'error',
+                    'code' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'Invalid data.',
+                    'detail' => $validator->errors(),
+                ], Response::HTTP_BAD_REQUEST);
+            }
+    
+            // Search the username with that IP
+            $username_data = DB::connection('radius')
+                ->table('radreply')
+                ->where('value', $data['ip'])
+                ->first();
+    
+            if (!$username_data) {
+                // Return a JSON response if the username is not found
+                return response()->json([
+                    'status' => 'error',
+                    'code' => Response::HTTP_NOT_FOUND,
+                    'message' => 'User not found.',
+                ], Response::HTTP_NOT_FOUND);
+            }
+    
+            $username = $username_data->username;
+            $bandwidth = $data['bandwidth_plan'];
+    
+            // Update Mikrotik-Rate-Limit in radreply table
+            DB::connection('radius')
+                ->table('radreply')
+                ->where('username', $username)
+                ->where('attribute', 'Mikrotik-Rate-Limit')
+                ->update([
+                    'value' => $bandwidth,
+                ]);
+    
+            // Return a JSON response for successful update
+            return response()->json([
+                'status' => 'success',
+                'code' => Response::HTTP_OK,
+                'message' => 'User updated successfully',
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the process
+            return response()->json([
+                'status' => 'error',
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => 'An error occurred.',
+                'detail' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
     /**
      *  VALIDATIONS 
      * 

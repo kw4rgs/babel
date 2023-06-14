@@ -81,6 +81,9 @@ $router->group(['middleware' => 'bearer-token'], function ($router) {
     /* Encuentra un usuario del radius */
     $router->get('/v1/radius/users/find', ['uses' => 'RadiusController@findUser']);
 
+    /* Actualiza el bandwidth de un usuario del radius por ip */
+    $router->put('/v1/radius/users/bandwidth', ['uses' => 'RadiusController@updateUserBandwidth']);
+
     /* RUTAS SMARTOLT CONTROLLER */
 
     /* Trae el estado de una ONU */
