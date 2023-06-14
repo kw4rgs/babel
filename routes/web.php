@@ -101,6 +101,9 @@ $router->group(['middleware' => 'bearer-token'], function ($router) {
     /* Actualiza un customer y reinicia la ONU */
     $router->put('/v1/ftth/customer', ['uses' => 'FTTHController@updateCustomerConnection']);
 
+    /* Actualizar de forma masiva los clientes */
+    $router->put('/v1/ftth/customers', ['uses' => 'FTTHController@updateCustomersConnection']);
+
 
 });
 

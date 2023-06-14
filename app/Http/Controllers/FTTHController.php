@@ -253,4 +253,63 @@ class FTTHController extends Controller
         }
     }
 
+
+    public function updateCustomersConnection(Request $request)
+    {
+        try {
+            $requests = $request->input('customer_connections', []);
+            $response_data = [];
+            $overallStatus = Response::HTTP_OK;
+    
+            foreach ($requests as $requestData) {
+                // Create a new Request instance
+                $connectionRequest = Request::createFromBase(new \Symfony\Component\HttpFoundation\Request());
+    
+                // Set the converted array as the request data
+                $connectionRequest->merge($requestData);
+    
+                $customer_connection = $this->getCustomerConnection($connectionRequest);
+                $response = [
+                    'username' => $requestData['username'],
+                    'status' => $customer_connection->getStatusCode(),
+                ];
+    
+                if ($customer_connection->getStatusCode() === Response::HTTP_OK) {
+                    $radius_response = $this->radiusController->updateUser($connectionRequest);
+                    $smartolt_response = $this->smartoltController->rebootOnu($connectionRequest);
+    
+                    $response['message'] = 'Customer connection updated in Radius and ONU rebooted in SmartOLT.';
+                    $response['data'] = [
+                        'radius' => $radius_response->original,
+                        'smartolt' => $smartolt_response->original
+                    ];
+                } elseif ($customer_connection->getStatusCode() === Response::HTTP_PARTIAL_CONTENT) {
+                    $radius_response = $this->radiusController->updateUser($connectionRequest);
+    
+                    $response['message'] = 'Customer connection updated in Radius, but ONU is not available in SmartOLT.';
+                    $response['data'] = [
+                        'radius' => $radius_response->original
+                    ];
+                } else {
+                    $response['message'] = 'Error updating customer connection.';
+                    $response['data'] = [
+                        'radius' => $customer_connection->original
+                    ];
+                    $overallStatus = Response::HTTP_PARTIAL_CONTENT; // Set overall status to 206 (Partial Content)
+                }
+    
+                $response_data[] = $response;
+            }
+    
+            return response()->json($response_data, $overallStatus);
+        } catch (HttpException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error updating customer connection.',
+                'data' => [
+                    'error' => $e->getMessage()
+                ]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
