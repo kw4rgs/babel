@@ -104,6 +104,9 @@ $router->group(['middleware' => 'bearer-token'], function ($router) {
     /* Actualizar de forma masiva los clientes */
     $router->put('/v1/ftth/customers', ['uses' => 'FTTHController@updateCustomersConnection']);
 
+    /* Actualizar bulk de clientes */
+    $router->put('/v1/ftth/customers/bulk', ['uses' => 'FTTHController@updateCustomersConnectionBulk']);
+
 
 });
 

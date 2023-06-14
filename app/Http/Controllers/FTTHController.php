@@ -312,4 +312,96 @@ class FTTHController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function updateCustomersConnectionBulk (Request $request)
+    {
+        try {
+            $bulkCustomer = $request->input('bulk', []);
+            $response_data = [];
+    
+            foreach ($bulkCustomer as $customer) {
+                $framed_ip_address = $customer['framed_ip'];
+                $bandwidth_plan = $customer['bandwidth_plan'];
+                $onu_sn = $customer['onu_sn'];
+    
+                // Step 1: Search for the username based on framed IP in the radius database
+                $username = $this->radiusController->searchUsernameByFramedIP($framed_ip_address);
+    
+                if (!$username) {
+                    $response_data[] = [
+                        'framed_ip' => $framed_ip_address,
+                        'status' => Response::HTTP_NOT_FOUND,
+                        'message' => 'Username not found for framed IP',
+                    ];
+                    continue;
+                }
+                
+                dd($username);
+                // Step 2: Update the mikrokit-rate-limit using the bandwidth plan
+                $radius_response = $this->radiusController->updateUserBandwidth($username, $bandwidth_plan);
+    
+                if ($radius_response->getStatusCode() !== Response::HTTP_OK) {
+                    $response_data[] = [
+                        'framed_ip' => $framed_ip,
+                        'status' => $radius_response->getStatusCode(),
+                        'message' => 'Error updating mikrokit-rate-limit',
+                        'data' => [
+                            'radius' => $radius_response->original,
+                        ],
+                    ];
+                    continue;
+                }
+    
+                // Step 3: Reboot the ONU using external ID (onu_sn)
+                if ($onu_sn) {
+                    $smartolt_response = $this->smartoltController->rebootOnuByExternalId($onu_sn);
+    
+                    if ($smartolt_response->getStatusCode() !== Response::HTTP_OK) {
+                        $response_data[] = [
+                            'framed_ip' => $framed_ip,
+                            'status' => $smartolt_response->getStatusCode(),
+                            'message' => 'Error rebooting ONU',
+                            'data' => [
+                                'smartolt' => $smartolt_response->original,
+                            ],
+                        ];
+                        continue;
+                    }
+                }
+    
+                // All operations successful
+                $response_data[] = [
+                    'framed_ip' => $framed_ip,
+                    'status' => Response::HTTP_OK,
+                    'message' => 'Operations completed successfully',
+                    'data' => [
+                        'radius' => $radius_response->original,
+                        'smartolt' => $smartolt_response->original ?? null,
+                    ],
+                ];
+            }
+    
+            return response()->json($response_data, Response::HTTP_OK);
+        } catch (HttpException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error updating customer connection.',
+                'data' => [
+                    'error' => $e->getMessage(),
+                ],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    private function searchUsernameByFramedIP($framed_ip)
+    {
+        // Implement the logic to search for the username based on framed IP
+        // Return the username if found, otherwise return null
+        // You can use the appropriate code to interact with your data source (e.g., database, external API) here
+        // Example:
+        // $user = User::where('framed_ip', $framed_ip)->first();
+        // return $user ? $user->username : null;
+        // Replace this example code with your actual implementation
+        return null;
+    }
 }

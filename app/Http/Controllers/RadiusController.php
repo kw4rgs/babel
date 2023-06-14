@@ -597,7 +597,8 @@ class RadiusController extends Controller
     public function deleteUser(Request $request)
     {
         try {
-            $validate = $this->validateUser($request);
+            $username = $request->input('username');
+            $validate = $this->validateUser($username);
             
             if ($validate['code'] != 200) {
 
@@ -929,5 +930,68 @@ class RadiusController extends Controller
 
             return $response;
         }   
+
+
+
+        /** SPECIALS **/
+        public function searchUsernameByFramedIP ($framed_ip_address)
+        {
+                try {
+                    $validate = $this->validateIP($framed_ip_address);
+                    
+                    if ($validate['code'] != 200) {
+
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Error finding user',
+                            'detail' => $validate['detail'],
+                        ], Response::HTTP_BAD_REQUEST);
+
+                    } else {
+
+                        
+                        // Check if the user exists
+                        $userExists = DB::connection('radius')
+                            ->table('radreply')
+                            ->where('value', $framed_ip_address)
+                            ->exists();
+
+                        if (!$userExists) {
+
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'User does not exist.',
+                            ], Response::HTTP_NOT_FOUND);
+
+                        } else {
+                            // Find user from radreply table
+                            $username = DB::connection('radius')
+                                ->table('radreply')
+                                ->where('value', $framed_ip_address)
+                                ->first();
+                            
+                            $user_data = [
+                                "username" => $username->username
+                            ];
+
+                            return response()->json([
+                                'status' => 'success',
+                                'message' => 'User found successfully',
+                                'detail' => $user_data,
+                            ], Response::HTTP_OK);
+                        }
+                    }
+
+                } catch (\Exception $e) {
+
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Error finding user',
+                        'detail' => $e->getMessage()
+                    ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        
+                }
+
+    }
 
 }
