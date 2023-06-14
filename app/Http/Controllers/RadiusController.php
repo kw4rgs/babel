@@ -144,10 +144,12 @@ class RadiusController extends Controller
      * @return Illuminate\Http\Response
      */
 
-    public function getUser (Request $request)
+    public function getUser (Request $request, $username_arg = null)
     {
         try {
-            $validate = $this->validateUser($request);
+            $username = isset($request->username) ? $request->username : $username_arg;
+
+            $validate = $this->validateUser($username);
             
             if ($validate['code'] != 200) {
 
@@ -159,8 +161,8 @@ class RadiusController extends Controller
 
             } else {
 
-                $data = $request->input();
-                $username = $data['username'];
+                // $data = $request->input();
+                // $username = $data['username'];
 
                 // Check if the user exists
                 $userExists = DB::connection('radius')
@@ -294,7 +296,6 @@ class RadiusController extends Controller
         * @return array $userinfo_data
         */
 
-
         private function getUserInfo ($username)
         {
             $userinfo_data = DB::connection('radius')
@@ -309,6 +310,8 @@ class RadiusController extends Controller
 
             return $userinfo_data;
         }
+
+
 
     /**
      * Create User
@@ -450,81 +453,6 @@ class RadiusController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-        /**
-         * Validate the input data
-         * 
-         * @param Request $request
-         * @return array $response
-         */
-
-        private function validateRequest (Request $request)
-        {
-            $data = $request->input();
-
-            $validator = Validator::make($request->all(), [
-                'username' => 'required|string',
-                'name' => 'required|string',
-                'bandwidth_plan' => 'required|string',
-                'node' => 'required|string',
-                'main_ip' => 'required|ip',
-            ]);
-        
-            if ($validator->fails()) {
-
-                $response = [
-                    'status' => 'error',
-                    'code' => 400,
-                    'message' => 'Invalid data.',
-                    'detail' => $validator->errors(),
-                ];
-
-            } else {
-                $response = [
-                    'status' => 'success',
-                    'code' => 200,
-                    'message' => 'Data is valid.',
-                ];
-            }
-
-            return $response;
-
-        }
-
-        /**
-         * Validate the username
-         * 
-         * @param Request $request
-         * @return array $response
-         */
-
-        private function validateUser (Request $request)
-        {
-            $data = $request->input();
-
-            $validator = Validator::make($request->all(), [
-                'username' => 'required|string',
-            ]);
-        
-            if ($validator->fails()) {
-
-                $response = [
-                    'status' => 'error',
-                    'code' => 400,
-                    'message' => 'Invalid data.',
-                    'detail' => $validator->errors(),
-                ];
-
-            } else {
-                $response = [
-                    'status' => 'success',
-                    'code' => 200,
-                    'message' => 'Data is valid.',
-                ];
-            }
-
-            return $response;
-        }
 
 
     /**
@@ -775,7 +703,7 @@ class RadiusController extends Controller
             } else {
 
                 $data = $request->input();
-                $framed_ip_address = $data['framed_ip'];
+                $framed_ip_address = $data['ip'];
                 
                 // Check if the user exists
                 $userExists = DB::connection('radius')
@@ -792,15 +720,19 @@ class RadiusController extends Controller
 
                 } else {
                     // Find user from radreply table
-                    $user = DB::connection('radius')
+                    $username = DB::connection('radius')
                         ->table('radreply')
                         ->where('value', $framed_ip_address)
                         ->first();
+                    
+                    $user_data = [
+                        "username" => $username->username
+                    ];
 
                     return response()->json([
                         'status' => 'success',
                         'message' => 'User found successfully',
-                        'detail' => $user,
+                        'detail' => $user_data,
                     ], Response::HTTP_OK);
                 }
             }
@@ -819,38 +751,115 @@ class RadiusController extends Controller
     }
 
     /**
+     *  VALIDATIONS 
+     * 
+    */
+        /**
+         * Validate the input data
+         * 
+         * @param Request $request
+         * @return array $response
+         */
+
+            private function validateRequest (Request $request)
+            {
+                $data = $request->input();
+
+                $validator = Validator::make($request->all(), [
+                    'username' => 'required|string',
+                    'name' => 'required|string',
+                    'bandwidth_plan' => 'required|string',
+                    'node' => 'required|string',
+                    'main_ip' => 'required|ip',
+                ]);
+            
+                if ($validator->fails()) {
+
+                    $response = [
+                        'status' => 'error',
+                        'code' => 400,
+                        'message' => 'Invalid data.',
+                        'detail' => $validator->errors(),
+                    ];
+
+                } else {
+                    $response = [
+                        'status' => 'success',
+                        'code' => 200,
+                        'message' => 'Data is valid.',
+                    ];
+                }
+
+                return $response;
+
+            }
+
+        /**
+         * Validate the username
+        * 
+        * @param Request $request
+        * @return array $response
+        */
+
+        private function validateUser ($username)
+        {
+            $validator = Validator::make(['username' => $username], [
+                'username' => 'required|string',
+            ]);
+        
+            if ($validator->fails()) {
+
+                $response = [
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Invalid data.',
+                    'detail' => $validator->errors(),
+                ];
+
+            } else {
+                $response = [
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Data is valid.',
+                ];
+            }
+
+            return $response;
+        }
+
+        /**
          * Validate the IP
          * 
          * @param Request $request
          * @return array $response
          */
 
-         private function validateIP (Request $request)
-         {
-             $data = $request->input();
- 
-             $validator = Validator::make($request->all(), [
-                 'framed_ip' => 'required|string',
-             ]);
-         
-             if ($validator->fails()) {
- 
-                 $response = [
-                     'status' => 'error',
-                     'code' => 400,
-                     'message' => 'Invalid data.',
-                     'detail' => $validator->errors(),
-                 ];
- 
-             } else {
-                 $response = [
-                     'status' => 'success',
-                     'code' => 200,
-                     'message' => 'Data is valid.',
-                 ];
-             }
- 
-             return $response;
-         }   
+        private function validateIP (Request $request)
+        {
+            $data = $request->input();
+
+            $validator = Validator::make($request->all(), [
+                'ip' => 'required|string',
+            ]);
+        
+            if ($validator->fails()) {
+
+                $response = [
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Invalid data.',
+                    'detail' => $validator->errors(),
+                ];
+
+            } else {
+                $response = [
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Data is valid.',
+                ];
+            }
+
+            return $response;
+        }   
 
 }
