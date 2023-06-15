@@ -228,4 +228,59 @@ class SmartOltController extends Controller
 
     }
 
+
+    public function rebootOnuByExternalId ($onu_sn)
+    {
+        try {
+            $validator = Validator::make(['onu_sn' => $onu_sn], [
+                'onu_sn' => 'required|string',
+            ]);
+    
+            if ($validator->fails()) {
+                $response = [
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Invalid data.',
+                    'detail' => $validator->errors(),
+                ];
+            } else {
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => env('SMARTOLT_URL') . '/api/onu/reboot/' . $onu_sn,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 30,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_HTTPHEADER => array(
+                        'X-Token: ' . env('SMARTOLT_APIKEY'),
+                    ),
+                ));
+                $response = curl_exec($curl);
+                $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE); // Get the HTTP code
+                curl_close($curl);
+    
+                if ($httpCode != 200) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'ONU Status not found',
+                    ], Response::HTTP_NOT_FOUND);
+                } else {
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'ONU rebooted successfully',
+                        'detail' => json_decode($response, true),
+                    ], Response::HTTP_OK);
+                }
+            }
+        } catch (HttpException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while rebooting ONU',
+                'detail' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

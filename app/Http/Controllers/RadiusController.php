@@ -933,65 +933,94 @@ class RadiusController extends Controller
 
 
 
-        /** SPECIALS **/
-        public function searchUsernameByFramedIP ($framed_ip_address)
-        {
-                try {
-                    $validate = $this->validateIP($framed_ip_address);
-                    
-                    if ($validate['code'] != 200) {
-
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => 'Error finding user',
-                            'detail' => $validate['detail'],
-                        ], Response::HTTP_BAD_REQUEST);
-
-                    } else {
-
-                        
-                        // Check if the user exists
-                        $userExists = DB::connection('radius')
-                            ->table('radreply')
-                            ->where('value', $framed_ip_address)
-                            ->exists();
-
-                        if (!$userExists) {
-
-                            return response()->json([
-                                'status' => 'error',
-                                'message' => 'User does not exist.',
-                            ], Response::HTTP_NOT_FOUND);
-
-                        } else {
-                            // Find user from radreply table
-                            $username = DB::connection('radius')
-                                ->table('radreply')
-                                ->where('value', $framed_ip_address)
-                                ->first();
-                            
-                            $user_data = [
-                                "username" => $username->username
-                            ];
-
-                            return response()->json([
-                                'status' => 'success',
-                                'message' => 'User found successfully',
-                                'detail' => $user_data,
-                            ], Response::HTTP_OK);
-                        }
-                    }
-
-                } catch (\Exception $e) {
+    /** SPECIALS **/
+    public function searchUsernameByFramedIP ($framed_ip_address)
+    {
+            try {
+                $validate = $this->validateUser($framed_ip_address);
+                
+                if ($validate['code'] != 200) {
 
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Error finding user',
-                        'detail' => $e->getMessage()
-                    ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        
+                        'detail' => $validate['detail'],
+                    ], Response::HTTP_BAD_REQUEST);
+
+                } else {
+
+                    
+                    // Check if the user exists
+                    $userExists = DB::connection('radius')
+                        ->table('radreply')
+                        ->where('value', $framed_ip_address)
+                        ->exists();
+
+                    if (!$userExists) {
+
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'User does not exist.',
+                        ], Response::HTTP_NOT_FOUND);
+
+                    } else {
+                        // Find user from radreply table
+                        $username = DB::connection('radius')
+                            ->table('radreply')
+                            ->where('value', $framed_ip_address)
+                            ->first();
+                        
+                        $user_data = [
+                            "username" => $username->username
+                        ];
+
+                        return response()->json([
+                            'status' => 'success',
+                            'message' => 'User found successfully',
+                            'detail' => $user_data,
+                        ], Response::HTTP_OK);
+                    }
                 }
 
+            } catch (\Exception $e) {
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Error finding user',
+                    'detail' => $e->getMessage()
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    
+            }
+
+    }
+
+    public function updateUserBandwidthByIP ($username, $bandwidth_plan)
+    {
+        try {
+            // Update Mikrotik-Rate-Limit in radreply table
+            DB::connection('radius')
+                ->table('radreply')
+                ->where('username', $username)
+                ->where('attribute', 'Mikrotik-Rate-Limit')
+                ->update([
+                    'value' => $bandwidth_plan,
+                ]);
+    
+            // Return a JSON response for successful update
+            return response()->json([
+                'status' => 'success',
+                'code' => Response::HTTP_OK,
+                'message' => 'User updated successfully',
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the process
+            return response()->json([
+                'status' => 'error',
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => 'An error occurred.',
+                'detail' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

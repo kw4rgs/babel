@@ -336,13 +336,14 @@ class FTTHController extends Controller
                     continue;
                 }
                 
-                dd($username);
+                $username = $username->original['detail']['username'];
+
                 // Step 2: Update the mikrokit-rate-limit using the bandwidth plan
-                $radius_response = $this->radiusController->updateUserBandwidth($username, $bandwidth_plan);
-    
+                $radius_response = $this->radiusController->updateUserBandwidthByIP($username, $bandwidth_plan);
+ 
                 if ($radius_response->getStatusCode() !== Response::HTTP_OK) {
                     $response_data[] = [
-                        'framed_ip' => $framed_ip,
+                        'framed_ip' => $framed_ip_address,
                         'status' => $radius_response->getStatusCode(),
                         'message' => 'Error updating mikrokit-rate-limit',
                         'data' => [
@@ -358,10 +359,11 @@ class FTTHController extends Controller
     
                     if ($smartolt_response->getStatusCode() !== Response::HTTP_OK) {
                         $response_data[] = [
-                            'framed_ip' => $framed_ip,
+                            'framed_ip' => $framed_ip_address,
                             'status' => $smartolt_response->getStatusCode(),
                             'message' => 'Error rebooting ONU',
                             'data' => [
+                                'radius' => $radius_response->original,
                                 'smartolt' => $smartolt_response->original,
                             ],
                         ];
@@ -371,7 +373,7 @@ class FTTHController extends Controller
     
                 // All operations successful
                 $response_data[] = [
-                    'framed_ip' => $framed_ip,
+                    'framed_ip' => $framed_ip_address,
                     'status' => Response::HTTP_OK,
                     'message' => 'Operations completed successfully',
                     'data' => [
@@ -393,15 +395,4 @@ class FTTHController extends Controller
         }
     }
     
-    private function searchUsernameByFramedIP($framed_ip)
-    {
-        // Implement the logic to search for the username based on framed IP
-        // Return the username if found, otherwise return null
-        // You can use the appropriate code to interact with your data source (e.g., database, external API) here
-        // Example:
-        // $user = User::where('framed_ip', $framed_ip)->first();
-        // return $user ? $user->username : null;
-        // Replace this example code with your actual implementation
-        return null;
-    }
 }
