@@ -61,6 +61,9 @@ $app->singleton(
 
 $app->configure('app');
 
+$app->configure('timeout');
+
+
 if (class_exists(\Knuckles\Scribe\ScribeServiceProvider::class)) {
     $app->register(\Knuckles\Scribe\ScribeServiceProvider::class);
     $app->configure('scribe');
@@ -78,6 +81,10 @@ $app->configure('database');
 | route or middleware that'll be assigned to some specific routes.
 |
 */
+
+$app->middleware([
+    App\Http\Middleware\TimeoutMiddleware::class,
+]);
 
 $app->routeMiddleware([
     'bearer-token' => App\Http\Middleware\BearerTokenMiddleware::class,

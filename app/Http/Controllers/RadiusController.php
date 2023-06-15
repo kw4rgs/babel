@@ -42,75 +42,94 @@ class RadiusController extends Controller
 
     public function getAllUsers()
     {
-        $radreply_data = DB::connection('radius')
-            ->table('radreply')
-            ->select('id', 'username', 'attribute', 'value')
-            ->orderBy('id', 'asc')
-            ->get();
-                
-        $radcheck_data = DB::connection('radius')
-            ->table('radcheck')
-            ->select('username', 'value')
-            ->orderBy('id', 'asc')
-            ->get();
+        try {
+            $radreply_data = DB::connection('radius')
+                ->table('radreply')
+                ->select('id', 'username', 'attribute', 'value')
+                ->orderBy('id', 'asc')
+                ->get();
+                    
+            $radcheck_data = DB::connection('radius')
+                ->table('radcheck')
+                ->select('username', 'value')
+                ->orderBy('id', 'asc')
+                ->get();
+            
+            $userinfo_data = DB::connection('radius')
+                ->table('userinfo')
+                ->select('username', 'firstname', 'lastname', 'nodo', 'creationdate', 'updatedate')
+                ->orderBy('id', 'asc')
+                ->get();
+            
+            $merged_data = [];
         
-        $userinfo_data = DB::connection('radius')
-            ->table('userinfo')
-            ->select('username', 'firstname', 'lastname', 'nodo', 'creationdate', 'updatedate')
-            ->orderBy('id', 'asc')
-            ->get();
+            foreach ($radreply_data as $user) {
+                $username = $user->username;
         
-        $merged_data = [];
-    
-        foreach ($radreply_data as $user) {
-            $username = $user->username;
-    
-            if (!isset($merged_data[$username])) {
-                $merged_data[$username] = [
-                    'Id' => $user->id,
-                    'Username' => $username,
-                    'Password' => '',
-                ];
-            }
-    
-            $attributes = explode(',', $user->attribute);
-            $values = explode(',', $user->value);
-    
-            foreach ($attributes as $index => $attribute) {
-                $attribute = trim($attribute);
-                $value = trim($values[$index]);
-    
-                $merged_data[$username][$attribute] = $value;
-            }
-        }
-    
-        foreach ($radcheck_data as $user) {
-            $username = $user->username;
-    
-            if (isset($merged_data[$username])) {
-                $merged_data[$username]['Password'] = $user->value;
-            }
-        }
-    
-        foreach ($userinfo_data as $user) {
-            $username = isset($user->username) ? $user->username : null;
-            $created_at = isset($user->creationdate) ? explode(' ', $user->creationdate) : null;
-            $updated_at = isset($user->updatedate) ? explode(' ', $user->updatedate) : null;
-    
-            if (isset($merged_data[$username])) {
-                try {
-                    $merged_data[$username]['Name'] = isset($user->firstname) ? $user->firstname : null;
-                } catch (Exception $e) {
-                    return $e;
+                if (!isset($merged_data[$username])) {
+                    $merged_data[$username] = [
+                        'Id' => $user->id,
+                        'Username' => $username,
+                        'Password' => '',
+                    ];
                 }
-
-                $merged_data[$username]['Node'] = isset($user->nodo) ? $user->nodo : null;
-                $merged_data[$username]['Creation Date'] = isset($created_at[0]) ? $created_at[0] : null;
-                $merged_data[$username]['Update Date'] = isset($updated_at[0]) ? $updated_at[0] : null;
+        
+                $attributes = explode(',', $user->attribute);
+                $values = explode(',', $user->value);
+        
+                foreach ($attributes as $index => $attribute) {
+                    $attribute = trim($attribute);
+                    $value = trim($values[$index]);
+        
+                    $merged_data[$username][$attribute] = $value;
+                }
             }
-        }
+        
+            foreach ($radcheck_data as $user) {
+                $username = $user->username;
+        
+                if (isset($merged_data[$username])) {
+                    $merged_data[$username]['Password'] = $user->value;
+                }
+            }
+        
+            foreach ($userinfo_data as $user) {
+                $username = isset($user->username) ? $user->username : null;
+                $created_at = isset($user->creationdate) ? explode(' ', $user->creationdate) : null;
+                $updated_at = isset($user->updatedate) ? explode(' ', $user->updatedate) : null;
+        
+                if (isset($merged_data[$username])) {
+                    try {
+                        $merged_data[$username]['Name'] = isset($user->firstname) ? $user->firstname : null;
+                    } catch (Exception $e) {
+                        return $e;
+                    }
+
+                    $merged_data[$username]['Node'] = isset($user->nodo) ? $user->nodo : null;
+                    $merged_data[$username]['Creation Date'] = isset($created_at[0]) ? $created_at[0] : null;
+                    $merged_data[$username]['Update Date'] = isset($updated_at[0]) ? $updated_at[0] : null;
+                }
+            }
+        
+            $data_radius = array_values($merged_data);
+        
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Users found',
+                    'detail' => [
+                        'radius_users_quantity' => count($data_radius),
+                        'radius_users_data' => $data_radius
+                    ]
+                ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            $errorMessage = 'Error retrieving users';
     
-        return $merged_data;
+            return response()->json([
+                'status' => 'error',
+                'message' => $errorMessage,
+                'detail' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     
