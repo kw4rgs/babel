@@ -336,7 +336,7 @@ class FTTHController extends Controller
                     continue;
                 }
                 
-                $username = $username->original['detail']['username'];
+                $username = isset($username->original['detail']['username']) ? $username->original['detail']['username'] : $customer['framed_ip'];
 
                 // Step 2: Update the mikrokit-rate-limit using the bandwidth plan
                 $radius_response = $this->radiusController->updateUserBandwidthByIP($username, $bandwidth_plan);
